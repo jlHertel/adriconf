@@ -16,7 +16,9 @@ namespace DRI::Parser {
 
     DRI::Application parseApplication(xmlpp::Node *application);
 
-    std::list<Glib::ustring> convertSectionsToOptions(std::list<DRI::Section> sections);
+    std::list<DRI::Option> convertSectionsToOptionsObject(const std::list<DRI::Section> &sections);
+
+    std::list<Glib::ustring> convertSectionsToOptions(const std::list<DRI::Section> &sections);
 
     void printContainer(std::list<DRI::Device> devices);
 };

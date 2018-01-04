@@ -193,12 +193,24 @@ DRI::Application DRI::Parser::parseApplication(xmlpp::Node *application) {
     return app;
 }
 
-std::list<Glib::ustring> DRI::Parser::convertSectionsToOptions(std::list<DRI::Section> sections) {
+std::list<Glib::ustring> DRI::Parser::convertSectionsToOptions(const std::list<DRI::Section> &sections) {
     std::list<Glib::ustring> options;
 
-    for (auto section : sections) {
+    for (auto &section : sections) {
         for (auto option : section.getOptions()) {
             options.emplace_back(option.getName());
+        }
+    }
+
+    return options;
+}
+
+std::list<DRI::Option> DRI::Parser::convertSectionsToOptionsObject(const std::list<DRI::Section> &sections) {
+    std::list<DRI::Option> options;
+
+    for (auto &section : sections) {
+        for (auto &option : section.getOptions()) {
+            options.emplace_back(option);
         }
     }
 

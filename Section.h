@@ -14,9 +14,9 @@ namespace DRI {
     public:
         Section();
 
-        Glib::ustring getDescription();
+        Glib::ustring getDescription() const;
 
-        std::list<DRI::Option> getOptions();
+        std::list<DRI::Option> getOptions() const;
 
         Section *setDescription(Glib::ustring description);
 

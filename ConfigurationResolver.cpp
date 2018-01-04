@@ -4,18 +4,30 @@
 
 /* This function will remove unnecessary options/applications and generate a structure with only the necessary items */
 std::list<DRI::Device> DRI::ConfigurationResolver::resolveOptionsForSave(
-        DRI::Device systemWideDevice,
+        const DRI::Device &systemWideDevice,
+        const std::list<DRI::DriverConfiguration> &driverAvailableOptions,
         std::list<DRI::Device> userDefinedOptions
 ) {
     /* Create the final driverList */
     std::list<DRI::Device> mergedDevices;
 
-    /* Precedence: userDefined > SystemWide */
+    /* Precedence: userDefined > System Wide > Driver Default */
     for (auto &userDevice : userDefinedOptions) {
         DRI::Device mergedDevice;
 
         mergedDevice.setDriver(userDevice.getDriver());
         mergedDevice.setScreen(userDevice.getScreen());
+
+        auto driverConfig = std::find_if(driverAvailableOptions.begin(), driverAvailableOptions.end(),
+                                         [&userDevice](const DRI::DriverConfiguration &d) {
+                                             return d.getScreen() == userDevice.getScreen();
+                                         });
+
+        std::list<DRI::Option> driverOptions;
+
+        if (driverConfig != driverAvailableOptions.end()) {
+            driverOptions = DRI::Parser::convertSectionsToOptionsObject(driverConfig->getSections());
+        }
 
         for (auto const &userApplication : userDevice.getApplications()) {
             DRI::Application mergedApp;
@@ -39,18 +51,38 @@ std::list<DRI::Device> DRI::ConfigurationResolver::resolveOptionsForSave(
                             mergedOptions.emplace(option.first, option.second);
                         } else {
                             std::cout << Glib::ustring::compose(
-                                    _("Option '%1' from application '%2' on driver '%3' and screen '%4' is the same as the system wide value. Option will be ignored."),
+                                    _("Option '%1' from application '%2' on driver '%3' and screen '%4' is the same as the system wide value (%5). Option will be ignored."),
                                     option.first,
                                     userApplication.getName(),
                                     userDevice.getDriver(),
-                                    userDevice.getScreen()
+                                    userDevice.getScreen(),
+                                    option.second
                             ) << std::endl;
                         }
 
                     } else {
-                        /* Options doesn't exist in system-wide, so we need to add this app */
-                        addApplication = true;
-                        mergedOptions.emplace(option.first, option.second);
+                        /*
+                         * Option doesn't exist in system-wide
+                         * We must check what is the default value from driver
+                         */
+
+                        auto driverOption = std::find_if(driverOptions.begin(), driverOptions.end(),
+                                                         [&option](DRI::Option &driverDefinedOption) {
+                                                             return driverDefinedOption.getName() == option.first;
+                                                         });
+
+                        if (driverOption->getDefaultValue() == option.second) {
+                            std::cout << Glib::ustring::compose(
+                                    _("Option \"%1\" on driver \"%2\" and screen \"%3\" is the same as driver default (%4). Option will be ignored."),
+                                    option.first,
+                                    userDevice.getDriver(),
+                                    userDevice.getScreen(),
+                                    driverOption->getDefaultValue()
+                            ) << std::endl;
+                        } else {
+                            addApplication = true;
+                            mergedOptions.emplace(option.first, option.second);
+                        }
                     }
 
                 }
@@ -70,13 +102,49 @@ std::list<DRI::Device> DRI::ConfigurationResolver::resolveOptionsForSave(
                 }
 
             } else {
-                /* No merge, just add it */
+                /**
+                 * Application doesn't exist in system-wide configuration
+                 * but we must check each option to see if its value is the same as the driver default
+                 */
+                std::map<Glib::ustring, Glib::ustring> mergedOptions;
 
-                mergedApp.setExecutable(userApplication.getExecutable());
-                mergedApp.setName(userApplication.getName());
-                mergedApp.setOptions(userApplication.getOptions());
+                bool addApplication = false;
 
-                mergedDevice.addApplication(mergedApp);
+                for (auto &userDefinedOption : userApplication.getOptions()) {
+                    auto driverOption = std::find_if(driverOptions.begin(), driverOptions.end(),
+                                                     [&userDefinedOption](DRI::Option &driverDefinedOption) {
+                                                         return driverDefinedOption.getName() ==
+                                                                userDefinedOption.first;
+                                                     });
+
+                    if (driverOption->getDefaultValue() == userDefinedOption.second) {
+                        std::cout << Glib::ustring::compose(
+                                _("Option \"%1\" on driver \"%2\" and screen \"%3\" is the same as driver default (%4). Option will be ignored."),
+                                userDefinedOption.first,
+                                userDevice.getDriver(),
+                                userDevice.getScreen(),
+                                driverOption->getDefaultValue()
+                        ) << std::endl;
+                    } else {
+                        addApplication = true;
+                        mergedOptions.emplace(userDefinedOption.first, userDefinedOption.second);
+                    }
+                }
+
+                if(addApplication) {
+                    mergedApp.setExecutable(userApplication.getExecutable());
+                    mergedApp.setName(userApplication.getName());
+                    mergedApp.setOptions(mergedOptions);
+
+                    mergedDevice.addApplication(mergedApp);
+                } else {
+                    std::cout << Glib::ustring::compose(
+                            _("Application '%1' on driver '%2' and screen '%3' has all the values already defined in driver default configuration. Application will be ignored."),
+                            userApplication.getName(),
+                            mergedDevice.getDriver(),
+                            mergedDevice.getScreen()
+                    ) << std::endl;
+                }
             }
         }
 

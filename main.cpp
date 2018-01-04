@@ -68,9 +68,11 @@ int main(int argc, char *argv[]) {
     Gtk::ImageMenuItem *pSaveAction;
     builder->get_widget("saveAction", pSaveAction);
     if (pSaveAction) {
-        pSaveAction->signal_activate().connect([&systemWideDevice, &userDevices]() {
+        pSaveAction->signal_activate().connect([&systemWideDevice, &userDevices, &driverSupportedOptions]() {
             std::cout << _("Generating final XML for saving...") << std::endl;
-            auto resolvedOptions = DRI::ConfigurationResolver::resolveOptionsForSave(systemWideDevice, userDevices);
+            auto resolvedOptions = DRI::ConfigurationResolver::resolveOptionsForSave(
+                    systemWideDevice, driverSupportedOptions, userDevices
+            );
             auto rawXML = DRI::Writer::generateRawXml(resolvedOptions);
             std::cout << Glib::ustring::compose(_("Writing generated XML: %1"), rawXML) << std::endl;
             std::string userHome(std::getenv("HOME"));

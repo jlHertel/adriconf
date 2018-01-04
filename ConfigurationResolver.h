@@ -9,7 +9,8 @@
 
 namespace DRI::ConfigurationResolver {
     std::list<DRI::Device> resolveOptionsForSave(
-            DRI::Device systemWideOptions,
+            const DRI::Device &systemWideOptions,
+            const std::list<DRI::DriverConfiguration> &driverAvailableOptions,
             std::list<DRI::Device> userDefinedOptions
     );
 
