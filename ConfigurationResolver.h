@@ -18,6 +18,12 @@ namespace DRI::ConfigurationResolver {
             std::list<DRI::DriverConfiguration> driverAvailableOptions,
             std::list<DRI::Device> userDefinedOptions
     );
+
+    std::list<DRI::Device> mergeOptionsForDisplay(
+            const DRI::Device &systemWideOptions,
+            const std::list<DRI::DriverConfiguration> &driverAvailableOptions,
+            const std::list<DRI::Device> &userDefinedOptions
+    );
 };
 
 

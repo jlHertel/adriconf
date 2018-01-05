@@ -34,9 +34,13 @@ int main(int argc, char *argv[]) {
 
     /* Filter invalid options */
     userDevices = DRI::ConfigurationResolver::filterDriverUnsupportedOptions(driverSupportedOptions, userDevices);
+    /* Merge them in a complete structure */
+    userDevices = DRI::ConfigurationResolver::mergeOptionsForDisplay(
+            systemWideDevice, driverSupportedOptions, userDevices
+    );
 
     /* Start the GUI work */
-    auto app = Gtk::Application::create(argc, argv, "br.com.jeanhertel.driconf");
+    auto app = Gtk::Application::create(argc, argv, "br.com.jeanhertel.adriconf");
     auto builder = Gtk::Builder::create();
     try {
         builder->add_from_file("DriConf.glade");
@@ -61,7 +65,7 @@ int main(int argc, char *argv[]) {
     builder->get_widget("quitAction", pQuitAction);
     if (pQuitAction) {
         pQuitAction->signal_activate().connect([&pWindow]() {
-                pWindow->hide();
+            pWindow->hide();
         });
     }
 
@@ -80,6 +84,69 @@ int main(int argc, char *argv[]) {
             outFile << rawXML;
             outFile.close();
         });
+    }
+
+    Gtk::Menu *pDriverMenu;
+    builder->get_widget("DriverMenu", pDriverMenu);
+
+    if (pDriverMenu) {
+        auto signalChangeDriver = []() {
+            /* TODO: Implement signal to redraw widgets when we select a new driver */
+            std::cout << "Change driver selected" << std::endl;
+        };
+
+        Gtk::RadioButtonGroup driverRadioGroup;
+        bool groupInitialized = false;
+        for (auto &driverOptions : userDevices) {
+            Gtk::RadioMenuItem *driver = Gtk::manage(new Gtk::RadioMenuItem());
+            driver->set_label(Glib::ustring::compose(
+                    _("%1 on screen %2"),
+                    driverOptions.getDriver(),
+                    driverOptions.getScreen()
+            ));
+            driver->set_visible(true);
+            driver->signal_select().connect(signalChangeDriver);
+
+            if (!groupInitialized) {
+                driverRadioGroup = driver->get_group();
+                driver->set_active(true);
+                groupInitialized = true;
+            } else {
+                driver->set_group(driverRadioGroup);
+            }
+
+            pDriverMenu->add(*driver);
+        }
+    }
+
+    Gtk::Menu *pApplicationMenu;
+    builder->get_widget("ApplicationMenu", pApplicationMenu);
+
+    if (pApplicationMenu) {
+        Gtk::RadioButtonGroup AppRadioGroup;
+        bool groupInitialized = false;
+
+        Gtk::RadioButtonGroup appRadioGroup;
+        auto firstDriver = userDevices.begin();
+        for (auto &driverApp : firstDriver->getApplications()) {
+            Gtk::RadioMenuItem *appRadioItem = Gtk::manage(new Gtk::RadioMenuItem());
+            appRadioItem->set_label(driverApp.getName());
+            appRadioItem->set_visible(true);
+            appRadioItem->signal_activate().connect([]() {
+                /* TODO: Implement app changed signal */
+                std::cout << "App changed" << std::endl;
+            });
+
+            if (!groupInitialized) {
+                appRadioGroup = appRadioItem->get_group();
+                appRadioItem->set_active(true);
+                groupInitialized = true;
+            } else {
+                appRadioItem->set_group(appRadioGroup);
+            }
+
+            pApplicationMenu->add(*appRadioItem);
+        }
     }
 
     app->run(*pWindow);

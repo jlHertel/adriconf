@@ -131,7 +131,7 @@ std::list<DRI::Device> DRI::ConfigurationResolver::resolveOptionsForSave(
                     }
                 }
 
-                if(addApplication) {
+                if (addApplication) {
                     mergedApp.setExecutable(userApplication.getExecutable());
                     mergedApp.setName(userApplication.getName());
                     mergedApp.setOptions(mergedOptions);
@@ -199,4 +199,102 @@ std::list<DRI::Device> DRI::ConfigurationResolver::filterDriverUnsupportedOption
     }
 
     return userDefinedOptions;
+}
+
+/**
+ * For every driver and application adds all the available standard options
+ * Also generate a default configuration if none is provided
+ * @param systemWideOptions
+ * @param driverAvailableOptions
+ * @param userDefinedOptions
+ * @return
+ */
+std::list<DRI::Device> DRI::ConfigurationResolver::mergeOptionsForDisplay(
+        const DRI::Device &systemWideOptions,
+        const std::list<DRI::DriverConfiguration> &driverAvailableOptions,
+        const std::list<DRI::Device> &userDefinedOptions
+) {
+    std::list<DRI::Device> mergedDevices;
+
+    for (auto &driverConf : driverAvailableOptions) {
+        DRI::Device device;
+        device.setScreen(driverConf.getScreen());
+        device.setDriver(driverConf.getDriver());
+
+        /* Check if user-config has any config for this screen/driver */
+        auto userDefinedConf = std::find_if(
+                userDefinedOptions.begin(),
+                userDefinedOptions.end(),
+                [&driverConf](const DRI::Device &device1) {
+                    return device1.getDriver() == driverConf.getDriver()
+                           && device1.getScreen() == driverConf.getScreen();
+                });
+        auto driverOptions = DRI::Parser::convertSectionsToOptionsObject(driverConf.getSections());
+
+        auto newDeviceApps = device.getApplications();
+
+        if (userDefinedConf != userDefinedOptions.end()) {
+            for (auto &userDefinedApp : userDefinedConf->getApplications()) {
+                DRI::Application app;
+                app.setName(userDefinedApp.getName());
+                app.setExecutable(userDefinedApp.getName());
+
+                auto appOptions = userDefinedApp.getOptions();
+                for (auto &driverOptionObj : driverOptions) {
+                    if (appOptions.count(driverOptionObj.getName()) == 0) {
+                        appOptions.emplace(driverOptionObj.getName(), driverOptionObj.getDefaultValue());
+                    }
+                }
+
+                newDeviceApps.emplace_back(app);
+            }
+        }
+
+        /* Check if we can add any of the system-wide apps for this config */
+        for (auto &systemWideApp : systemWideOptions.getApplications()) {
+            auto appExists = std::find_if(newDeviceApps.begin(), newDeviceApps.end(),
+                                          [&systemWideApp](DRI::Application &app) {
+                                              return app.getExecutable() == systemWideApp.getExecutable();
+                                          });
+
+            if (appExists == newDeviceApps.end()) {
+                DRI::Application systemApp = systemWideApp;
+                auto systemAppOptions = systemApp.getOptions();
+
+                for (auto &driverOptionObj : driverOptions) {
+                    if (systemAppOptions.count(driverOptionObj.getName()) == 0) {
+                        systemAppOptions.emplace(driverOptionObj.getName(), driverOptionObj.getDefaultValue());
+                    }
+                }
+
+                systemApp.setOptions(systemAppOptions);
+
+                newDeviceApps.emplace_back(systemApp);
+            }
+        }
+
+        /* Check if we have a default config */
+        auto defaultApp = std::find_if(newDeviceApps.begin(), newDeviceApps.end(), [](DRI::Application app) {
+            return app.getExecutable().empty();
+        });
+
+        if (defaultApp == newDeviceApps.end()) {
+            DRI::Application defaultApplication;
+            /* TODO: Maybe we should translate the default app name? */
+            defaultApplication.setName("Default");
+            auto defaultAppOptions = defaultApplication.getOptions();
+            for (auto &driverOptionObj : driverOptions) {
+                defaultAppOptions.emplace(driverOptionObj.getName(), driverOptionObj.getDefaultValue());
+            }
+
+            defaultApplication.setOptions(defaultAppOptions);
+            newDeviceApps.emplace_front(defaultApplication);
+        }
+
+        device.setApplications(newDeviceApps);
+
+        mergedDevices.emplace_back(device);
+    }
+
+    return mergedDevices;
 }
