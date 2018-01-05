@@ -11,7 +11,7 @@ set(SOURCE_FILES main.cpp Device.cpp Device.h
         ConfigurationResolver.cpp ConfigurationResolver.h
         DRIQuery.cpp DRIQuery.h
         DriverConfiguration.cpp DriverConfiguration.h
-        Writer.cpp Writer.h)
+        Writer.cpp Writer.h GUI.cpp GUI.h ConfigurationLoader.cpp ConfigurationLoader.h)
 
 find_package(PkgConfig REQUIRED)
 find_package(OpenGL REQUIRED)
