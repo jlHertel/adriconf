@@ -24,6 +24,9 @@ namespace DRI {
         Glib::ustring locale;
 
         void setupLocale();
+
+        void drawApplicationSelectionMenu();
+
     public:
         GUI();
 
@@ -35,6 +38,8 @@ namespace DRI {
         void onQuitPressed();
 
         void onSavePressed();
+
+        void onApplicationSelected(Gtk::RadioMenuItem *item);
     };
 }
 

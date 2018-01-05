@@ -1,7 +1,6 @@
 #include "GUI.h"
 
 #include <boost/locale.hpp>
-#include "Section.h"
 #include "Parser.h"
 #include "ConfigurationResolver.h"
 #include "DRIQuery.h"
@@ -50,37 +49,7 @@ DRI::GUI::GUI() {
     }
 
     /* Extract & generate the menu with the applications */
-    Gtk::Menu *pApplicationMenu;
-    this->gladeBuilder->get_widget("ApplicationMenu", pApplicationMenu);
-
-    /*
-     * TODO: Rewrite this in a better maintanable code
-     *
-     * if (pApplicationMenu) {
-        Gtk::RadioButtonGroup AppRadioGroup;
-        bool groupInitialized = false;
-
-        Gtk::RadioButtonGroup appRadioGroup;
-        auto firstDriver = userDevices.begin();
-        for (auto &driverApp : firstDriver->getApplications()) {
-            Gtk::RadioMenuItem *appRadioItem = Gtk::manage(new Gtk::RadioMenuItem());
-            appRadioItem->set_label(driverApp.getName());
-            appRadioItem->set_visible(true);
-            appRadioItem->signal_activate().connect([]() {
-                std::cout << "App changed" << std::endl;
-            });
-
-            if (!groupInitialized) {
-                appRadioGroup = appRadioItem->get_group();
-                appRadioItem->set_active(true);
-                groupInitialized = true;
-            } else {
-                appRadioItem->set_group(appRadioGroup);
-            }
-
-            pApplicationMenu->add(*appRadioItem);
-        }
-    }*/
+    this->drawApplicationSelectionMenu();
 }
 
 DRI::GUI::~GUI() {
@@ -120,4 +89,60 @@ void DRI::GUI::setupLocale() {
     std::cout << Glib::ustring::compose(_("Current language code is %1"), langCode) << std::endl;
 
     this->locale = langCode;
+}
+
+void DRI::GUI::drawApplicationSelectionMenu() {
+    /* TODO: On redraw we must remove all itens */
+    Gtk::Menu *pApplicationMenu;
+    this->gladeBuilder->get_widget("ApplicationMenu", pApplicationMenu);
+
+    if (pApplicationMenu) {
+        Gtk::RadioButtonGroup appRadioGroup;
+        bool groupInitialized = false;
+
+        for (auto &driver : this->userDefinedConfiguration) {
+            Gtk::MenuItem *driverMenuItem = Gtk::manage(new Gtk::MenuItem);
+            driverMenuItem->set_visible(true);
+            driverMenuItem->set_label(driver.getDriver());
+
+            Gtk::Menu *driverSubMenu = Gtk::manage(new Gtk::Menu);
+            driverSubMenu->set_visible(true);
+            for (auto &possibleApp : driver.getApplications()) {
+                Gtk::RadioMenuItem *appMenuItem = Gtk::manage(new Gtk::RadioMenuItem);
+                appMenuItem->set_visible(true);
+                appMenuItem->set_label(possibleApp.getName());
+
+                if (!groupInitialized) {
+                    appRadioGroup = appMenuItem->get_group();
+                    appMenuItem->set_active(true);
+                    groupInitialized = true;
+                } else {
+                    appMenuItem->set_group(appRadioGroup);
+                }
+
+                appMenuItem->signal_toggled().connect([this, &appMenuItem]() {
+                    this->onApplicationSelected(appMenuItem);
+                });
+
+                driverSubMenu->append(*appMenuItem);
+            }
+
+            driverMenuItem->set_submenu(*driverSubMenu);
+
+            pApplicationMenu->add(*driverMenuItem);
+        }
+    }
+}
+
+void DRI::GUI::onApplicationSelected(Gtk::RadioMenuItem *item) {
+    if(!item) {
+        return;
+    }
+    /* TODO: Fix this, as we keep getting critical errors from GTK+ */
+    if(item->get_active()) {
+        std::cout << "Item is active " << std::endl;
+    } else {
+        std::cout << "Item is not active " << std::endl;
+    }
+
 }
