@@ -17,6 +17,8 @@ namespace DRI {
         DRI::Device systemWideConfiguration;
         std::list<DRI::DriverConfiguration> driverConfiguration;
         std::list<DRI::Device> userDefinedConfiguration;
+        Glib::ustring currentSelectedDriver;
+        Glib::ustring currentSelectedApplication;
 
         /* Helpers */
         DRI::ConfigurationLoader configurationLoader;
@@ -39,7 +41,7 @@ namespace DRI {
 
         void onSavePressed();
 
-        void onApplicationSelected(Gtk::RadioMenuItem *item);
+        void onApplicationSelected(Glib::ustring, Glib::ustring);
     };
 }
 

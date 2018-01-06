@@ -31,6 +31,8 @@ namespace DRI {
 
         bool applicationExists(Glib::ustring executable) const;
 
+        void sortApplications();
+
         Device(const Glib::ustring &driver, int screen);
 
         Device();

@@ -1,5 +1,7 @@
 #include "Device.h"
 
+#include <algorithm>
+
 Glib::ustring DRI::Device::getDriver() const {
     return this->driver;
 }
@@ -52,4 +54,10 @@ bool DRI::Device::applicationExists(Glib::ustring executable) const {
     }
 
     return false;
+}
+
+void DRI::Device::sortApplications() {
+    this->applications.sort([](DRI::Application a, DRI::Application b) {
+        return a.getName() < b.getName();
+    });
 }

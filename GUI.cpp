@@ -50,6 +50,7 @@ DRI::GUI::GUI() {
 
     /* Extract & generate the menu with the applications */
     this->drawApplicationSelectionMenu();
+    this->drawApplicationSelectionMenu();
 }
 
 DRI::GUI::~GUI() {
@@ -92,15 +93,34 @@ void DRI::GUI::setupLocale() {
 }
 
 void DRI::GUI::drawApplicationSelectionMenu() {
-    /* TODO: On redraw we must remove all itens */
     Gtk::Menu *pApplicationMenu;
     this->gladeBuilder->get_widget("ApplicationMenu", pApplicationMenu);
 
     if (pApplicationMenu) {
+        /* Remove any item already defined */
+        for (auto &menuItem : pApplicationMenu->get_children()) {
+            pApplicationMenu->remove(*menuItem);
+        }
+
+        /* Clear the items already selected */
+        this->currentSelectedDriver = "";
+        /* No need to set the current application executables, as the default doesn't have one */
+        this->currentSelectedApplication = "";
+
+        /* Sort the applications again to maintain a good human GUI */
+        for (auto &driver : this->userDefinedConfiguration) {
+            driver.sortApplications();
+        }
+
         Gtk::RadioButtonGroup appRadioGroup;
         bool groupInitialized = false;
 
         for (auto &driver : this->userDefinedConfiguration) {
+
+            if (this->currentSelectedDriver.empty()) {
+                this->currentSelectedDriver = driver.getDriver();
+            }
+
             Gtk::MenuItem *driverMenuItem = Gtk::manage(new Gtk::MenuItem);
             driverMenuItem->set_visible(true);
             driverMenuItem->set_label(driver.getDriver());
@@ -114,15 +134,19 @@ void DRI::GUI::drawApplicationSelectionMenu() {
 
                 if (!groupInitialized) {
                     appRadioGroup = appMenuItem->get_group();
-                    appMenuItem->set_active(true);
                     groupInitialized = true;
                 } else {
                     appMenuItem->set_group(appRadioGroup);
                 }
 
-                appMenuItem->signal_toggled().connect([this, &appMenuItem]() {
-                    this->onApplicationSelected(appMenuItem);
-                });
+                if (this->currentSelectedDriver == driver.getDriver() && possibleApp.getExecutable().empty()) {
+                    appMenuItem->set_active(true);
+                }
+
+                appMenuItem->signal_toggled().connect(sigc::bind<Glib::ustring, Glib::ustring>(
+                        sigc::mem_fun(this, &DRI::GUI::onApplicationSelected),
+                        driver.getDriver(), possibleApp.getExecutable()
+                ));
 
                 driverSubMenu->append(*appMenuItem);
             }
@@ -134,15 +158,16 @@ void DRI::GUI::drawApplicationSelectionMenu() {
     }
 }
 
-void DRI::GUI::onApplicationSelected(Gtk::RadioMenuItem *item) {
-    if(!item) {
+void DRI::GUI::onApplicationSelected(const Glib::ustring driverName, const Glib::ustring applicationName) {
+    if (driverName == this->currentSelectedDriver && applicationName == this->currentSelectedApplication) {
         return;
     }
-    /* TODO: Fix this, as we keep getting critical errors from GTK+ */
-    if(item->get_active()) {
-        std::cout << "Item is active " << std::endl;
-    } else {
-        std::cout << "Item is not active " << std::endl;
-    }
+
+    this->currentSelectedDriver = driverName;
+    this->currentSelectedApplication = applicationName;
+
+    /* TODO: Redraw the screen items */
+
+    std::cout << "Selected driver \"" << driverName << "\" and \"" << applicationName << "\" executable." << std::endl;
 
 }
