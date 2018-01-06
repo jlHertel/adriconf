@@ -16,9 +16,9 @@ namespace DRI {
     public:
         const Glib::ustring &getDriver() const;
 
-        void setDriver(const Glib::ustring &driver);
+        void setDriver(Glib::ustring driver);
 
-        int getScreen() const;
+        const int &getScreen() const;
 
         void setScreen(int screen);
 

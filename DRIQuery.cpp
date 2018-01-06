@@ -41,6 +41,6 @@ std::list<DRI::DriverConfiguration> DRI::DRIQuery::queryDriverConfigurationOptio
         configurations.emplace_back(config);
     }
 
-    return configurations;
+    return std::move(configurations);
 }
 

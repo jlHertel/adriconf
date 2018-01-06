@@ -3,24 +3,24 @@
 
 #include <glibmm/ustring.h>
 #include <list>
-#include "Option.h"
+#include "DriverOption.h"
 
 namespace DRI {
     class Section {
     private:
         Glib::ustring description;
-        std::list<DRI::Option> options;
+        std::list<DRI::DriverOption> options;
 
     public:
         Section();
 
-        Glib::ustring getDescription() const;
+        const Glib::ustring &getDescription() const;
 
-        std::list<DRI::Option> getOptions() const;
+        const std::list<DRI::DriverOption> &getOptions() const;
 
         Section *setDescription(Glib::ustring description);
 
-        Section *addOption(DRI::Option option);
+        Section *addOption(DRI::DriverOption option);
     };
 }
 

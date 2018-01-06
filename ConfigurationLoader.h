@@ -15,7 +15,7 @@ namespace DRI {
     public:
         std::list<DRI::DriverConfiguration> loadDriverSpecificConfiguration(const Glib::ustring &locale);
         DRI::Device loadSystemWideConfiguration();
-        std::list<DRI::Device> loadUserDefinedConfiguration();
+        std::list<DRI::Device*> loadUserDefinedConfiguration();
     };
 
 }

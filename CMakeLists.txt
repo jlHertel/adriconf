@@ -4,14 +4,14 @@ project(adriconf)
 set(CMAKE_CXX_STANDARD 17)
 
 set(SOURCE_FILES main.cpp Device.cpp Device.h
-        Option.cpp Option.h
+        DriverOption.cpp DriverOption.h
         Section.cpp Section.h
         Parser.cpp Parser.h
         Application.cpp Application.h
         ConfigurationResolver.cpp ConfigurationResolver.h
         DRIQuery.cpp DRIQuery.h
         DriverConfiguration.cpp DriverConfiguration.h
-        Writer.cpp Writer.h GUI.cpp GUI.h ConfigurationLoader.cpp ConfigurationLoader.h)
+        Writer.cpp Writer.h GUI.cpp GUI.h ConfigurationLoader.cpp ConfigurationLoader.h ApplicationOption.cpp ApplicationOption.h)
 
 find_package(PkgConfig REQUIRED)
 find_package(OpenGL REQUIRED)

@@ -2,11 +2,11 @@
 
 DRI::Section::Section() : options() {}
 
-Glib::ustring DRI::Section::getDescription() const {
+const Glib::ustring &DRI::Section::getDescription() const {
     return this->description;
 }
 
-std::list<DRI::Option > DRI::Section::getOptions() const {
+const std::list<DRI::DriverOption> &DRI::Section::getOptions() const {
     return this->options;
 }
 
@@ -16,7 +16,7 @@ DRI::Section *DRI::Section::setDescription(Glib::ustring description) {
     return this;
 }
 
-DRI::Section *DRI::Section::addOption(DRI::Option option) {
+DRI::Section *DRI::Section::addOption(DRI::DriverOption option) {
     this->options.push_back(option);
 
     return this;

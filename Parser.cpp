@@ -57,8 +57,8 @@ DRI::Parser::parseAvailableConfiguration(const Glib::ustring &xml, const Glib::u
     return availableSections;
 }
 
-DRI::Option DRI::Parser::parseSectionOptions(xmlpp::Node *option, const Glib::ustring &currentLocale) {
-    DRI::Option parsedOption;
+DRI::DriverOption DRI::Parser::parseSectionOptions(xmlpp::Node *option, const Glib::ustring &currentLocale) {
+    DRI::DriverOption parsedOption;
 
     auto optionElement = dynamic_cast<xmlpp::Element *>(option);
 
@@ -116,8 +116,8 @@ DRI::Option DRI::Parser::parseSectionOptions(xmlpp::Node *option, const Glib::us
     return parsedOption;
 }
 
-std::list<DRI::Device> DRI::Parser::parseDevices(Glib::ustring &xml) {
-    std::list<DRI::Device> deviceList;
+std::list<DRI::Device *> DRI::Parser::parseDevices(Glib::ustring &xml) {
+    std::list<DRI::Device *> deviceList;
 
     try {
         xmlpp::DomParser parser;
@@ -131,17 +131,17 @@ std::list<DRI::Device> DRI::Parser::parseDevices(Glib::ustring &xml) {
 
             auto devices = rootNode->get_children("device");
             for (auto device : devices) {
-                DRI::Device deviceConf;
+                auto deviceConf = new DRI::Device();
 
                 auto deviceElement = dynamic_cast<xmlpp::Element *>(device);
                 auto deviceScreen = deviceElement->get_attribute("screen");
                 if (deviceScreen != nullptr) {
-                    deviceConf.setScreen(std::stoi(deviceScreen->get_value()));
+                    deviceConf->setScreen(std::stoi(deviceScreen->get_value()));
                 }
 
                 auto deviceDriver = deviceElement->get_attribute("driver");
                 if (deviceDriver != nullptr) {
-                    deviceConf.setDriver(deviceDriver->get_value());
+                    deviceConf->setDriver(deviceDriver->get_value());
                 }
 
                 auto applications = device->get_children("application");
@@ -149,8 +149,8 @@ std::list<DRI::Device> DRI::Parser::parseDevices(Glib::ustring &xml) {
                 for (auto application : applications) {
                     auto parsedApp = parseApplication(application);
                     /* If an application doesn't have any option, why include it? */
-                    if (!parsedApp.getOptions().empty()) {
-                        deviceConf.addApplication(parsedApp);
+                    if (!parsedApp->getOptions().empty()) {
+                        deviceConf->addApplication(parsedApp);
                     }
                 }
 
@@ -164,19 +164,19 @@ std::list<DRI::Device> DRI::Parser::parseDevices(Glib::ustring &xml) {
     return deviceList;
 }
 
-DRI::Application DRI::Parser::parseApplication(xmlpp::Node *application) {
-    DRI::Application app;
+DRI::Application *DRI::Parser::parseApplication(xmlpp::Node *application) {
+    auto app = new DRI::Application();
 
     auto applicationElement = dynamic_cast<xmlpp::Element *>(application);
 
     auto applicationName = applicationElement->get_attribute("name");
     if (applicationName != nullptr) {
-        app.setName(applicationName->get_value());
+        app->setName(applicationName->get_value());
     }
 
     auto applicationExecutable = applicationElement->get_attribute("executable");
     if (applicationExecutable != nullptr) {
-        app.setExecutable(applicationExecutable->get_value());
+        app->setExecutable(applicationExecutable->get_value());
     }
 
     auto options = application->get_children("option");
@@ -186,7 +186,11 @@ DRI::Application DRI::Parser::parseApplication(xmlpp::Node *application) {
         auto optionName = optionElement->get_attribute("name");
         auto optionValue = optionElement->get_attribute("value");
         if (optionName != nullptr && optionValue != nullptr) {
-            app.addOption(optionName->get_value(), optionValue->get_value());
+            auto newOption = new DRI::ApplicationOption();
+            newOption->setName(optionName->get_value());
+            newOption->setValue(optionValue->get_value());
+
+            app->addOption(newOption);
         }
     }
 
@@ -197,7 +201,7 @@ std::list<Glib::ustring> DRI::Parser::convertSectionsToOptions(const std::list<D
     std::list<Glib::ustring> options;
 
     for (auto &section : sections) {
-        for (auto option : section.getOptions()) {
+        for (const auto &option : section.getOptions()) {
             options.emplace_back(option.getName());
         }
     }
@@ -205,34 +209,14 @@ std::list<Glib::ustring> DRI::Parser::convertSectionsToOptions(const std::list<D
     return options;
 }
 
-std::list<DRI::Option> DRI::Parser::convertSectionsToOptionsObject(const std::list<DRI::Section> &sections) {
-    std::list<DRI::Option> options;
+std::list<DRI::DriverOption> DRI::Parser::convertSectionsToOptionsObject(const std::list<DRI::Section> &sections) {
+    std::list<DRI::DriverOption> options;
 
-    for (auto &section : sections) {
-        for (auto &option : section.getOptions()) {
+    for (const auto &section : sections) {
+        for (const auto &option : section.getOptions()) {
             options.emplace_back(option);
         }
     }
 
     return options;
-}
-
-void DRI::Parser::printContainer(std::list<DRI::Device> devices) {
-    for (auto const &userDevice : devices) {
-        std::cout << "Device " << userDevice.getScreen() << " (" << userDevice.getDriver() << ")" << std::endl;
-
-        for (auto const &app : userDevice.getApplications()) {
-            std::cout << "  Application: " << app.getName() << std::endl;
-            if (!app.getExecutable().empty()) {
-                std::cout << "  Executable: " << app.getExecutable() << std::endl;
-            }
-
-            std::cout << "  [" << std::endl;
-            for (auto const &option : app.getOptions()) {
-                std::cout << "    " << option.first << " = " << option.second << std::endl;
-            }
-
-            std::cout << "  ]" << std::endl;
-        }
-    }
 }

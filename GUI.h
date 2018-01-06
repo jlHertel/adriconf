@@ -16,18 +16,19 @@ namespace DRI {
         /* State-related */
         DRI::Device systemWideConfiguration;
         std::list<DRI::DriverConfiguration> driverConfiguration;
-        std::list<DRI::Device> userDefinedConfiguration;
+        std::list<DRI::Device *> userDefinedConfiguration;
         Glib::ustring currentSelectedDriver;
         Glib::ustring currentSelectedApplication;
 
         /* Helpers */
-        DRI::ConfigurationLoader configurationLoader;
         Glib::RefPtr<Gtk::Builder> gladeBuilder;
         Glib::ustring locale;
 
         void setupLocale();
 
         void drawApplicationSelectionMenu();
+
+        void drawApplicationOptions();
 
     public:
         GUI();
@@ -42,6 +43,8 @@ namespace DRI {
         void onSavePressed();
 
         void onApplicationSelected(Glib::ustring, Glib::ustring);
+
+        void onCheckboxChanged(Glib::ustring);
     };
 }
 

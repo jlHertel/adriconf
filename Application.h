@@ -3,30 +3,29 @@
 
 #include <glibmm/ustring.h>
 #include <list>
-#include <map>
+#include "ApplicationOption.h"
 
 namespace DRI {
     class Application {
     private:
         Glib::ustring name;
         Glib::ustring executable;
-        /* name-value of the options */
-        std::map<Glib::ustring, Glib::ustring> options;
+        std::list<DRI::ApplicationOption *> options;
 
     public:
-        const Glib::ustring getName() const;
+        const Glib::ustring &getName() const;
 
-        void setName(const Glib::ustring &name);
+        void setName(Glib::ustring name);
 
-        const Glib::ustring getExecutable() const;
+        const Glib::ustring &getExecutable() const;
 
-        void setExecutable(const Glib::ustring &executable);
+        void setExecutable(Glib::ustring executable);
 
-        const std::map<Glib::ustring, Glib::ustring> getOptions() const;
+        std::list<DRI::ApplicationOption *> &getOptions();
 
-        void addOption(Glib::ustring name, Glib::ustring value);
+        void addOption(DRI::ApplicationOption *option);
 
-        void setOptions(std::map<Glib::ustring, Glib::ustring> options);
+        virtual ~Application();
     };
 };
 

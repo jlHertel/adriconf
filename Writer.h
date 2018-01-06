@@ -6,7 +6,7 @@
 #include "Device.h"
 
 namespace DRI::Writer {
-    Glib::ustring generateRawXml(std::list<DRI::Device> devices);
+    Glib::ustring generateRawXml(const std::list<DRI::Device *> &devices);
 }
 
 #endif

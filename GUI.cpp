@@ -5,6 +5,7 @@
 #include "ConfigurationResolver.h"
 #include "DRIQuery.h"
 #include "Writer.h"
+#include "DriverConfiguration.h"
 
 #include <iostream>
 #include <fstream>
@@ -13,18 +14,22 @@ DRI::GUI::GUI() {
     this->setupLocale();
 
     /* Load the configurations */
-    this->driverConfiguration = this->configurationLoader.loadDriverSpecificConfiguration(this->locale);
-    this->systemWideConfiguration = this->configurationLoader.loadSystemWideConfiguration();
-    this->userDefinedConfiguration = this->configurationLoader.loadUserDefinedConfiguration();
+    DRI::ConfigurationLoader configurationLoader;
+    this->driverConfiguration = configurationLoader.loadDriverSpecificConfiguration(this->locale);
+    this->systemWideConfiguration = configurationLoader.loadSystemWideConfiguration();
+    this->userDefinedConfiguration = configurationLoader.loadUserDefinedConfiguration();
 
     /* Merge all the options in a complete structure */
-    this->userDefinedConfiguration = DRI::ConfigurationResolver::mergeOptionsForDisplay(
-            this->systemWideConfiguration, this->driverConfiguration, this->userDefinedConfiguration
+    DRI::ConfigurationResolver::mergeOptionsForDisplay(
+            this->systemWideConfiguration,
+            this->driverConfiguration,
+            this->userDefinedConfiguration
     );
 
     /* Filter invalid options */
-    this->userDefinedConfiguration = DRI::ConfigurationResolver::filterDriverUnsupportedOptions(
-            this->driverConfiguration, this->userDefinedConfiguration
+    DRI::ConfigurationResolver::filterDriverUnsupportedOptions(
+            this->driverConfiguration,
+            this->userDefinedConfiguration
     );
 
     /* Load the GUI file */
@@ -33,6 +38,12 @@ DRI::GUI::GUI() {
 
     /* Extract the main object */
     this->gladeBuilder->get_widget("mainwindow", this->pWindow);
+    if (!pWindow) {
+        std::cerr << _("Main window object is not in glade file!") << std::endl;
+        return;
+    }
+
+    this->pWindow->set_default_size(800, 600);
 
     /* Extract the quit-menu */
     Gtk::ImageMenuItem *pQuitAction;
@@ -50,10 +61,16 @@ DRI::GUI::GUI() {
 
     /* Extract & generate the menu with the applications */
     this->drawApplicationSelectionMenu();
-    this->drawApplicationSelectionMenu();
+
+    /* Draw the final screen */
+    this->drawApplicationOptions();
 }
 
 DRI::GUI::~GUI() {
+    for (auto &conf : this->userDefinedConfiguration) {
+        delete conf;
+    }
+
     delete this->pWindow;
 }
 
@@ -74,6 +91,11 @@ void DRI::GUI::onSavePressed() {
     std::ofstream outFile(userHome + "/.drirc");
     outFile << rawXML;
     outFile.close();
+
+    /* free memory */
+    for (auto &dev : resolvedOptions) {
+        delete dev;
+    }
 }
 
 Gtk::Window *DRI::GUI::getWindowPointer() {
@@ -107,9 +129,9 @@ void DRI::GUI::drawApplicationSelectionMenu() {
         /* No need to set the current application executables, as the default doesn't have one */
         this->currentSelectedApplication = "";
 
-        /* Sort the applications again to maintain a good human GUI */
+        /* Sort the applications to maintain a good human GUI */
         for (auto &driver : this->userDefinedConfiguration) {
-            driver.sortApplications();
+            driver->sortApplications();
         }
 
         Gtk::RadioButtonGroup appRadioGroup;
@@ -118,19 +140,19 @@ void DRI::GUI::drawApplicationSelectionMenu() {
         for (auto &driver : this->userDefinedConfiguration) {
 
             if (this->currentSelectedDriver.empty()) {
-                this->currentSelectedDriver = driver.getDriver();
+                this->currentSelectedDriver = driver->getDriver();
             }
 
             Gtk::MenuItem *driverMenuItem = Gtk::manage(new Gtk::MenuItem);
             driverMenuItem->set_visible(true);
-            driverMenuItem->set_label(driver.getDriver());
+            driverMenuItem->set_label(driver->getDriver());
 
             Gtk::Menu *driverSubMenu = Gtk::manage(new Gtk::Menu);
             driverSubMenu->set_visible(true);
-            for (auto &possibleApp : driver.getApplications()) {
+            for (auto &possibleApp : driver->getApplications()) {
                 Gtk::RadioMenuItem *appMenuItem = Gtk::manage(new Gtk::RadioMenuItem);
                 appMenuItem->set_visible(true);
-                appMenuItem->set_label(possibleApp.getName());
+                appMenuItem->set_label(possibleApp->getName());
 
                 if (!groupInitialized) {
                     appRadioGroup = appMenuItem->get_group();
@@ -139,13 +161,13 @@ void DRI::GUI::drawApplicationSelectionMenu() {
                     appMenuItem->set_group(appRadioGroup);
                 }
 
-                if (this->currentSelectedDriver == driver.getDriver() && possibleApp.getExecutable().empty()) {
+                if (this->currentSelectedDriver == driver->getDriver() && possibleApp->getExecutable().empty()) {
                     appMenuItem->set_active(true);
                 }
 
                 appMenuItem->signal_toggled().connect(sigc::bind<Glib::ustring, Glib::ustring>(
                         sigc::mem_fun(this, &DRI::GUI::onApplicationSelected),
-                        driver.getDriver(), possibleApp.getExecutable()
+                        driver->getDriver(), possibleApp->getExecutable()
                 ));
 
                 driverSubMenu->append(*appMenuItem);
@@ -166,8 +188,118 @@ void DRI::GUI::onApplicationSelected(const Glib::ustring driverName, const Glib:
     this->currentSelectedDriver = driverName;
     this->currentSelectedApplication = applicationName;
 
-    /* TODO: Redraw the screen items */
+    this->drawApplicationOptions();
+}
 
-    std::cout << "Selected driver \"" << driverName << "\" and \"" << applicationName << "\" executable." << std::endl;
+void DRI::GUI::drawApplicationOptions() {
+    /* First we must find the driver definition */
+    auto selectedDriver = std::find_if(this->driverConfiguration.begin(), this->driverConfiguration.end(),
+                                       [this](DRI::DriverConfiguration &driver) {
+                                           return this->currentSelectedDriver == driver.getDriver();
+                                       });
 
+    /* Then we find the application itself */
+    auto userSelectedDriver = std::find_if(this->userDefinedConfiguration.begin(), this->userDefinedConfiguration.end(),
+                                           [this](DRI::Device *device) {
+                                               return this->currentSelectedDriver == device->getDriver();
+                                           }
+    );
+    auto selectedApp = std::find_if((*userSelectedDriver)->getApplications().begin(),
+                                    (*userSelectedDriver)->getApplications().end(),
+                                    [this](DRI::Application *app) {
+                                        return this->currentSelectedApplication == app->getExecutable();
+                                    }
+    );
+
+    auto selectedAppOptions = (*selectedApp)->getOptions();
+
+    /* Get the notebook itself */
+    Gtk::Notebook *pNotebook;
+    this->gladeBuilder->get_widget("notebook", pNotebook);
+    if (!pNotebook) {
+        std::cerr << _("Notebook object not found in glade file!") << std::endl;
+        return;
+    }
+
+    pNotebook->set_visible(true);
+
+    /* Draw each section as a tab */
+    for (auto &section : selectedDriver->getSections()) {
+        Gtk::Box *tabBox = Gtk::manage(new Gtk::Box);
+        tabBox->set_visible(true);
+        tabBox->set_orientation(Gtk::Orientation::ORIENTATION_VERTICAL);
+
+        /* Draw each field individually */
+        for (auto &option : section.getOptions()) {
+            auto optionValue = std::find_if(selectedAppOptions.begin(), selectedAppOptions.end(),
+                                            [&option](DRI::ApplicationOption *o) {
+                                                return option.getName() == o->getName();
+                                            });
+
+            Gtk::Box *optionBox = Gtk::manage(new Gtk::Box);
+            optionBox->set_visible(true);
+            optionBox->set_orientation(Gtk::Orientation::ORIENTATION_HORIZONTAL);
+
+            Gtk::Label *label = Gtk::manage(new Gtk::Label);
+            label->set_label(option.getName());
+            label->set_visible(true);
+            optionBox->add(*label);
+
+            if (option.getType() == "bool") {
+                Gtk::CheckButton *optionCheckButton = Gtk::manage(new Gtk::CheckButton);
+                optionCheckButton->set_visible(true);
+
+                if ((*optionValue)->getValue() == "true") {
+                    optionCheckButton->set_active(true);
+                }
+
+                optionCheckButton->signal_clicked().connect(sigc::bind<Glib::ustring>(
+                        sigc::mem_fun(this, &DRI::GUI::onCheckboxChanged), option.getName()
+                ));
+
+                optionBox->add(*optionCheckButton);
+            }
+
+            tabBox->add(*optionBox);
+        }
+
+
+        /* Connect the field directly to the app object */
+
+        pNotebook->append_page(*tabBox, section.getDescription());
+    }
+}
+
+void DRI::GUI::onCheckboxChanged(Glib::ustring optionName) {
+    /* Find the application itself */
+    auto eventSelectedDriver = std::find_if(this->userDefinedConfiguration.begin(),
+                                            this->userDefinedConfiguration.end(),
+                                            [this](DRI::Device *device) {
+                                                return this->currentSelectedDriver == device->getDriver();
+                                            }
+    );
+    auto eventSelectedApp = std::find_if((*eventSelectedDriver)->getApplications().begin(),
+                                         (*eventSelectedDriver)->getApplications().end(),
+                                         [this](DRI::Application *app) {
+                                             return this->currentSelectedApplication ==
+                                                    app->getExecutable();
+                                         }
+    );
+
+    auto eventSelectedAppOptions = (*eventSelectedApp)->getOptions();
+
+    std::cout << "Called signal for option " << optionName << std::endl;
+
+    auto currentOption = std::find_if(eventSelectedAppOptions.begin(), eventSelectedAppOptions.end(),
+                                      [&optionName](DRI::ApplicationOption *a) {
+                                          return a->getName() == optionName;
+                                      });
+
+    if ((*currentOption)->getValue() == "true") {
+        std::cout << "Setting value to false" << std::endl;
+        (*currentOption)->setValue("false");
+    } else {
+        std::cout << "Setting value to true" << std::endl;
+        (*currentOption)->setValue("true");
+    }
 }

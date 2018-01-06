@@ -10,32 +10,34 @@ namespace DRI {
     private:
         Glib::ustring driver;
         int screen;
-        std::list<DRI::Application> applications;
+        std::list<DRI::Application*> applications;
 
     public:
-        Glib::ustring getDriver() const;
+        const Glib::ustring &getDriver() const;
 
-        void setDriver(const Glib::ustring &driver);
+        void setDriver(Glib::ustring driver);
 
-        int getScreen() const;
+        const int &getScreen() const;
 
         void setScreen(int screen);
 
-        std::list<DRI::Application> getApplications() const;
+        std::list<DRI::Application*> &getApplications();
 
-        void addApplication(DRI::Application application);
+        const std::list<DRI::Application*> &getApplications() const;
 
-        void setApplications(std::list<DRI::Application> applications);
+        void addApplication(DRI::Application* application);
 
-        DRI::Application findApplication(Glib::ustring executable) const;
-
-        bool applicationExists(Glib::ustring executable) const;
+        DRI::Application* findApplication(const Glib::ustring &executable) const;
 
         void sortApplications();
 
-        Device(const Glib::ustring &driver, int screen);
+        Device(Glib::ustring driver, int screen);
 
         Device();
+
+        Device(const Device&);
+
+        virtual ~Device();
     };
 }
 
