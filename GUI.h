@@ -14,11 +14,13 @@ namespace DRI {
         Gtk::Window *pWindow;
 
         /* State-related */
-        DRI::Device systemWideConfiguration;
+        std::shared_ptr<DRI::Device> systemWideConfiguration;
         std::list<DRI::DriverConfiguration> driverConfiguration;
-        std::list<DRI::Device *> userDefinedConfiguration;
+        std::list<std::shared_ptr<DRI::Device>> userDefinedConfiguration;
         Glib::ustring currentSelectedDriver;
         Glib::ustring currentSelectedApplication;
+        std::shared_ptr<DRI::Application> currentApp;
+        DRI::DriverConfiguration currentDriver;
 
         /* Helpers */
         Glib::RefPtr<Gtk::Builder> gladeBuilder;

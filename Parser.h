@@ -12,9 +12,9 @@ namespace DRI::Parser {
 
     DRI::DriverOption parseSectionOptions(xmlpp::Node *option, const Glib::ustring &currentLocale);
 
-    std::list<DRI::Device*> parseDevices(Glib::ustring &xml);
+    std::list<std::shared_ptr<DRI::Device>> parseDevices(Glib::ustring &xml);
 
-    DRI::Application* parseApplication(xmlpp::Node *application);
+    std::shared_ptr<DRI::Application> parseApplication(xmlpp::Node *application);
 
     std::list<DRI::DriverOption> convertSectionsToOptionsObject(const std::list<DRI::Section> &sections);
 

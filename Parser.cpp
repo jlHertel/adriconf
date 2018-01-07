@@ -116,8 +116,8 @@ DRI::DriverOption DRI::Parser::parseSectionOptions(xmlpp::Node *option, const Gl
     return parsedOption;
 }
 
-std::list<DRI::Device *> DRI::Parser::parseDevices(Glib::ustring &xml) {
-    std::list<DRI::Device *> deviceList;
+std::list<std::shared_ptr<DRI::Device>> DRI::Parser::parseDevices(Glib::ustring &xml) {
+    std::list<std::shared_ptr<DRI::Device>> deviceList;
 
     try {
         xmlpp::DomParser parser;
@@ -131,7 +131,7 @@ std::list<DRI::Device *> DRI::Parser::parseDevices(Glib::ustring &xml) {
 
             auto devices = rootNode->get_children("device");
             for (auto device : devices) {
-                auto deviceConf = new DRI::Device();
+                auto deviceConf = std::make_shared<DRI::Device>();
 
                 auto deviceElement = dynamic_cast<xmlpp::Element *>(device);
                 auto deviceScreen = deviceElement->get_attribute("screen");
@@ -164,8 +164,8 @@ std::list<DRI::Device *> DRI::Parser::parseDevices(Glib::ustring &xml) {
     return deviceList;
 }
 
-DRI::Application *DRI::Parser::parseApplication(xmlpp::Node *application) {
-    auto app = new DRI::Application();
+std::shared_ptr<DRI::Application> DRI::Parser::parseApplication(xmlpp::Node *application) {
+    auto app = std::make_shared<DRI::Application>();
 
     auto applicationElement = dynamic_cast<xmlpp::Element *>(application);
 
@@ -186,7 +186,7 @@ DRI::Application *DRI::Parser::parseApplication(xmlpp::Node *application) {
         auto optionName = optionElement->get_attribute("name");
         auto optionValue = optionElement->get_attribute("value");
         if (optionName != nullptr && optionValue != nullptr) {
-            auto newOption = new DRI::ApplicationOption();
+            auto newOption = std::make_shared<DRI::ApplicationOption>();
             newOption->setName(optionName->get_value());
             newOption->setValue(optionValue->get_value());
 

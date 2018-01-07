@@ -2,17 +2,17 @@
 #include "Parser.h"
 #include <glibmm/i18n.h>
 
-std::list<DRI::Device *> DRI::ConfigurationResolver::resolveOptionsForSave(
-        const DRI::Device &systemWideDevice,
+std::list<std::shared_ptr<DRI::Device>> DRI::ConfigurationResolver::resolveOptionsForSave(
+        const std::shared_ptr<DRI::Device> &systemWideDevice,
         const std::list<DRI::DriverConfiguration> &driverAvailableOptions,
-        const std::list<DRI::Device *> &userDefinedDevices
+        const std::list<std::shared_ptr<DRI::Device>> &userDefinedDevices
 ) {
     /* Create the final driverList */
-    std::list<DRI::Device *> mergedDevices;
+    std::list<std::shared_ptr<DRI::Device>> mergedDevices;
 
     /* Precedence: userDefined > System Wide > Driver Default */
     for (const auto &userDefinedDevice : userDefinedDevices) {
-        auto mergedDevice = new DRI::Device();
+        auto mergedDevice = std::make_shared<DRI::Device>();
 
         mergedDevice->setDriver(userDefinedDevice->getDriver());
         mergedDevice->setScreen(userDefinedDevice->getScreen());
@@ -29,12 +29,11 @@ std::list<DRI::Device *> DRI::ConfigurationResolver::resolveOptionsForSave(
         }
 
         for (const auto &userDefinedApplication : userDefinedDevice->getApplications()) {
-            auto mergedApp = new DRI::Application();
+            auto mergedApp = std::make_shared<DRI::Application>();
             mergedApp->setExecutable(userDefinedApplication->getExecutable());
             mergedApp->setName(userDefinedApplication->getName());
-            auto mergedAppOptions = mergedApp->getOptions();
 
-            auto systemWideApp = systemWideDevice.findApplication(userDefinedApplication->getExecutable());
+            auto systemWideApp = systemWideDevice->findApplication(userDefinedApplication->getExecutable());
 
             /* If this application already exists systemWide, we need to do a merge on it */
             if (systemWideApp != nullptr) {
@@ -46,7 +45,8 @@ std::list<DRI::Device *> DRI::ConfigurationResolver::resolveOptionsForSave(
 
                 for (auto const &userDefinedAppOption : userDefinedApplication->getOptions()) {
                     auto systemWideAppOption = std::find_if(systemWideAppOptions.begin(), systemWideAppOptions.end(),
-                                                            [&userDefinedAppOption](DRI::ApplicationOption *a) {
+                                                            [&userDefinedAppOption](
+                                                                    std::shared_ptr<DRI::ApplicationOption> a) {
                                                                 return a->getName() == userDefinedAppOption->getName();
                                                             });
 
@@ -54,10 +54,10 @@ std::list<DRI::Device *> DRI::ConfigurationResolver::resolveOptionsForSave(
                         /* If the option set is the same as the one used just ignore this options*/
                         if ((*systemWideAppOption)->getValue() != userDefinedAppOption->getValue()) {
                             addApplication = true;
-                            auto newMergedOption = new DRI::ApplicationOption();
+                            auto newMergedOption = std::make_shared<DRI::ApplicationOption>();
                             newMergedOption->setName(userDefinedAppOption->getName());
                             newMergedOption->setValue(userDefinedAppOption->getValue());
-                            mergedAppOptions.emplace_back(newMergedOption);
+                            mergedApp->addOption(newMergedOption);
                         }
                     } else {
                         /*
@@ -72,10 +72,10 @@ std::list<DRI::Device *> DRI::ConfigurationResolver::resolveOptionsForSave(
                         if (driverOption->getDefaultValue() != userDefinedAppOption->getValue()) {
                             addApplication = true;
 
-                            auto newMergedOption = new DRI::ApplicationOption();
+                            auto newMergedOption = std::make_shared<DRI::ApplicationOption>();
                             newMergedOption->setName(userDefinedAppOption->getName());
                             newMergedOption->setValue(userDefinedAppOption->getValue());
-                            mergedAppOptions.emplace_back(newMergedOption);
+                            mergedApp->addOption(newMergedOption);
                         }
                     }
 
@@ -100,10 +100,10 @@ std::list<DRI::Device *> DRI::ConfigurationResolver::resolveOptionsForSave(
                     if (driverOption->getDefaultValue() != userDefinedAppOption->getValue()) {
                         addApplication = true;
 
-                        auto newMergedOption = new DRI::ApplicationOption();
+                        auto newMergedOption = std::make_shared<DRI::ApplicationOption>();
                         newMergedOption->setName(userDefinedAppOption->getName());
                         newMergedOption->setValue(userDefinedAppOption->getValue());
-                        mergedAppOptions.emplace_back(newMergedOption);
+                        mergedApp->addOption(newMergedOption);
                     }
                 }
 
@@ -121,7 +121,7 @@ std::list<DRI::Device *> DRI::ConfigurationResolver::resolveOptionsForSave(
 
 void DRI::ConfigurationResolver::filterDriverUnsupportedOptions(
         const std::list<DRI::DriverConfiguration> &driverAvailableOptions,
-        std::list<DRI::Device *> &userDefinedDevices
+        std::list<std::shared_ptr<DRI::Device>> &userDefinedDevices
 ) {
     for (auto &userDefinedDevice : userDefinedDevices) {
         auto driverConfig = std::find_if(driverAvailableOptions.begin(), driverAvailableOptions.end(),
@@ -153,32 +153,32 @@ void DRI::ConfigurationResolver::filterDriverUnsupportedOptions(
                     itr = options.erase(itr);
 
                     auto optionsObject = (*itr);
-                    /* Release the memory of the object pointed by this iterator */
-                    delete optionsObject;
                 } else {
                     ++itr;
                 }
             }
+
+            userDefinedApp->setOptions(options);
         }
     }
 }
 
 void DRI::ConfigurationResolver::mergeOptionsForDisplay(
-        const DRI::Device &systemWideDevice,
+        const std::shared_ptr<DRI::Device> &systemWideDevice,
         const std::list<DRI::DriverConfiguration> &driverAvailableOptions,
-        std::list<DRI::Device *> &userDefinedOptions
+        std::list<std::shared_ptr<DRI::Device>> &userDefinedOptions
 ) {
     for (const auto &driverConf : driverAvailableOptions) {
         /* Check if user-config has any config for this screen/driver */
         auto userSearchDefinedDevice = std::find_if(userDefinedOptions.begin(), userDefinedOptions.end(),
-                                                    [&driverConf](DRI::Device *d) {
+                                                    [&driverConf](std::shared_ptr<DRI::Device> d) {
                                                         return d->getDriver() == driverConf.getDriver()
                                                                && d->getScreen() == driverConf.getScreen();
                                                     });
-        DRI::Device *userDefinedDevice = nullptr;
+        std::shared_ptr<DRI::Device> userDefinedDevice = nullptr;
 
         if (userSearchDefinedDevice == userDefinedOptions.end()) {
-            userDefinedDevice = new DRI::Device;
+            userDefinedDevice = std::make_shared<DRI::Device>();
             userDefinedDevice->setDriver(driverConf.getDriver());
             userDefinedDevice->setScreen(driverConf.getScreen());
         } else {
@@ -189,57 +189,84 @@ void DRI::ConfigurationResolver::mergeOptionsForDisplay(
 
         auto newDeviceApps = userDefinedDevice->getApplications();
 
+        /* Check if the user-defined apps are missing any of the driver option */
+        for (auto &userDefinedApp : newDeviceApps) {
+            for (const auto &driverDefinedOption : driverOptions) {
+                auto optionExists = std::find_if(userDefinedApp->getOptions().begin(),
+                                                 userDefinedApp->getOptions().end(),
+                                                 [&driverDefinedOption](std::shared_ptr<DRI::ApplicationOption> o) {
+                                                     return o->getName() == driverDefinedOption.getName();
+
+                                                 });
+                /* Option doesn't exists, lets add it */
+                if (optionExists == userDefinedApp->getOptions().end()) {
+                    auto newDriverOpt = std::make_shared<DRI::ApplicationOption>();
+                    newDriverOpt->setName(driverDefinedOption.getName());
+                    newDriverOpt->setValue(driverDefinedOption.getDefaultValue());
+
+                    userDefinedApp->addOption(newDriverOpt);
+                }
+            }
+        }
+
+
         /* Check if we can add any of the system-wide apps for this config */
-        for (const auto &systemWideApp : systemWideDevice.getApplications()) {
+        for (const auto &systemWideApp : systemWideDevice->getApplications()) {
             auto appExists = std::find_if(newDeviceApps.begin(), newDeviceApps.end(),
-                                          [&systemWideApp](DRI::Application *app) {
+                                          [&systemWideApp](std::shared_ptr<DRI::Application> app) {
                                               return app->getExecutable() == systemWideApp->getExecutable();
                                           });
 
             if (appExists == newDeviceApps.end()) {
-                auto *systemDefinedApp = new DRI::Application;
+                auto systemDefinedApp = std::make_shared<DRI::Application>();
                 systemDefinedApp->setName(systemWideApp->getName());
                 systemDefinedApp->setExecutable(systemWideApp->getExecutable());
 
-                auto systemAppOptions = systemDefinedApp->getOptions();
-
                 for (const auto &driverOptionObj : driverOptions) {
-                    auto optionExists = std::find_if(systemAppOptions.begin(), systemAppOptions.end(),
-                                 [&driverOptionObj](DRI::ApplicationOption *a) {
-                                     return driverOptionObj.getName() == a->getName();
-                                 });
+                    auto optionExists = std::find_if(systemWideApp->getOptions().begin(), systemWideApp->getOptions().end(),
+                                                     [&driverOptionObj](std::shared_ptr<DRI::ApplicationOption> a) {
+                                                         return driverOptionObj.getName() == a->getName();
+                                                     });
 
-                    if (optionExists != systemAppOptions.end()) {
-                        auto newDriverOpt = new DRI::ApplicationOption();
+                    if (optionExists == systemWideApp->getOptions().end()) {
+                        auto newDriverOpt = std::make_shared<DRI::ApplicationOption>();
                         newDriverOpt->setName(driverOptionObj.getName());
                         newDriverOpt->setValue(driverOptionObj.getDefaultValue());
 
-                        systemAppOptions.emplace_back(newDriverOpt);
+                        systemDefinedApp->addOption(newDriverOpt);
+                    } else {
+                        /* Option already exists, lets add it */
+                        auto newDriverOpt = std::make_shared<DRI::ApplicationOption>();
+                        newDriverOpt->setName((*optionExists)->getName());
+                        newDriverOpt->setValue((*optionExists)->getValue());
+
+                        systemDefinedApp->addOption(newDriverOpt);
                     }
                 }
 
-                newDeviceApps.emplace_back(systemDefinedApp);
+                userDefinedDevice->addApplication(systemDefinedApp);
             }
         }
 
         /* Check if we have a default config */
-        auto defaultApp = std::find_if(newDeviceApps.begin(), newDeviceApps.end(), [](DRI::Application *app) {
-            return app->getExecutable().empty();
-        });
+        auto defaultApp = std::find_if(newDeviceApps.begin(), newDeviceApps.end(),
+                                       [](std::shared_ptr<DRI::Application> app) {
+                                           return app->getExecutable().empty();
+                                       });
 
         if (defaultApp == newDeviceApps.end()) {
-            auto defaultApplication = new DRI::Application();
+            auto defaultApplication = std::make_shared<DRI::Application>();
             defaultApplication->setName("Default");
             auto defaultAppOptions = defaultApplication->getOptions();
             for (auto &driverOptionObj : driverOptions) {
-                auto newDriverOpt = new DRI::ApplicationOption();
+                auto newDriverOpt = std::make_shared<DRI::ApplicationOption>();
                 newDriverOpt->setName(driverOptionObj.getName());
                 newDriverOpt->setValue(driverOptionObj.getDefaultValue());
 
-                defaultAppOptions.emplace_back(newDriverOpt);
+                defaultApplication->addOption(newDriverOpt);
             }
 
-            newDeviceApps.emplace_front(defaultApplication);
+            userDefinedDevice->addApplication(defaultApplication);
         }
     }
 }

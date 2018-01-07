@@ -2,6 +2,7 @@
 #define ADRICONF_CONFIGURATIONLOADER_H
 
 #include <glibmm/ustring.h>
+#include <memory>
 
 #include "DriverConfiguration.h"
 #include "Device.h"
@@ -14,8 +15,8 @@ namespace DRI {
 
     public:
         std::list<DRI::DriverConfiguration> loadDriverSpecificConfiguration(const Glib::ustring &locale);
-        DRI::Device loadSystemWideConfiguration();
-        std::list<DRI::Device*> loadUserDefinedConfiguration();
+        std::shared_ptr<DRI::Device> loadSystemWideConfiguration();
+        std::list<std::shared_ptr<DRI::Device>> loadUserDefinedConfiguration();
     };
 
 }

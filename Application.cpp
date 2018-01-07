@@ -16,16 +16,14 @@ void DRI::Application::setExecutable(Glib::ustring executable) {
     this->executable = std::move(executable);
 }
 
-std::list<DRI::ApplicationOption *> &DRI::Application::getOptions() {
+std::list<std::shared_ptr<DRI::ApplicationOption>> &DRI::Application::getOptions() {
     return this->options;
 }
 
-void DRI::Application::addOption(DRI::ApplicationOption *option) {
+void DRI::Application::addOption(std::shared_ptr<DRI::ApplicationOption> option) {
     this->options.emplace_back(option);
 }
 
-DRI::Application::~Application() {
-    for(auto &option : this->options) {
-        delete option;
-    }
+void DRI::Application::setOptions(std::list<std::shared_ptr<DRI::ApplicationOption>> options) {
+    this->options = std::move(options);
 }

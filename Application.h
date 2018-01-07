@@ -4,13 +4,14 @@
 #include <glibmm/ustring.h>
 #include <list>
 #include "ApplicationOption.h"
+#include <memory>
 
 namespace DRI {
     class Application {
     private:
         Glib::ustring name;
         Glib::ustring executable;
-        std::list<DRI::ApplicationOption *> options;
+        std::list<std::shared_ptr<DRI::ApplicationOption>> options;
 
     public:
         const Glib::ustring &getName() const;
@@ -21,11 +22,11 @@ namespace DRI {
 
         void setExecutable(Glib::ustring executable);
 
-        std::list<DRI::ApplicationOption *> &getOptions();
+        std::list<std::shared_ptr<DRI::ApplicationOption>> &getOptions();
 
-        void addOption(DRI::ApplicationOption *option);
+        void addOption(std::shared_ptr<DRI::ApplicationOption> option);
 
-        virtual ~Application();
+        void setOptions(std::list<std::shared_ptr<DRI::ApplicationOption>>);
     };
 };
 

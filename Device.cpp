@@ -18,23 +18,21 @@ void DRI::Device::setScreen(int screen) {
     this->screen = screen;
 }
 
-std::list<DRI::Application *> &DRI::Device::getApplications() {
+std::list<std::shared_ptr<DRI::Application>> &DRI::Device::getApplications() {
     return this->applications;
 }
 
-const std::list<DRI::Application *> &DRI::Device::getApplications() const {
+const std::list<std::shared_ptr<DRI::Application>> &DRI::Device::getApplications() const {
     return this->applications;
 }
 
-void DRI::Device::addApplication(DRI::Application *application) {
+void DRI::Device::addApplication(std::shared_ptr<DRI::Application> application) {
     this->applications.emplace_back(application);
 }
 
-DRI::Device::Device(Glib::ustring driver, int screen) : driver(std::move(driver)), screen(screen), applications() {}
-
 DRI::Device::Device() : driver(""), screen(-1), applications() {}
 
-DRI::Application *DRI::Device::findApplication(const Glib::ustring &executable) const {
+std::shared_ptr<DRI::Application> DRI::Device::findApplication(const Glib::ustring &executable) const {
     for (auto app : this->applications) {
         if (app->getExecutable() == executable) {
             return app;
@@ -45,19 +43,7 @@ DRI::Application *DRI::Device::findApplication(const Glib::ustring &executable) 
 }
 
 void DRI::Device::sortApplications() {
-    this->applications.sort([](DRI::Application *a, DRI::Application *b) {
+    this->applications.sort([](std::shared_ptr<DRI::Application> a, std::shared_ptr<DRI::Application> b) {
         return a->getName() < b->getName();
     });
-}
-
-DRI::Device::~Device() {
-    for (auto &&app : this->applications) {
-        delete app;
-    }
-}
-
-DRI::Device::Device(const DRI::Device &copy) {
-    this->driver = copy.getDriver();
-    this->screen = copy.getScreen();
-
 }

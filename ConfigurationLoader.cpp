@@ -35,24 +35,20 @@ std::list<DRI::DriverConfiguration> DRI::ConfigurationLoader::loadDriverSpecific
     return query.queryDriverConfigurationOptions(locale);
 }
 
-DRI::Device DRI::ConfigurationLoader::loadSystemWideConfiguration() {
+std::shared_ptr<DRI::Device> DRI::ConfigurationLoader::loadSystemWideConfiguration() {
     Glib::ustring systemWideXML = this->readSystemWideXML();
-    std::list<DRI::Device*> systemWideDevices = DRI::Parser::parseDevices(systemWideXML);
+    std::list<std::shared_ptr<DRI::Device>> systemWideDevices = DRI::Parser::parseDevices(systemWideXML);
 
     /* In case no configuration is available system-wide we generate an empty one */
     if(systemWideDevices.empty()) {
-        auto fakeDevice = new DRI::Device;
+        auto fakeDevice = std::make_shared<DRI::Device>();
         systemWideDevices.emplace_back(fakeDevice);
     }
 
-    /* We don't need dynamic allocation with the system-wide config, so convert it to a stack object */
-    DRI::Device *pDevice = systemWideDevices.front();
-    DRI::Device systemWideDevice = *pDevice;
-    delete pDevice;
-    return systemWideDevice;
+    return systemWideDevices.front();
 }
 
-std::list<DRI::Device*> DRI::ConfigurationLoader::loadUserDefinedConfiguration() {
+std::list<std::shared_ptr<DRI::Device>> DRI::ConfigurationLoader::loadUserDefinedConfiguration() {
     Glib::ustring userDefinedXML(this->readUserDefinedXML());
     return DRI::Parser::parseDevices(userDefinedXML);
 }

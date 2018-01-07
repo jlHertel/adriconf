@@ -1,6 +1,7 @@
 #ifndef DRICONF3_DEVICE_H
 #define DRICONF3_DEVICE_H
 
+#include <memory>
 #include <list>
 #include <glibmm/ustring.h>
 #include "Application.h"
@@ -10,7 +11,7 @@ namespace DRI {
     private:
         Glib::ustring driver;
         int screen;
-        std::list<DRI::Application*> applications;
+        std::list<std::shared_ptr<DRI::Application>> applications;
 
     public:
         const Glib::ustring &getDriver() const;
@@ -21,23 +22,17 @@ namespace DRI {
 
         void setScreen(int screen);
 
-        std::list<DRI::Application*> &getApplications();
+        std::list<std::shared_ptr<DRI::Application>> &getApplications();
 
-        const std::list<DRI::Application*> &getApplications() const;
+        const std::list<std::shared_ptr<DRI::Application>> &getApplications() const;
 
-        void addApplication(DRI::Application* application);
+        void addApplication(std::shared_ptr<DRI::Application> application);
 
-        DRI::Application* findApplication(const Glib::ustring &executable) const;
+        std::shared_ptr<DRI::Application> findApplication(const Glib::ustring &executable) const;
 
         void sortApplications();
 
-        Device(Glib::ustring driver, int screen);
-
         Device();
-
-        Device(const Device&);
-
-        virtual ~Device();
     };
 }
 
