@@ -239,6 +239,16 @@ void DRI::GUI::drawApplicationOptions() {
         return;
     }
 
+    /* Remove any previous defined page */
+    int numberOfPages = pNotebook->get_n_pages();
+
+    for (int i = 0; i < numberOfPages; i++) {
+        pNotebook->remove_page(-1);
+    }
+
+    /* Remove any previous defined comboBox */
+    this->currentComboBoxes.clear();
+
     pNotebook->set_visible(true);
 
     /* Draw each section as a tab */
@@ -246,6 +256,7 @@ void DRI::GUI::drawApplicationOptions() {
         Gtk::Box *tabBox = Gtk::manage(new Gtk::Box);
         tabBox->set_visible(true);
         tabBox->set_orientation(Gtk::Orientation::ORIENTATION_VERTICAL);
+        tabBox->set_margin_start(10);
 
         /* Draw each field individually */
         for (auto &option : section.getOptions()) {
@@ -254,7 +265,7 @@ void DRI::GUI::drawApplicationOptions() {
                                                 return option.getName() == o->getName();
                                             });
 
-            if(optionValue == selectedAppOptions.end()) {
+            if (optionValue == selectedAppOptions.end()) {
                 std::cerr << Glib::ustring::compose(
                         _("Option %1 doesn't exist in application %2. Merge failed"),
                         option.getName(),
@@ -266,11 +277,6 @@ void DRI::GUI::drawApplicationOptions() {
             Gtk::Box *optionBox = Gtk::manage(new Gtk::Box);
             optionBox->set_visible(true);
             optionBox->set_orientation(Gtk::Orientation::ORIENTATION_HORIZONTAL);
-
-            Gtk::Label *label = Gtk::manage(new Gtk::Label);
-            label->set_label(option.getName());
-            label->set_visible(true);
-            optionBox->add(*label);
 
             if (option.getType() == "bool") {
                 Gtk::CheckButton *optionCheckButton = Gtk::manage(new Gtk::CheckButton);
@@ -287,6 +293,34 @@ void DRI::GUI::drawApplicationOptions() {
                 optionBox->add(*optionCheckButton);
             }
 
+            if (option.getType() == "enum") {
+                Gtk::ComboBoxText *optionCombo = Gtk::manage(new Gtk::ComboBoxText);
+                optionCombo->set_visible(true);
+
+                int counter = 0;
+                for (auto const &enumOption : option.getEnumValues()) {
+                    optionCombo->append(enumOption.first);
+                    if (enumOption.second == (*optionValue)->getValue()) {
+                        optionCombo->set_active(counter);
+                    }
+                    counter++;
+                }
+
+                optionCombo->signal_changed().connect(sigc::bind<Glib::ustring>(
+                        sigc::mem_fun(this, &DRI::GUI::onComboboxChanged), option.getName()
+                ));
+
+                this->currentComboBoxes[option.getName()] = optionCombo;
+
+                optionBox->add(*optionCombo);
+            }
+
+            Gtk::Label *label = Gtk::manage(new Gtk::Label);
+            label->set_label(option.getDescription());
+            label->set_visible(true);
+            label->set_margin_start(10);
+            optionBox->add(*label);
+
             tabBox->add(*optionBox);
         }
 
@@ -298,24 +332,7 @@ void DRI::GUI::drawApplicationOptions() {
 }
 
 void DRI::GUI::onCheckboxChanged(Glib::ustring optionName) {
-    /* Find the application itself */
-    auto eventSelectedDriver = std::find_if(this->userDefinedConfiguration.begin(),
-                                            this->userDefinedConfiguration.end(),
-                                            [this](std::shared_ptr<DRI::Device> device) {
-                                                return this->currentSelectedDriver == device->getDriver();
-                                            }
-    );
-    auto eventSelectedApp = std::find_if((*eventSelectedDriver)->getApplications().begin(),
-                                         (*eventSelectedDriver)->getApplications().end(),
-                                         [this](std::shared_ptr<DRI::Application> app) {
-                                             return this->currentSelectedApplication ==
-                                                    app->getExecutable();
-                                         }
-    );
-
-    auto eventSelectedAppOptions = (*eventSelectedApp)->getOptions();
-
-    std::cout << "Called signal for option " << optionName << std::endl;
+    auto eventSelectedAppOptions = this->currentApp->getOptions();
 
     auto currentOption = std::find_if(eventSelectedAppOptions.begin(), eventSelectedAppOptions.end(),
                                       [&optionName](std::shared_ptr<DRI::ApplicationOption> a) {
@@ -323,10 +340,16 @@ void DRI::GUI::onCheckboxChanged(Glib::ustring optionName) {
                                       });
 
     if ((*currentOption)->getValue() == "true") {
-        std::cout << "Setting value to false" << std::endl;
         (*currentOption)->setValue("false");
     } else {
-        std::cout << "Setting value to true" << std::endl;
         (*currentOption)->setValue("true");
     }
+}
+
+void DRI::GUI::onComboboxChanged(Glib::ustring optionName) {
+    std::cout << "Called signal for option " << optionName << std::endl;
+
+    auto selectedOptionText = this->currentComboBoxes[optionName]->get_active_text();
+
+    std::cout << "Selected option: " <<  selectedOptionText << std::endl;
 }

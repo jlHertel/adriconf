@@ -26,7 +26,7 @@ namespace DRI {
 
         const Glib::ustring &getValidValues() const;
 
-        std::list<std::pair<Glib::ustring, Glib::ustring>> getEnumValues();
+        std::list<std::pair<Glib::ustring, Glib::ustring>> getEnumValues() const;
 
         DriverOption *setName(Glib::ustring name);
 

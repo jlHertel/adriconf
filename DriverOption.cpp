@@ -23,7 +23,7 @@ const Glib::ustring &DRI::DriverOption::getValidValues() const {
     return this->validValues;
 }
 
-std::list<std::pair<Glib::ustring, Glib::ustring>> DRI::DriverOption::getEnumValues() {
+std::list<std::pair<Glib::ustring, Glib::ustring>> DRI::DriverOption::getEnumValues() const{
     return this->enumValues;
 }
 
