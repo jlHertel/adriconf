@@ -5,8 +5,6 @@
 #include "ConfigurationResolver.h"
 #include "DRIQuery.h"
 #include "Writer.h"
-#include "DriverConfiguration.h"
-
 #include <iostream>
 #include <fstream>
 
@@ -64,6 +62,9 @@ DRI::GUI::GUI() : currentApp(nullptr) {
 
     /* Draw the final screen */
     this->drawApplicationOptions();
+
+    /* Setup the about dialog */
+    this->setupAboutDialog();
 }
 
 DRI::GUI::~GUI() {
@@ -401,6 +402,44 @@ void DRI::GUI::onNumberEntryChanged(Glib::ustring optionName) {
                                       });
 
     auto enteredValue = this->currentSpinButtons[optionName]->get_value();
-    Glib::ustring enteredValueStr(std::to_string((int)enteredValue));
+    Glib::ustring enteredValueStr(std::to_string((int) enteredValue));
     (*currentOption)->setValue(enteredValueStr);
+}
+
+void DRI::GUI::setupAboutDialog() {
+    this->aboutDialog.set_transient_for(*this->pWindow);
+    this->aboutDialog.set_program_name("Advanced DRI Configurator");
+    this->aboutDialog.set_version("1.0.0");
+    this->aboutDialog.set_copyright("Jean Lorenz Hertel");
+    this->aboutDialog.set_comments(_("An advanced DRI configurator tool."));
+    this->aboutDialog.set_license("GPLv3");
+
+    this->aboutDialog.set_website("https://github.com/jlHertel/adriconf");
+    this->aboutDialog.set_website_label(_("Source Code"));
+
+    std::vector<Glib::ustring> list_authors;
+    list_authors.emplace_back("Jean Lorenz Hertel");
+    this->aboutDialog.set_authors(list_authors);
+
+    this->aboutDialog.signal_response().connect([this](int responseCode) {
+        switch (responseCode) {
+            case Gtk::RESPONSE_CLOSE:
+            case Gtk::RESPONSE_CANCEL:
+            case Gtk::RESPONSE_DELETE_EVENT:
+                this->aboutDialog.hide();
+                break;
+            default:
+                std::cout << Glib::ustring::compose(_("Unexpected response code from about dialog: %1"), responseCode)
+                          << std::endl;
+                break;
+        }
+    });
+
+    Gtk::ImageMenuItem *pAboutAction;
+    this->gladeBuilder->get_widget("aboutAction", pAboutAction);
+    if (pAboutAction) {
+        pAboutAction->signal_activate().connect([this]() {
+            this->aboutDialog.show();
+        });
+    }
 }

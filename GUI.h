@@ -12,6 +12,7 @@ namespace DRI {
     private:
         /* GUI-Related */
         Gtk::Window *pWindow;
+        Gtk::AboutDialog aboutDialog;
 
         /* State-related */
         std::shared_ptr<DRI::Device> systemWideConfiguration;
@@ -33,6 +34,8 @@ namespace DRI {
         void drawApplicationSelectionMenu();
 
         void drawApplicationOptions();
+
+        void setupAboutDialog();
 
     public:
         GUI();
