@@ -63,3 +63,35 @@ DRI::DriverOption *DRI::DriverOption::addEnumValue(Glib::ustring description, Gl
 
     return this;
 }
+
+int DRI::DriverOption::getValidValueStart() const {
+    if(this->validValues.empty()) {
+        return 0;
+    }
+
+    auto splitPos = this->validValues.find_first_of(':');
+    if(splitPos > this->validValues.length() || splitPos <= 0) {
+        return 0;
+    }
+
+    // The first part up to the new line
+    auto firstPart = this->validValues.substr(0, splitPos);
+
+    return std::stoi(firstPart);
+}
+
+int DRI::DriverOption::getValidValueEnd() const {
+    if(this->validValues.empty()) {
+        return 10000;
+    }
+
+    auto splitPos = this->validValues.find_first_of(':');
+    if(splitPos > this->validValues.length() || splitPos <= 0) {
+        return 10000;
+    }
+
+    // The part after the new line
+    auto secondPart = this->validValues.substr(splitPos + 1, this->validValues.length() - splitPos);
+
+    return std::stoi(secondPart);
+}

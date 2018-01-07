@@ -248,6 +248,8 @@ void DRI::GUI::drawApplicationOptions() {
 
     /* Remove any previous defined comboBox */
     this->currentComboBoxes.clear();
+    /* Remove any previous defined spinButton */
+    this->currentSpinButtons.clear();
 
     pNotebook->set_visible(true);
 
@@ -256,7 +258,8 @@ void DRI::GUI::drawApplicationOptions() {
         Gtk::Box *tabBox = Gtk::manage(new Gtk::Box);
         tabBox->set_visible(true);
         tabBox->set_orientation(Gtk::Orientation::ORIENTATION_VERTICAL);
-        tabBox->set_margin_start(10);
+        tabBox->set_margin_start(8);
+        tabBox->set_margin_top(10);
 
         /* Draw each field individually */
         for (auto &option : section.getOptions()) {
@@ -315,6 +318,30 @@ void DRI::GUI::drawApplicationOptions() {
                 optionBox->add(*optionCombo);
             }
 
+            if (option.getType() == "int") {
+                Gtk::SpinButton *optionEntry = Gtk::manage(new Gtk::SpinButton);
+                optionEntry->set_visible(true);
+
+                auto currentValue = (*optionValue)->getValue();
+
+                auto adjustment = Gtk::Adjustment::create(
+                        std::stof(currentValue),
+                        option.getValidValueStart(),
+                        option.getValidValueEnd(),
+                        1,
+                        10
+                );
+
+                optionEntry->set_adjustment(adjustment);
+                optionEntry->signal_changed().connect(sigc::bind<Glib::ustring>(
+                        sigc::mem_fun(this, &DRI::GUI::onNumberEntryChanged), option.getName()
+                ));
+
+                this->currentSpinButtons[option.getName()] = optionEntry;
+
+                optionBox->add(*optionEntry);
+            }
+
             Gtk::Label *label = Gtk::manage(new Gtk::Label);
             label->set_label(option.getDescription());
             label->set_visible(true);
@@ -347,9 +374,33 @@ void DRI::GUI::onCheckboxChanged(Glib::ustring optionName) {
 }
 
 void DRI::GUI::onComboboxChanged(Glib::ustring optionName) {
-    std::cout << "Called signal for option " << optionName << std::endl;
+    auto eventSelectedAppOptions = this->currentApp->getOptions();
+
+    auto currentOption = std::find_if(eventSelectedAppOptions.begin(), eventSelectedAppOptions.end(),
+                                      [&optionName](std::shared_ptr<DRI::ApplicationOption> a) {
+                                          return a->getName() == optionName;
+                                      });
 
     auto selectedOptionText = this->currentComboBoxes[optionName]->get_active_text();
 
-    std::cout << "Selected option: " <<  selectedOptionText << std::endl;
+    auto enumValues = this->currentDriver.getEnumValuesForOption(optionName);
+    for (const auto &enumValue : enumValues) {
+        if (enumValue.first == selectedOptionText) {
+            (*currentOption)->setValue(enumValue.second);
+        }
+    }
+
+}
+
+void DRI::GUI::onNumberEntryChanged(Glib::ustring optionName) {
+    auto eventSelectedAppOptions = this->currentApp->getOptions();
+
+    auto currentOption = std::find_if(eventSelectedAppOptions.begin(), eventSelectedAppOptions.end(),
+                                      [&optionName](std::shared_ptr<DRI::ApplicationOption> a) {
+                                          return a->getName() == optionName;
+                                      });
+
+    auto enteredValue = this->currentSpinButtons[optionName]->get_value();
+    Glib::ustring enteredValueStr(std::to_string((int)enteredValue));
+    (*currentOption)->setValue(enteredValueStr);
 }

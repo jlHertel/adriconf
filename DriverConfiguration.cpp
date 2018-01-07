@@ -23,3 +23,14 @@ const std::list<DRI::Section> &DRI::DriverConfiguration::getSections() const {
 void DRI::DriverConfiguration::setSections(const std::list<DRI::Section> &sections) {
     this->sections = sections;
 }
+
+std::list<std::pair<Glib::ustring, Glib::ustring>>
+DRI::DriverConfiguration::getEnumValuesForOption(const Glib::ustring &optionName) {
+    for(const auto &section : this->sections) {
+        for(const auto &option : section.getOptions()) {
+            if(option.getName() == optionName) {
+                return option.getEnumValues();
+            }
+        }
+    }
+}

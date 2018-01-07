@@ -25,6 +25,8 @@ namespace DRI {
         const std::list<Section> &getSections() const;
 
         void setSections(const std::list<Section> &sections);
+
+        std::list<std::pair<Glib::ustring, Glib::ustring>> getEnumValuesForOption(const Glib::ustring &);
     };
 };
 

@@ -22,6 +22,7 @@ namespace DRI {
         std::shared_ptr<DRI::Application> currentApp;
         DRI::DriverConfiguration currentDriver;
         std::map<Glib::ustring, Gtk::ComboBoxText *> currentComboBoxes;
+        std::map<Glib::ustring, Gtk::SpinButton *> currentSpinButtons;
 
         /* Helpers */
         Glib::RefPtr<Gtk::Builder> gladeBuilder;
@@ -50,6 +51,8 @@ namespace DRI {
         void onCheckboxChanged(Glib::ustring);
 
         void onComboboxChanged(Glib::ustring);
+
+        void onNumberEntryChanged(Glib::ustring);
     };
 }
 
