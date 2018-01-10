@@ -298,18 +298,18 @@ void DRI::GUI::drawApplicationOptions() {
             optionBox->set_orientation(Gtk::Orientation::ORIENTATION_HORIZONTAL);
 
             if (option.getType() == "bool") {
-                Gtk::CheckButton *optionCheckButton = Gtk::manage(new Gtk::CheckButton);
-                optionCheckButton->set_visible(true);
+                Gtk::Switch *optionSwitch = Gtk::manage(new Gtk::Switch);
+                optionSwitch->set_visible(true);
 
                 if ((*optionValue)->getValue() == "true") {
-                    optionCheckButton->set_active(true);
+                    optionSwitch->set_active(true);
                 }
 
-                optionCheckButton->signal_clicked().connect(sigc::bind<Glib::ustring>(
+                optionSwitch->property_active().signal_changed().connect(sigc::bind<Glib::ustring>(
                         sigc::mem_fun(this, &DRI::GUI::onCheckboxChanged), option.getName()
                 ));
 
-                optionBox->add(*optionCheckButton);
+                optionBox->add(*optionSwitch);
             }
 
             if (option.getType() == "enum") {
