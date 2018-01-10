@@ -66,12 +66,12 @@ DRI::DriverOption *DRI::DriverOption::addEnumValue(Glib::ustring description, Gl
 
 int DRI::DriverOption::getValidValueStart() const {
     if(this->validValues.empty()) {
-        return 0;
+        return -1;
     }
 
     auto splitPos = this->validValues.find_first_of(':');
     if(splitPos > this->validValues.length() || splitPos <= 0) {
-        return 0;
+        return -1;
     }
 
     // The first part up to the new line
