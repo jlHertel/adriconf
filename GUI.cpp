@@ -57,6 +57,16 @@ DRI::GUI::GUI() : currentApp(nullptr) {
         pSaveAction->signal_activate().connect(sigc::mem_fun(this, &DRI::GUI::onSavePressed));
     }
 
+    /* Create the menu itens */
+    this->pMenuAddApplication = Gtk::manage(new Gtk::MenuItem);
+    this->pMenuAddApplication->set_visible(true);
+    this->pMenuAddApplication->set_label(_("Add new"));
+
+    this->pMenuRemoveApplication = Gtk::manage(new Gtk::MenuItem);
+    this->pMenuRemoveApplication->set_visible(true);
+    this->pMenuRemoveApplication->set_label(_("Remove current Application"));
+    this->pMenuRemoveApplication->signal_activate().connect(sigc::mem_fun(this, &DRI::GUI::onRemoveApplicationPressed));
+
     /* Extract & generate the menu with the applications */
     this->drawApplicationSelectionMenu();
 
@@ -65,6 +75,8 @@ DRI::GUI::GUI() : currentApp(nullptr) {
 
     /* Setup the about dialog */
     this->setupAboutDialog();
+
+    /* TODO: Add/remove applications */
 }
 
 DRI::GUI::~GUI() {
@@ -125,6 +137,10 @@ void DRI::GUI::drawApplicationSelectionMenu() {
         for (auto &driver : this->userDefinedConfiguration) {
             driver->sortApplications();
         }
+
+        /* Add the actions of add/remove apps */
+        pApplicationMenu->add(*this->pMenuAddApplication);
+        pApplicationMenu->add(*this->pMenuRemoveApplication);
 
         Gtk::RadioButtonGroup appRadioGroup;
         bool groupInitialized = false;
@@ -442,4 +458,32 @@ void DRI::GUI::setupAboutDialog() {
             this->aboutDialog.show();
         });
     }
+}
+
+void DRI::GUI::onRemoveApplicationPressed() {
+    if (this->currentApp->getExecutable().empty()) {
+        Gtk::MessageDialog dialog(*(this->pWindow), _("The default application cannot be removed."));
+        dialog.set_secondary_text(_("The driver needs a default configuration."));
+        dialog.run();
+        return;
+    }
+
+    for (auto &device : this->userDefinedConfiguration) {
+        if (device->getDriver() == this->currentDriver.getDriver()) {
+            device->getApplications().remove_if([this](const std::shared_ptr<DRI::Application> &app) {
+                return app->getExecutable() == this->currentApp->getExecutable();
+            });
+        }
+    }
+
+    Gtk::MessageDialog dialog(*(this->pWindow), _("Application removed successfully."));
+    dialog.set_secondary_text(_("The application has been removed."));
+    dialog.run();
+
+    this->drawApplicationSelectionMenu();
+    this->drawApplicationOptions();
+}
+
+void DRI::GUI::onAddApplicationPressed() {
+    std::cout << "Add app button pressed" << std::endl;
 }

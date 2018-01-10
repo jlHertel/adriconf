@@ -13,6 +13,8 @@ namespace DRI {
         /* GUI-Related */
         Gtk::Window *pWindow;
         Gtk::AboutDialog aboutDialog;
+        Gtk::MenuItem *pMenuAddApplication;
+        Gtk::MenuItem *pMenuRemoveApplication;
 
         /* State-related */
         std::shared_ptr<DRI::Device> systemWideConfiguration;
@@ -56,6 +58,10 @@ namespace DRI {
         void onComboboxChanged(Glib::ustring);
 
         void onNumberEntryChanged(Glib::ustring);
+
+        void onRemoveApplicationPressed();
+
+        void onAddApplicationPressed();
     };
 }
 
