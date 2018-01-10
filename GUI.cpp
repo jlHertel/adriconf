@@ -61,6 +61,7 @@ DRI::GUI::GUI() : currentApp(nullptr) {
     this->pMenuAddApplication = Gtk::manage(new Gtk::MenuItem);
     this->pMenuAddApplication->set_visible(true);
     this->pMenuAddApplication->set_label(_("Add new"));
+    this->pMenuAddApplication->signal_activate().connect(sigc::mem_fun(this, &DRI::GUI::onAddApplicationPressed));
 
     this->pMenuRemoveApplication = Gtk::manage(new Gtk::MenuItem);
     this->pMenuRemoveApplication->set_visible(true);
@@ -75,8 +76,6 @@ DRI::GUI::GUI() : currentApp(nullptr) {
 
     /* Setup the about dialog */
     this->setupAboutDialog();
-
-    /* TODO: Add/remove applications */
 }
 
 DRI::GUI::~GUI() {
@@ -485,5 +484,114 @@ void DRI::GUI::onRemoveApplicationPressed() {
 }
 
 void DRI::GUI::onAddApplicationPressed() {
-    std::cout << "Add app button pressed" << std::endl;
+    Gtk::Dialog addAppDialog(_("New Application"), *(this->pWindow), true);
+
+    Gtk::Box *contentArea = addAppDialog.get_content_area();
+
+    /* Application name area */
+    Gtk::Box *appNameBox = Gtk::manage(new Gtk::Box);
+    appNameBox->set_orientation(Gtk::Orientation::ORIENTATION_HORIZONTAL);
+    appNameBox->set_visible(true);
+
+    Gtk::Label *labelAppName = Gtk::manage(new Gtk::Label);
+    labelAppName->set_visible(true);
+    labelAppName->set_text(_("Application name"));
+    appNameBox->add(*labelAppName);
+
+    Gtk::Entry *entryAppName = Gtk::manage(new Gtk::Entry);
+    entryAppName->set_visible(true);
+    appNameBox->add(*entryAppName);
+
+    contentArea->add(*appNameBox);
+
+    /* Application executable area */
+    Gtk::Box *appExecutableBox = Gtk::manage(new Gtk::Box);
+    appExecutableBox->set_orientation(Gtk::Orientation::ORIENTATION_HORIZONTAL);
+    appExecutableBox->set_visible(true);
+
+    Gtk::Label *labelAppExecutable = Gtk::manage(new Gtk::Label);
+    labelAppExecutable->set_visible(true);
+    labelAppExecutable->set_text(_("Application executable"));
+    appExecutableBox->add(*labelAppExecutable);
+
+    Gtk::Entry *entryAppExecutable = Gtk::manage(new Gtk::Entry);
+    entryAppExecutable->set_visible(true);
+    appExecutableBox->add(*entryAppExecutable);
+
+    contentArea->add(*appExecutableBox);
+
+    /* App Driver area */
+    Gtk::Box *appDriverBox = Gtk::manage(new Gtk::Box);
+    appDriverBox->set_visible(true);
+    appDriverBox->set_orientation(Gtk::Orientation::ORIENTATION_HORIZONTAL);
+
+    Gtk::Label *labelAppDriver = Gtk::manage(new Gtk::Label);
+    labelAppDriver->set_visible(true);
+    labelAppDriver->set_text(_("Driver"));
+    appDriverBox->add(*labelAppDriver);
+
+    Gtk::ComboBoxText *comboAppDriver = Gtk::manage(new Gtk::ComboBoxText);
+    comboAppDriver->set_visible(true);
+    for (const auto &driverConfig : this->driverConfiguration) {
+        comboAppDriver->append(driverConfig.getDriver());
+    }
+
+    comboAppDriver->set_active(0);
+    appDriverBox->add(*comboAppDriver);
+
+    contentArea->add(*appDriverBox);
+
+    addAppDialog.add_button(_("Save"), 50);
+    addAppDialog.add_button(_("Cancel"), Gtk::RESPONSE_CANCEL);
+
+    std::shared_ptr<DRI::Application> newApplication;
+    int result = addAppDialog.run();
+
+    Gtk::MessageDialog dialog(*(this->pWindow), _("Application successfully added."));
+    dialog.set_secondary_text(_("The application was successfully added. Reloading default app options."));
+
+    switch (result) {
+        case Gtk::RESPONSE_CLOSE:
+        case Gtk::RESPONSE_CANCEL:
+        case Gtk::RESPONSE_DELETE_EVENT:
+            addAppDialog.hide();
+            break;
+
+        case 50:
+            /* Check the given information and try to save the app */
+            if (entryAppName->get_text().empty() || entryAppExecutable->get_text().empty() ||
+                comboAppDriver->get_active_text().empty()) {
+                Gtk::MessageDialog dialog(*(this->pWindow), _("Validation error"));
+                dialog.set_secondary_text(_("You need to specify the application name, executable and driver."));
+                dialog.run();
+                return;
+            }
+
+            for (const auto &driver : this->driverConfiguration) {
+                if (driver.getDriver() == comboAppDriver->get_active_text()) {
+                    newApplication = driver.generateApplication();
+                }
+            }
+
+            newApplication->setName(entryAppName->get_text());
+            newApplication->setExecutable(entryAppExecutable->get_text());
+
+            for (auto &userConfig : this->userDefinedConfiguration) {
+                if (userConfig->getDriver() == comboAppDriver->get_active_text()) {
+                    userConfig->addApplication(newApplication);
+                }
+            }
+
+            addAppDialog.hide();
+
+            dialog.run();
+
+            this->drawApplicationSelectionMenu();
+            this->drawApplicationOptions();
+
+            break;
+        default:
+            std::cerr << Glib::ustring::compose(_("Undefined response returned by dialog: %1"), result) << std::endl;
+            break;
+    }
 }

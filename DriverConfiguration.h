@@ -27,6 +27,9 @@ namespace DRI {
         void setSections(const std::list<Section> &sections);
 
         std::list<std::pair<Glib::ustring, Glib::ustring>> getEnumValuesForOption(const Glib::ustring &);
+
+        /* Generate a new application based on this driver-supported options */
+        std::shared_ptr<DRI::Application> generateApplication() const;
     };
 };
 

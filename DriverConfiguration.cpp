@@ -26,11 +26,30 @@ void DRI::DriverConfiguration::setSections(const std::list<DRI::Section> &sectio
 
 std::list<std::pair<Glib::ustring, Glib::ustring>>
 DRI::DriverConfiguration::getEnumValuesForOption(const Glib::ustring &optionName) {
-    for(const auto &section : this->sections) {
-        for(const auto &option : section.getOptions()) {
-            if(option.getName() == optionName) {
+    for (const auto &section : this->sections) {
+        for (const auto &option : section.getOptions()) {
+            if (option.getName() == optionName) {
                 return option.getEnumValues();
             }
         }
     }
+}
+
+std::shared_ptr<DRI::Application> DRI::DriverConfiguration::generateApplication() const {
+    std::shared_ptr<DRI::Application> app = std::make_shared<DRI::Application>();
+    std::list<std::shared_ptr<DRI::ApplicationOption>> options;
+
+    for (const auto &section : this->sections) {
+        for (const auto &option : section.getOptions()) {
+            auto driverOpt = std::make_shared<DRI::ApplicationOption>();
+            driverOpt->setName(option.getName());
+            driverOpt->setValue(option.getDefaultValue());
+
+            options.emplace_back(driverOpt);
+        }
+    }
+
+    app->setOptions(options);
+
+    return app;
 }
