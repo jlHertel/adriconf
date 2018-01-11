@@ -378,9 +378,11 @@ void DRI::GUI::drawApplicationOptions() {
         }
 
 
-        /* Connect the field directly to the app object */
+        Gtk::ScrolledWindow *scrolledWindow = Gtk::manage(new Gtk::ScrolledWindow);
+        scrolledWindow->set_visible(true);
+        scrolledWindow->add(*tabBox);
 
-        pNotebook->append_page(*tabBox, section.getDescription());
+        pNotebook->append_page(*scrolledWindow, section.getDescription());
     }
 }
 
