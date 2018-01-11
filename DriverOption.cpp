@@ -23,7 +23,7 @@ const Glib::ustring &DRI::DriverOption::getValidValues() const {
     return this->validValues;
 }
 
-std::list<std::pair<Glib::ustring, Glib::ustring>> DRI::DriverOption::getEnumValues() const{
+std::list<std::pair<Glib::ustring, Glib::ustring>> DRI::DriverOption::getEnumValues() const {
     return this->enumValues;
 }
 
@@ -65,12 +65,12 @@ DRI::DriverOption *DRI::DriverOption::addEnumValue(Glib::ustring description, Gl
 }
 
 int DRI::DriverOption::getValidValueStart() const {
-    if(this->validValues.empty()) {
+    if (this->validValues.empty()) {
         return -1;
     }
 
     auto splitPos = this->validValues.find_first_of(':');
-    if(splitPos > this->validValues.length() || splitPos <= 0) {
+    if (splitPos > this->validValues.length() || splitPos <= 0) {
         return -1;
     }
 
@@ -81,12 +81,12 @@ int DRI::DriverOption::getValidValueStart() const {
 }
 
 int DRI::DriverOption::getValidValueEnd() const {
-    if(this->validValues.empty()) {
+    if (this->validValues.empty()) {
         return 10000;
     }
 
     auto splitPos = this->validValues.find_first_of(':');
-    if(splitPos > this->validValues.length() || splitPos <= 0) {
+    if (splitPos > this->validValues.length() || splitPos <= 0) {
         return 10000;
     }
 
@@ -94,4 +94,20 @@ int DRI::DriverOption::getValidValueEnd() const {
     auto secondPart = this->validValues.substr(splitPos + 1, this->validValues.length() - splitPos);
 
     return std::stoi(secondPart);
+}
+
+int DRI::DriverOption::getSortValue() const {
+    if (this->type == "bool") {
+        return 1;
+    }
+
+    if (this->type == "enum") {
+        return 2;
+    }
+
+    if (this->type == "int") {
+        return 3;
+    }
+
+    return 4;
 }

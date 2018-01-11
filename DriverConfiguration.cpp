@@ -53,3 +53,9 @@ std::shared_ptr<DRI::Application> DRI::DriverConfiguration::generateApplication(
 
     return app;
 }
+
+void DRI::DriverConfiguration::sortSectionOptions() {
+    for(auto &section : this->sections) {
+        section.sortOptions();
+    }
+}

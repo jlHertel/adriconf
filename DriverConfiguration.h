@@ -30,6 +30,9 @@ namespace DRI {
 
         /* Generate a new application based on this driver-supported options */
         std::shared_ptr<DRI::Application> generateApplication() const;
+
+        /* Sort the options inside each section to be more user-friendly */
+        void sortSectionOptions();
     };
 };
 

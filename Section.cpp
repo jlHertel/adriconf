@@ -21,3 +21,9 @@ DRI::Section *DRI::Section::addOption(DRI::DriverOption option) {
 
     return this;
 }
+
+void DRI::Section::sortOptions() {
+    this->options.sort([] (const DRI::DriverOption &a, const DRI::DriverOption &b) {
+        return a.getSortValue() < b.getSortValue();
+    });
+}

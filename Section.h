@@ -21,6 +21,9 @@ namespace DRI {
         Section *setDescription(Glib::ustring description);
 
         Section *addOption(DRI::DriverOption option);
+
+        /* Sort the options of this section */
+        void sortOptions();
     };
 }
 

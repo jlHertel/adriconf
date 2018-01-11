@@ -14,6 +14,10 @@ DRI::GUI::GUI() : currentApp(nullptr) {
     /* Load the configurations */
     DRI::ConfigurationLoader configurationLoader;
     this->driverConfiguration = configurationLoader.loadDriverSpecificConfiguration(this->locale);
+    for(auto &driver : this->driverConfiguration) {
+        driver.sortSectionOptions();
+    }
+
     this->systemWideConfiguration = configurationLoader.loadSystemWideConfiguration();
     this->userDefinedConfiguration = configurationLoader.loadUserDefinedConfiguration();
 

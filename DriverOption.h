@@ -30,6 +30,8 @@ namespace DRI {
 
         int getValidValueEnd() const;
 
+        int getSortValue() const;
+
         std::list<std::pair<Glib::ustring, Glib::ustring>> getEnumValues() const;
 
         DriverOption *setName(Glib::ustring name);
