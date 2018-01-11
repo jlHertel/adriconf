@@ -46,6 +46,7 @@ DRI::GUI::GUI() : currentApp(nullptr) {
     }
 
     this->pWindow->set_default_size(800, 600);
+    this->pWindow->set_size_request(800, 600);
 
     /* Extract the quit-menu */
     Gtk::ImageMenuItem *pQuitAction;
@@ -279,7 +280,9 @@ void DRI::GUI::drawApplicationOptions() {
         tabBox->set_visible(true);
         tabBox->set_orientation(Gtk::Orientation::ORIENTATION_VERTICAL);
         tabBox->set_margin_start(8);
+        tabBox->set_margin_end(8);
         tabBox->set_margin_top(10);
+
 
         /* Draw each field individually */
         for (auto &option : section.getOptions()) {
@@ -300,6 +303,7 @@ void DRI::GUI::drawApplicationOptions() {
             Gtk::Box *optionBox = Gtk::manage(new Gtk::Box);
             optionBox->set_visible(true);
             optionBox->set_orientation(Gtk::Orientation::ORIENTATION_HORIZONTAL);
+            optionBox->set_margin_bottom(10);
 
             if (option.getType() == "bool") {
                 Gtk::Switch *optionSwitch = Gtk::manage(new Gtk::Switch);
@@ -313,7 +317,7 @@ void DRI::GUI::drawApplicationOptions() {
                         sigc::mem_fun(this, &DRI::GUI::onCheckboxChanged), option.getName()
                 ));
 
-                optionBox->add(*optionSwitch);
+                optionBox->pack_end(*optionSwitch, false, false);
             }
 
             if (option.getType() == "enum") {
@@ -335,7 +339,7 @@ void DRI::GUI::drawApplicationOptions() {
 
                 this->currentComboBoxes[option.getName()] = optionCombo;
 
-                optionBox->add(*optionCombo);
+                optionBox->pack_end(*optionCombo, false, false);
             }
 
             if (option.getType() == "int") {
@@ -359,14 +363,16 @@ void DRI::GUI::drawApplicationOptions() {
 
                 this->currentSpinButtons[option.getName()] = optionEntry;
 
-                optionBox->add(*optionEntry);
+                optionBox->pack_end(*optionEntry, false, true);
             }
 
             Gtk::Label *label = Gtk::manage(new Gtk::Label);
             label->set_label(option.getDescription());
             label->set_visible(true);
+            label->set_justify(Gtk::Justification::JUSTIFY_LEFT);
+            label->set_line_wrap(true);
             label->set_margin_start(10);
-            optionBox->add(*label);
+            optionBox->pack_start(*label, false, true);
 
             tabBox->add(*optionBox);
         }
