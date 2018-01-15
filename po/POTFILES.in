@@ -1,2 +1,4 @@
 main.cpp
+ConfigurationResolver.cpp
 DriConf.glade
+GUI.cpp

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-02 17:15-0200\n"
+"POT-Creation-Date: 2018-01-15 17:19-0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,23 +17,140 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../main.cpp:86
-#, fuzzy
-msgid "Current language code is "
-msgstr "Cdigo de lingua atual  %1"
+#: ../ConfigurationResolver.cpp:148
+msgid ""
+"Driver '%1' doesn't support option '%2' on application '%3'. Option removed."
+msgstr "Driver '%1' não suporta a opção '%2' na aplicação '%3'. Opção será removida."
 
 #: ../DriConf.glade.h:1
 msgid "_File"
 msgstr "Arquivo"
 
 #: ../DriConf.glade.h:2
-msgid "_Edit"
-msgstr "Editar"
+msgid "_Application"
+msgstr "Aplicação"
 
 #: ../DriConf.glade.h:3
 msgid "_Help"
 msgstr "Ajuda"
 
-#: ../DriConf.glade.h:4
-msgid "_Driver"
+#: ../GUI.cpp:44
+msgid "Main window object is not in glade file!"
+msgstr "Objeto window principal não está no arquivo glade!"
+
+#: ../GUI.cpp:68
+msgid "Add new"
+msgstr "Adicionar novo"
+
+#: ../GUI.cpp:73
+msgid "Remove current Application"
+msgstr "Remover aplicação atual"
+
+#: ../GUI.cpp:100
+msgid "Generating final XML for saving..."
+msgstr "Gerando XML final para salvar..."
+
+#: ../GUI.cpp:105
+msgid "Writing generated XML: %1"
+msgstr "Escrevendo XML gerado: %1"
+
+#: ../GUI.cpp:123
+#, fuzzy
+msgid "Current language code is %1"
+msgstr "Código de lingua atual é %1"
+
+#: ../GUI.cpp:166
+msgid "Driver %1 not found"
+msgstr "Driver %1 não encontrado"
+
+#: ../GUI.cpp:233
+msgid "Application %1 not found "
+msgstr "Aplicação %1 não encontrada"
+
+#: ../GUI.cpp:246
+msgid "Driver %1 not found "
+msgstr "Driver %1 não encontrado "
+
+#: ../GUI.cpp:262
+msgid "Notebook object not found in glade file!"
+msgstr "Objeto Notebook não encontrado no arquivo glade!"
+
+#: ../GUI.cpp:299
+msgid "Option %1 doesn't exist in application %2. Merge failed"
+msgstr "Opção %1 não existe na aplicação %2. Mesclagem falhou"
+
+#: ../GUI.cpp:444
+msgid "An advanced DRI configurator tool."
+msgstr "Uma ferramenta de configuração de DRI avançada."
+
+#: ../GUI.cpp:448
+msgid "Source Code"
+msgstr "Código Fonte"
+
+#: ../GUI.cpp:462
+msgid "Unexpected response code from about dialog: %1"
+msgstr "Código de resposta do dialogo inesperado: %1"
+
+#: ../GUI.cpp:479
+msgid "The default application cannot be removed."
+msgstr "A aplicação padrão não pode ser removida."
+
+#: ../GUI.cpp:480
+msgid "The driver needs a default configuration."
+msgstr "O driver precisa de uma aplicação padrão."
+
+#: ../GUI.cpp:493
+msgid "Application removed successfully."
+msgstr "Aplicação removida com sucesso."
+
+#: ../GUI.cpp:494
+msgid "The application has been removed."
+msgstr "A aplicação foi removida."
+
+#: ../GUI.cpp:502
+msgid "New Application"
+msgstr "Nova aplicação"
+
+#: ../GUI.cpp:513
+msgid "Application name"
+msgstr "Nome da aplicação"
+
+#: ../GUI.cpp:529
+msgid "Application executable"
+msgstr "Executável da aplicação"
+
+#: ../GUI.cpp:545
+#, fuzzy
+msgid "Driver"
 msgstr "Driver"
+
+#: ../GUI.cpp:559
+msgid "Save"
+msgstr "Salvar"
+
+#: ../GUI.cpp:560
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: ../GUI.cpp:565
+msgid "Application successfully added."
+msgstr "Aplicação adicionada com sucesso."
+
+#: ../GUI.cpp:566
+msgid "The application was successfully added. Reloading default app options."
+msgstr "A aplicação foi adicionada com sucesso. Recarregando opções da aplicação padrão."
+
+#: ../GUI.cpp:579
+msgid "Validation error"
+msgstr "Erro de validação"
+
+#: ../GUI.cpp:580
+msgid "You need to specify the application name, executable and driver."
+msgstr "Você precisa especificar o nome da aplicação, executável e driver."
+
+#: ../GUI.cpp:609
+msgid "Undefined response returned by dialog: %1"
+msgstr "Resposta indefinida retornada pelo dialogo: %1"
+
+#~ msgid "_Edit"
+#~ msgstr "Editar"
