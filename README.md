@@ -13,6 +13,17 @@ The main features of the tool include:
 - Applications with empty options (all options are the same as system-wide config or driver default) will be removed automatically
 
 
+TODOs
+-----
+
+Some things that still need to be done:
+
+- Properly support a system without X (wayland systems?) Currently the glX functions mandate a Xlib display object. There must be another way to get the driver options
+- Properly deal with PRIME setups (how do we get more information from the driver? hardware ids?)
+- Some code cleanups. I'm not very experienced with C++ yet (Maybe split the GUI class, as it is very big and not very readable)
+- Tests? Implementing testing for the software would be very nice
+- Remove Boost dependency? (Currently boost.locale is used to get the ISO-639 language id, to properly parse Mesa3d translations)
+
 Author
 ------
 
