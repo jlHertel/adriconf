@@ -573,9 +573,9 @@ void DRI::GUI::onAddApplicationPressed() {
             /* Check the given information and try to save the app */
             if (entryAppName->get_text().empty() || entryAppExecutable->get_text().empty() ||
                 comboAppDriver->get_active_text().empty()) {
-                Gtk::MessageDialog dialog(*(this->pWindow), _("Validation error"));
-                dialog.set_secondary_text(_("You need to specify the application name, executable and driver."));
-                dialog.run();
+                Gtk::MessageDialog validationDialog(*(this->pWindow), _("Validation error"));
+                validationDialog.set_secondary_text(_("You need to specify the application name, executable and driver."));
+                validationDialog.run();
                 return;
             }
 
