@@ -83,7 +83,7 @@ ENDIF(NOT GETTEXT_MSGFMT_EXECUTABLE)
 add_executable(adriconf ${SOURCE_FILES})
 
 target_link_libraries(adriconf ${GTKMM_LIBRARIES})
-target_link_libraries(adriconf ${Boost_LIBRARIES})
+target_link_libraries(adriconf ${Boost_LOCALE_LIBRARIES})
 target_link_libraries(adriconf ${LibXML++_LIBRARIES})
 target_link_libraries(adriconf ${X11_LIBRARIES})
 target_link_libraries(adriconf ${OPENGL_gl_LIBRARY})
