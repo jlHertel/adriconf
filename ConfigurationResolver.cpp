@@ -140,8 +140,9 @@ void DRI::ConfigurationResolver::filterDriverUnsupportedOptions(
 
         if (driverSupports == driverAvailableOptions.end()) {
             std::cerr << Glib::ustring::compose(
-                    _("User-defined driver '%1' doesn't have a driver loaded on system. Configuration removed."),
-                    currentUserDefinedDriver
+                    _("User-defined driver '%1' on screen '%2' doesn't have a driver loaded on system. Configuration removed."),
+                    currentUserDefinedDriver,
+                    currentUserDefinedScreen
             ) << std::endl;
 
             deviceIterator = userDefinedDevices.erase(deviceIterator);
