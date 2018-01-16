@@ -15,6 +15,10 @@ const Glib::ustring &DRI::DriverOption::getType() const {
     return this->type;
 }
 
+bool DRI::DriverOption::isFakeBool() const {
+    return this->type == "enum" && this->validValues == "0:1" && this->enumValues.empty();
+}
+
 const Glib::ustring &DRI::DriverOption::getDefaultValue() const {
     return this->defaultValue;
 }

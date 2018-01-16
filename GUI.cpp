@@ -320,7 +320,22 @@ void DRI::GUI::drawApplicationOptions() {
                 optionBox->pack_end(*optionSwitch, false, false);
             }
 
-            if (option.getType() == "enum") {
+            if (option.isFakeBool()) {
+                Gtk::Switch *optionSwitch = Gtk::manage(new Gtk::Switch);
+                optionSwitch->set_visible(true);
+
+                if ((*optionValue)->getValue() == "1") {
+                    optionSwitch->set_active(true);
+                }
+
+                optionSwitch->property_active().signal_changed().connect(sigc::bind<Glib::ustring>(
+                        sigc::mem_fun(this, &DRI::GUI::onFakeCheckBoxChanged), option.getName()
+                ));
+
+                optionBox->pack_end(*optionSwitch, false, false);
+            }
+
+            if (option.getType() == "enum" && !option.isFakeBool()) {
                 Gtk::ComboBoxText *optionCombo = Gtk::manage(new Gtk::ComboBoxText);
                 optionCombo->set_visible(true);
 
@@ -398,6 +413,21 @@ void DRI::GUI::onCheckboxChanged(Glib::ustring optionName) {
         (*currentOption)->setValue("false");
     } else {
         (*currentOption)->setValue("true");
+    }
+}
+
+void DRI::GUI::onFakeCheckBoxChanged(Glib::ustring optionName) {
+    auto eventSelectedAppOptions = this->currentApp->getOptions();
+
+    auto currentOption = std::find_if(eventSelectedAppOptions.begin(), eventSelectedAppOptions.end(),
+                                      [&optionName](std::shared_ptr<DRI::ApplicationOption> a) {
+                                          return a->getName() == optionName;
+                                      });
+
+    if ((*currentOption)->getValue() == "1") {
+        (*currentOption)->setValue("0");
+    } else {
+        (*currentOption)->setValue("1");
     }
 }
 

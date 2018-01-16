@@ -55,6 +55,8 @@ namespace DRI {
 
         void onCheckboxChanged(Glib::ustring);
 
+        void onFakeCheckBoxChanged(Glib::ustring);
+
         void onComboboxChanged(Glib::ustring);
 
         void onNumberEntryChanged(Glib::ustring);

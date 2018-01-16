@@ -32,6 +32,8 @@ namespace DRI {
 
         int getSortValue() const;
 
+        bool isFakeBool() const;
+
         std::list<std::pair<Glib::ustring, Glib::ustring>> getEnumValues() const;
 
         DriverOption *setName(Glib::ustring name);
