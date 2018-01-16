@@ -196,10 +196,13 @@ void DRI::ConfigurationResolver::mergeOptionsForDisplay(
                                                     });
         std::shared_ptr<DRI::Device> userDefinedDevice = nullptr;
 
+        bool addDeviceToList = false;
+
         if (userSearchDefinedDevice == userDefinedOptions.end()) {
             userDefinedDevice = std::make_shared<DRI::Device>();
             userDefinedDevice->setDriver(driverConf.getDriver());
             userDefinedDevice->setScreen(driverConf.getScreen());
+            addDeviceToList = true;
         } else {
             userDefinedDevice = *userSearchDefinedDevice;
         }
@@ -287,6 +290,10 @@ void DRI::ConfigurationResolver::mergeOptionsForDisplay(
             }
 
             userDefinedDevice->addApplication(defaultApplication);
+        }
+
+        if(addDeviceToList) {
+            userDefinedOptions.emplace_back(userDefinedDevice);
         }
     }
 }
