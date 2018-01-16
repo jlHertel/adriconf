@@ -151,8 +151,6 @@ void DRI::ConfigurationResolver::filterDriverUnsupportedOptions(
                             userDefinedApp->getName()
                     ) << std::endl;
                     itr = options.erase(itr);
-
-                    auto optionsObject = (*itr);
                 } else {
                     ++itr;
                 }
