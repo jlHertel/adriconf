@@ -159,6 +159,27 @@ void DRI::ConfigurationResolver::filterDriverUnsupportedOptions(
             userDefinedApp->setOptions(options);
         }
     }
+
+    // Remove user-defined configurations that don't exists at driver level
+    auto deviceIterator = userDefinedDevices.begin();
+    while (deviceIterator != userDefinedDevices.end()) {
+        Glib::ustring currentUserDefinedDriver((*deviceIterator)->getDriver());
+        auto driverSupports = std::find_if(driverAvailableOptions.begin(), driverAvailableOptions.end(),
+                                           [&currentUserDefinedDriver](const DRI::DriverConfiguration &d) {
+                                               return d.getDriver() == currentUserDefinedDriver;
+                                           });
+
+        if (driverSupports == driverAvailableOptions.end()) {
+            std::cerr << Glib::ustring::compose(
+                    _("User-defined driver '%1' doesn't have a driver loaded on system. Configuration removed."),
+                    currentUserDefinedDriver
+            ) << std::endl;
+
+            deviceIterator = userDefinedDevices.erase(deviceIterator);
+        } else {
+            ++deviceIterator;
+        }
+    }
 }
 
 void DRI::ConfigurationResolver::mergeOptionsForDisplay(
@@ -221,7 +242,8 @@ void DRI::ConfigurationResolver::mergeOptionsForDisplay(
                 systemDefinedApp->setExecutable(systemWideApp->getExecutable());
 
                 for (const auto &driverOptionObj : driverOptions) {
-                    auto optionExists = std::find_if(systemWideApp->getOptions().begin(), systemWideApp->getOptions().end(),
+                    auto optionExists = std::find_if(systemWideApp->getOptions().begin(),
+                                                     systemWideApp->getOptions().end(),
                                                      [&driverOptionObj](std::shared_ptr<DRI::ApplicationOption> a) {
                                                          return driverOptionObj.getName() == a->getName();
                                                      });
