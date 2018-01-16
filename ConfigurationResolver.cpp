@@ -123,10 +123,41 @@ void DRI::ConfigurationResolver::filterDriverUnsupportedOptions(
         const std::list<DRI::DriverConfiguration> &driverAvailableOptions,
         std::list<std::shared_ptr<DRI::Device>> &userDefinedDevices
 ) {
+    // Remove user-defined configurations that don't exists at driver level
+    auto deviceIterator = userDefinedDevices.begin();
+    while (deviceIterator != userDefinedDevices.end()) {
+        Glib::ustring currentUserDefinedDriver((*deviceIterator)->getDriver());
+        int currentUserDefinedScreen = (*deviceIterator)->getScreen();
+        auto driverSupports = std::find_if(driverAvailableOptions.begin(), driverAvailableOptions.end(),
+                                           [&currentUserDefinedDriver, &currentUserDefinedScreen](
+                                                   const DRI::DriverConfiguration &d) {
+                                               return (
+                                                       d.getDriver() == currentUserDefinedDriver
+                                                       &&
+                                                       d.getScreen() == currentUserDefinedScreen
+                                               );
+                                           });
+
+        if (driverSupports == driverAvailableOptions.end()) {
+            std::cerr << Glib::ustring::compose(
+                    _("User-defined driver '%1' doesn't have a driver loaded on system. Configuration removed."),
+                    currentUserDefinedDriver
+            ) << std::endl;
+
+            deviceIterator = userDefinedDevices.erase(deviceIterator);
+        } else {
+            ++deviceIterator;
+        }
+    }
+
     for (auto &userDefinedDevice : userDefinedDevices) {
         auto driverConfig = std::find_if(driverAvailableOptions.begin(), driverAvailableOptions.end(),
                                          [&userDefinedDevice](const DRI::DriverConfiguration &d) {
-                                             return d.getScreen() == userDefinedDevice->getScreen();
+                                             return (
+                                                     d.getScreen() == userDefinedDevice->getScreen()
+                                                     &&
+                                                     d.getDriver() == userDefinedDevice->getDriver()
+                                             );
                                          });
 
         std::list<Glib::ustring> driverOptions;
@@ -160,26 +191,7 @@ void DRI::ConfigurationResolver::filterDriverUnsupportedOptions(
         }
     }
 
-    // Remove user-defined configurations that don't exists at driver level
-    auto deviceIterator = userDefinedDevices.begin();
-    while (deviceIterator != userDefinedDevices.end()) {
-        Glib::ustring currentUserDefinedDriver((*deviceIterator)->getDriver());
-        auto driverSupports = std::find_if(driverAvailableOptions.begin(), driverAvailableOptions.end(),
-                                           [&currentUserDefinedDriver](const DRI::DriverConfiguration &d) {
-                                               return d.getDriver() == currentUserDefinedDriver;
-                                           });
 
-        if (driverSupports == driverAvailableOptions.end()) {
-            std::cerr << Glib::ustring::compose(
-                    _("User-defined driver '%1' doesn't have a driver loaded on system. Configuration removed."),
-                    currentUserDefinedDriver
-            ) << std::endl;
-
-            deviceIterator = userDefinedDevices.erase(deviceIterator);
-        } else {
-            ++deviceIterator;
-        }
-    }
 }
 
 void DRI::ConfigurationResolver::mergeOptionsForDisplay(
@@ -292,7 +304,7 @@ void DRI::ConfigurationResolver::mergeOptionsForDisplay(
             userDefinedDevice->addApplication(defaultApplication);
         }
 
-        if(addDeviceToList) {
+        if (addDeviceToList) {
             userDefinedOptions.emplace_back(userDefinedDevice);
         }
     }
