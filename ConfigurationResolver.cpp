@@ -89,7 +89,6 @@ std::list<std::shared_ptr<DRI::Device>> DRI::ConfigurationResolver::resolveOptio
                  * Application doesn't exist in system-wide configuration
                  * but we must check each option to see if its value is the same as the driver default
                  */
-                bool addApplication = false;
 
                 for (auto &userDefinedAppOption : userDefinedApplication->getOptions()) {
                     auto driverOption = std::find_if(driverOptions.begin(), driverOptions.end(),
@@ -98,8 +97,6 @@ std::list<std::shared_ptr<DRI::Device>> DRI::ConfigurationResolver::resolveOptio
                                                      });
 
                     if (driverOption->getDefaultValue() != userDefinedAppOption->getValue()) {
-                        addApplication = true;
-
                         auto newMergedOption = std::make_shared<DRI::ApplicationOption>();
                         newMergedOption->setName(userDefinedAppOption->getName());
                         newMergedOption->setValue(userDefinedAppOption->getValue());
@@ -107,9 +104,7 @@ std::list<std::shared_ptr<DRI::Device>> DRI::ConfigurationResolver::resolveOptio
                     }
                 }
 
-                if (addApplication) {
-                    mergedDevice->addApplication(mergedApp);
-                }
+                mergedDevice->addApplication(mergedApp);
             }
         }
 

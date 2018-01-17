@@ -148,10 +148,7 @@ std::list<std::shared_ptr<DRI::Device>> DRI::Parser::parseDevices(Glib::ustring 
 
                 for (auto application : applications) {
                     auto parsedApp = parseApplication(application);
-                    /* If an application doesn't have any option, why include it? */
-                    if (!parsedApp->getOptions().empty()) {
-                        deviceConf->addApplication(parsedApp);
-                    }
+                    deviceConf->addApplication(parsedApp);
                 }
 
                 deviceList.emplace_back(deviceConf);

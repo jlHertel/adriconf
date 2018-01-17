@@ -10,7 +10,7 @@ The main features of the tool include:
 
 - Automatic removal of invalid options (Options that the driver doesn't support at all)
 - Options that have the same value as the system wide options or driver default will be ignored
-- Applications with empty options (all options are the same as system-wide config or driver default) will be removed automatically
+- System-Wide Applications with empty options (all options are the same as system-wide config or driver default) will be removed automatically
 
 
 TODOs
