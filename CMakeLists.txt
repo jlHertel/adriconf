@@ -11,7 +11,8 @@ set(SOURCE_FILES main.cpp Device.cpp Device.h
         ConfigurationResolver.cpp ConfigurationResolver.h
         DRIQuery.cpp DRIQuery.h
         DriverConfiguration.cpp DriverConfiguration.h
-        Writer.cpp Writer.h GUI.cpp GUI.h ConfigurationLoader.cpp ConfigurationLoader.h ApplicationOption.cpp ApplicationOption.h)
+        Writer.cpp Writer.h GUI.cpp GUI.h ConfigurationLoader.cpp ConfigurationLoader.h ApplicationOption.cpp ApplicationOption.h
+        resources.c)
 
 find_package(PkgConfig REQUIRED)
 find_package(OpenGL REQUIRED)
@@ -88,6 +89,14 @@ target_link_libraries(adriconf ${LibXML++_LIBRARIES})
 target_link_libraries(adriconf ${X11_LIBRARIES})
 target_link_libraries(adriconf ${OPENGL_gl_LIBRARY})
 target_link_libraries(adriconf ${Gtest_LIBRARIES})
+
+add_custom_command(OUTPUT ${CMAKE_SOURCE_DIR}/resources.c
+    COMMAND glib-compile-resources adriconf.gresource.xml --target=resources.c --generate-source
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+)
+set_source_files_properties(${CMAKE_SOURCE_DIR}/resources.c PROPERTIES
+    GENERATED TRUE
+)
 
 # Move the glade file
 add_custom_command(
