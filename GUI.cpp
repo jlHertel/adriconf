@@ -36,7 +36,7 @@ DRI::GUI::GUI() : currentApp(nullptr) {
 
     /* Load the GUI file */
     this->gladeBuilder = Gtk::Builder::create();
-    this->gladeBuilder->add_from_file("DriConf.glade");
+    this->gladeBuilder->add_from_resource("/jlHertel/adriconf/DriConf.glade");
 
     /* Extract the main object */
     this->gladeBuilder->get_widget("mainwindow", this->pWindow);
