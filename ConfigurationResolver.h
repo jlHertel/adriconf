@@ -7,7 +7,7 @@
 #include <algorithm>
 #include "DriverConfiguration.h"
 
-namespace DRI::ConfigurationResolver {
+namespace ConfigurationResolver {
     /**
      * Takes all the options set and filter out the options already defined system-wide
      * Also filter out any empty application (applications which options are equal to system-wide or driver-default)
@@ -17,10 +17,10 @@ namespace DRI::ConfigurationResolver {
      * @param userDefinedOptions
      * @return A lista of new devices ready to be written to disk
      */
-    std::list<std::shared_ptr<DRI::Device>> resolveOptionsForSave(
-            const std::shared_ptr<DRI::Device> &,
-            const std::list<DRI::DriverConfiguration> &,
-            const std::list<std::shared_ptr<DRI::Device>> &
+    std::list<std::shared_ptr<Device>> resolveOptionsForSave(
+            const std::shared_ptr<Device> &,
+            const std::list<DriverConfiguration> &,
+            const std::list<std::shared_ptr<Device>> &
     );
 
     /**
@@ -30,8 +30,8 @@ namespace DRI::ConfigurationResolver {
      * @param userDefinedOptions
      */
     void filterDriverUnsupportedOptions(
-            const std::list<DRI::DriverConfiguration> &,
-            std::list<std::shared_ptr<DRI::Device>> &
+            const std::list<DriverConfiguration> &,
+            std::list<std::shared_ptr<Device>> &
     );
 
     /**
@@ -42,9 +42,9 @@ namespace DRI::ConfigurationResolver {
      * @param userDefinedOptions
      */
     void mergeOptionsForDisplay(
-            const std::shared_ptr<DRI::Device> &,
-            const std::list<DRI::DriverConfiguration> &,
-            std::list<std::shared_ptr<DRI::Device>> &
+            const std::shared_ptr<Device> &,
+            const std::list<DriverConfiguration> &,
+            std::list<std::shared_ptr<Device>> &
     );
 };
 

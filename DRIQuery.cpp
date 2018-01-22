@@ -1,7 +1,7 @@
 #include <giomm.h>
 #include "DRIQuery.h"
 
-DRI::DRIQuery::DRIQuery() {
+DRIQuery::DRIQuery() {
     this->getScreenDriver = (glXGetScreenDriver_t *) glXGetProcAddress((const GLubyte *) "glXGetScreenDriver");
     this->getDriverConfig = (glXGetDriverConfig_t *) glXGetProcAddress((const GLubyte *) "glXGetDriverConfig");
 
@@ -10,8 +10,8 @@ DRI::DRIQuery::DRIQuery() {
     }
 }
 
-std::list<DRI::DriverConfiguration> DRI::DRIQuery::queryDriverConfigurationOptions(const Glib::ustring &locale) {
-    std::list<DRI::DriverConfiguration> configurations;
+std::list<DriverConfiguration> DRIQuery::queryDriverConfigurationOptions(const Glib::ustring &locale) {
+    std::list<DriverConfiguration> configurations;
 
     Display *display;
 
@@ -26,7 +26,7 @@ std::list<DRI::DriverConfiguration> DRI::DRIQuery::queryDriverConfigurationOptio
     int screenCount = ScreenCount (display);
 
     for (int i = 0; i < screenCount; i++) {
-        DRI::DriverConfiguration config;
+        DriverConfiguration config;
         config.setScreen(i);
 
         auto driverName = (*(this->getScreenDriver))(display, i);
@@ -35,7 +35,7 @@ std::list<DRI::DriverConfiguration> DRI::DRIQuery::queryDriverConfigurationOptio
         auto driverOptions = (*(this->getDriverConfig))(driverName);
         Glib::ustring options(driverOptions);
 
-        auto parsedSections = DRI::Parser::parseAvailableConfiguration(options, locale);
+        auto parsedSections = Parser::parseAvailableConfiguration(options, locale);
         config.setSections(parsedSections);
 
         configurations.emplace_back(config);

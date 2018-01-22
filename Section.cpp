@@ -1,29 +1,29 @@
 #include "Section.h"
 
-DRI::Section::Section() : options() {}
+Section::Section() : options() {}
 
-const Glib::ustring &DRI::Section::getDescription() const {
+const Glib::ustring &Section::getDescription() const {
     return this->description;
 }
 
-const std::list<DRI::DriverOption> &DRI::Section::getOptions() const {
+const std::list<DriverOption> &Section::getOptions() const {
     return this->options;
 }
 
-DRI::Section *DRI::Section::setDescription(Glib::ustring description) {
+Section *Section::setDescription(Glib::ustring description) {
     this->description = std::move(description);
 
     return this;
 }
 
-DRI::Section *DRI::Section::addOption(DRI::DriverOption option) {
+Section *Section::addOption(DriverOption option) {
     this->options.push_back(option);
 
     return this;
 }
 
-void DRI::Section::sortOptions() {
-    this->options.sort([] (const DRI::DriverOption &a, const DRI::DriverOption &b) {
+void Section::sortOptions() {
+    this->options.sort([](const DriverOption &a, const DriverOption &b) {
         return a.getSortValue() < b.getSortValue();
     });
 }

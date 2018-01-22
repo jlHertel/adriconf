@@ -6,34 +6,32 @@
 #include "Application.h"
 #include "Section.h"
 
-namespace DRI {
-    class DriverConfiguration {
-    private:
-        Glib::ustring driver;
-        int screen;
-        std::list<DRI::Section> sections;
+class DriverConfiguration {
+private:
+    Glib::ustring driver;
+    int screen;
+    std::list<Section> sections;
 
-    public:
-        const Glib::ustring &getDriver() const;
+public:
+    const Glib::ustring &getDriver() const;
 
-        void setDriver(Glib::ustring driver);
+    void setDriver(Glib::ustring driver);
 
-        const int &getScreen() const;
+    const int &getScreen() const;
 
-        void setScreen(int screen);
+    void setScreen(int screen);
 
-        const std::list<Section> &getSections() const;
+    const std::list<Section> &getSections() const;
 
-        void setSections(const std::list<Section> &sections);
+    void setSections(const std::list<Section> &sections);
 
-        std::list<std::pair<Glib::ustring, Glib::ustring>> getEnumValuesForOption(const Glib::ustring &);
+    std::list<std::pair<Glib::ustring, Glib::ustring>> getEnumValuesForOption(const Glib::ustring &);
 
-        /* Generate a new application based on this driver-supported options */
-        std::shared_ptr<DRI::Application> generateApplication() const;
+    /* Generate a new application based on this driver-supported options */
+    std::shared_ptr<Application> generateApplication() const;
 
-        /* Sort the options inside each section to be more user-friendly */
-        void sortSectionOptions();
-    };
+    /* Sort the options inside each section to be more user-friendly */
+    void sortSectionOptions();
 };
 
 #endif

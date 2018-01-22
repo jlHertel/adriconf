@@ -3,72 +3,72 @@
 #include <utility>
 
 
-const Glib::ustring &DRI::DriverOption::getName() const {
+const Glib::ustring &DriverOption::getName() const {
     return this->name;
 }
 
-const Glib::ustring &DRI::DriverOption::getDescription() const {
+const Glib::ustring &DriverOption::getDescription() const {
     return this->description;
 }
 
-const Glib::ustring &DRI::DriverOption::getType() const {
+const Glib::ustring &DriverOption::getType() const {
     return this->type;
 }
 
-bool DRI::DriverOption::isFakeBool() const {
+bool DriverOption::isFakeBool() const {
     return this->type == "enum" && this->validValues == "0:1" && this->enumValues.empty();
 }
 
-const Glib::ustring &DRI::DriverOption::getDefaultValue() const {
+const Glib::ustring &DriverOption::getDefaultValue() const {
     return this->defaultValue;
 }
 
-const Glib::ustring &DRI::DriverOption::getValidValues() const {
+const Glib::ustring &DriverOption::getValidValues() const {
     return this->validValues;
 }
 
-std::list<std::pair<Glib::ustring, Glib::ustring>> DRI::DriverOption::getEnumValues() const {
+std::list<std::pair<Glib::ustring, Glib::ustring>> DriverOption::getEnumValues() const {
     return this->enumValues;
 }
 
 
-DRI::DriverOption *DRI::DriverOption::setName(Glib::ustring name) {
+DriverOption *DriverOption::setName(Glib::ustring name) {
     this->name = std::move(name);
 
     return this;
 }
 
-DRI::DriverOption *DRI::DriverOption::setDescription(Glib::ustring description) {
+DriverOption *DriverOption::setDescription(Glib::ustring description) {
     this->description = std::move(description);
 
     return this;
 }
 
-DRI::DriverOption *DRI::DriverOption::setType(Glib::ustring type) {
+DriverOption *DriverOption::setType(Glib::ustring type) {
     this->type = std::move(type);
 
     return this;
 }
 
-DRI::DriverOption *DRI::DriverOption::setDefaultValue(Glib::ustring defaultValue) {
+DriverOption *DriverOption::setDefaultValue(Glib::ustring defaultValue) {
     this->defaultValue = std::move(defaultValue);
 
     return this;
 }
 
-DRI::DriverOption *DRI::DriverOption::setValidValues(Glib::ustring validValues) {
+DriverOption *DriverOption::setValidValues(Glib::ustring validValues) {
     this->validValues = std::move(validValues);
 
     return this;
 }
 
-DRI::DriverOption *DRI::DriverOption::addEnumValue(Glib::ustring description, Glib::ustring value) {
+DriverOption *DriverOption::addEnumValue(Glib::ustring description, Glib::ustring value) {
     this->enumValues.emplace_back(description, value);
 
     return this;
 }
 
-int DRI::DriverOption::getValidValueStart() const {
+int DriverOption::getValidValueStart() const {
     if (this->validValues.empty()) {
         return -1;
     }
@@ -84,7 +84,7 @@ int DRI::DriverOption::getValidValueStart() const {
     return std::stoi(firstPart);
 }
 
-int DRI::DriverOption::getValidValueEnd() const {
+int DriverOption::getValidValueEnd() const {
     if (this->validValues.empty()) {
         return 10000;
     }
@@ -100,7 +100,7 @@ int DRI::DriverOption::getValidValueEnd() const {
     return std::stoi(secondPart);
 }
 
-int DRI::DriverOption::getSortValue() const {
+int DriverOption::getSortValue() const {
     if (this->type == "bool") {
         return 1;
     }

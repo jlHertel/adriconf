@@ -5,26 +5,24 @@
 #include <list>
 #include "DriverOption.h"
 
-namespace DRI {
-    class Section {
-    private:
-        Glib::ustring description;
-        std::list<DRI::DriverOption> options;
+class Section {
+private:
+    Glib::ustring description;
+    std::list<DriverOption> options;
 
-    public:
-        Section();
+public:
+    Section();
 
-        const Glib::ustring &getDescription() const;
+    const Glib::ustring &getDescription() const;
 
-        const std::list<DRI::DriverOption> &getOptions() const;
+    const std::list<DriverOption> &getOptions() const;
 
-        Section *setDescription(Glib::ustring description);
+    Section *setDescription(Glib::ustring description);
 
-        Section *addOption(DRI::DriverOption option);
+    Section *addOption(DriverOption option);
 
-        /* Sort the options of this section */
-        void sortOptions();
-    };
-}
+    /* Sort the options of this section */
+    void sortOptions();
+};
 
 #endif

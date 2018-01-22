@@ -9,20 +9,19 @@
 #include <X11/Xlib.h>
 #include <glibmm/ustring.h>
 
-typedef const char * glXGetScreenDriver_t (Display *dpy, int scrNum);
-typedef const char * glXGetDriverConfig_t (const char *driverName);
+typedef const char *glXGetScreenDriver_t(Display *dpy, int scrNum);
 
-namespace DRI {
-    class DRIQuery {
-    private:
-        glXGetScreenDriver_t *getScreenDriver;
-        glXGetDriverConfig_t *getDriverConfig;
+typedef const char *glXGetDriverConfig_t(const char *driverName);
 
-    public:
-        DRIQuery();
+class DRIQuery {
+private:
+    glXGetScreenDriver_t *getScreenDriver;
+    glXGetDriverConfig_t *getDriverConfig;
 
-        std::list<DRI::DriverConfiguration> queryDriverConfigurationOptions(const Glib::ustring &locale);
-    };
+public:
+    DRIQuery();
+
+    std::list<DriverConfiguration> queryDriverConfigurationOptions(const Glib::ustring &locale);
 };
 
 #endif

@@ -3,7 +3,7 @@
 #include <fstream>
 #include "DRIQuery.h"
 
-Glib::ustring DRI::ConfigurationLoader::readSystemWideXML() {
+Glib::ustring ConfigurationLoader::readSystemWideXML() {
     std::ostringstream buffer;
     std::ifstream input("/etc/drirc");
     buffer << input.rdbuf();
@@ -12,7 +12,7 @@ Glib::ustring DRI::ConfigurationLoader::readSystemWideXML() {
     return std::move(container);
 }
 
-Glib::ustring DRI::ConfigurationLoader::readUserDefinedXML() {
+Glib::ustring ConfigurationLoader::readUserDefinedXML() {
     Glib::ustring container;
 
     std::string userHome(std::getenv("HOME"));
@@ -30,25 +30,25 @@ Glib::ustring DRI::ConfigurationLoader::readUserDefinedXML() {
     return container;
 }
 
-std::list<DRI::DriverConfiguration> DRI::ConfigurationLoader::loadDriverSpecificConfiguration(const Glib::ustring &locale) {
-    DRI::DRIQuery query;
+std::list<DriverConfiguration> ConfigurationLoader::loadDriverSpecificConfiguration(const Glib::ustring &locale) {
+    DRIQuery query;
     return query.queryDriverConfigurationOptions(locale);
 }
 
-std::shared_ptr<DRI::Device> DRI::ConfigurationLoader::loadSystemWideConfiguration() {
+std::shared_ptr<Device> ConfigurationLoader::loadSystemWideConfiguration() {
     Glib::ustring systemWideXML = this->readSystemWideXML();
-    std::list<std::shared_ptr<DRI::Device>> systemWideDevices = DRI::Parser::parseDevices(systemWideXML);
+    std::list<std::shared_ptr<Device>> systemWideDevices = Parser::parseDevices(systemWideXML);
 
     /* In case no configuration is available system-wide we generate an empty one */
-    if(systemWideDevices.empty()) {
-        auto fakeDevice = std::make_shared<DRI::Device>();
+    if (systemWideDevices.empty()) {
+        auto fakeDevice = std::make_shared<Device>();
         systemWideDevices.emplace_back(fakeDevice);
     }
 
     return systemWideDevices.front();
 }
 
-std::list<std::shared_ptr<DRI::Device>> DRI::ConfigurationLoader::loadUserDefinedConfiguration() {
+std::list<std::shared_ptr<Device>> ConfigurationLoader::loadUserDefinedConfiguration() {
     Glib::ustring userDefinedXML(this->readUserDefinedXML());
-    return DRI::Parser::parseDevices(userDefinedXML);
+    return Parser::parseDevices(userDefinedXML);
 }

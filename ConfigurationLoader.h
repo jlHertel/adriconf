@@ -7,17 +7,18 @@
 #include "DriverConfiguration.h"
 #include "Device.h"
 
-namespace DRI {
-    class ConfigurationLoader {
-    private:
-        Glib::ustring readSystemWideXML();
-        Glib::ustring readUserDefinedXML();
+class ConfigurationLoader {
+private:
+    Glib::ustring readSystemWideXML();
 
-    public:
-        std::list<DRI::DriverConfiguration> loadDriverSpecificConfiguration(const Glib::ustring &locale);
-        std::shared_ptr<DRI::Device> loadSystemWideConfiguration();
-        std::list<std::shared_ptr<DRI::Device>> loadUserDefinedConfiguration();
-    };
+    Glib::ustring readUserDefinedXML();
 
-}
+public:
+    std::list<DriverConfiguration> loadDriverSpecificConfiguration(const Glib::ustring &locale);
+
+    std::shared_ptr<Device> loadSystemWideConfiguration();
+
+    std::list<std::shared_ptr<Device>> loadUserDefinedConfiguration();
+};
+
 #endif

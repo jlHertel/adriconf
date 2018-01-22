@@ -2,37 +2,37 @@
 
 #include <algorithm>
 
-const Glib::ustring &DRI::Device::getDriver() const {
+const Glib::ustring &Device::getDriver() const {
     return this->driver;
 }
 
-void DRI::Device::setDriver(Glib::ustring driver) {
+void Device::setDriver(Glib::ustring driver) {
     this->driver = std::move(driver);
 }
 
-const int &DRI::Device::getScreen() const {
+const int &Device::getScreen() const {
     return this->screen;
 }
 
-void DRI::Device::setScreen(int screen) {
+void Device::setScreen(int screen) {
     this->screen = screen;
 }
 
-std::list<std::shared_ptr<DRI::Application>> &DRI::Device::getApplications() {
+std::list<std::shared_ptr<Application>> &Device::getApplications() {
     return this->applications;
 }
 
-const std::list<std::shared_ptr<DRI::Application>> &DRI::Device::getApplications() const {
+const std::list<std::shared_ptr<Application>> &Device::getApplications() const {
     return this->applications;
 }
 
-void DRI::Device::addApplication(std::shared_ptr<DRI::Application> application) {
+void Device::addApplication(std::shared_ptr<Application> application) {
     this->applications.emplace_back(application);
 }
 
-DRI::Device::Device() : driver(""), screen(-1), applications() {}
+Device::Device() : driver(""), screen(-1), applications() {}
 
-std::shared_ptr<DRI::Application> DRI::Device::findApplication(const Glib::ustring &executable) const {
+std::shared_ptr<Application> Device::findApplication(const Glib::ustring &executable) const {
     for (auto app : this->applications) {
         if (app->getExecutable() == executable) {
             return app;
@@ -42,8 +42,8 @@ std::shared_ptr<DRI::Application> DRI::Device::findApplication(const Glib::ustri
     return nullptr;
 }
 
-void DRI::Device::sortApplications() {
-    this->applications.sort([](std::shared_ptr<DRI::Application> a, std::shared_ptr<DRI::Application> b) {
+void Device::sortApplications() {
+    this->applications.sort([](std::shared_ptr<Application> a, std::shared_ptr<Application> b) {
         return a->getName() < b->getName();
     });
 }

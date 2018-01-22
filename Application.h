@@ -6,28 +6,26 @@
 #include "ApplicationOption.h"
 #include <memory>
 
-namespace DRI {
-    class Application {
-    private:
-        Glib::ustring name;
-        Glib::ustring executable;
-        std::list<std::shared_ptr<DRI::ApplicationOption>> options;
+class Application {
+private:
+    Glib::ustring name;
+    Glib::ustring executable;
+    std::list<std::shared_ptr<ApplicationOption>> options;
 
-    public:
-        const Glib::ustring &getName() const;
+public:
+    const Glib::ustring &getName() const;
 
-        void setName(Glib::ustring name);
+    void setName(Glib::ustring name);
 
-        const Glib::ustring &getExecutable() const;
+    const Glib::ustring &getExecutable() const;
 
-        void setExecutable(Glib::ustring executable);
+    void setExecutable(Glib::ustring executable);
 
-        std::list<std::shared_ptr<DRI::ApplicationOption>> &getOptions();
+    std::list<std::shared_ptr<ApplicationOption>> &getOptions();
 
-        void addOption(std::shared_ptr<DRI::ApplicationOption> option);
+    void addOption(std::shared_ptr<ApplicationOption> option);
 
-        void setOptions(std::list<std::shared_ptr<DRI::ApplicationOption>>);
-    };
+    void setOptions(std::list<std::shared_ptr<ApplicationOption>>);
 };
 
 #endif

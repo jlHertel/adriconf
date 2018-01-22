@@ -1,31 +1,31 @@
 #include "DriverConfiguration.h"
 
-const Glib::ustring &DRI::DriverConfiguration::getDriver() const {
+const Glib::ustring &DriverConfiguration::getDriver() const {
     return driver;
 }
 
-void DRI::DriverConfiguration::setDriver(Glib::ustring driver) {
+void DriverConfiguration::setDriver(Glib::ustring driver) {
     DriverConfiguration::driver = std::move(driver);
 }
 
-const int &DRI::DriverConfiguration::getScreen() const {
+const int &DriverConfiguration::getScreen() const {
     return screen;
 }
 
-void DRI::DriverConfiguration::setScreen(int screen) {
+void DriverConfiguration::setScreen(int screen) {
     DriverConfiguration::screen = screen;
 }
 
-const std::list<DRI::Section> &DRI::DriverConfiguration::getSections() const {
+const std::list<Section> &DriverConfiguration::getSections() const {
     return sections;
 }
 
-void DRI::DriverConfiguration::setSections(const std::list<DRI::Section> &sections) {
+void DriverConfiguration::setSections(const std::list<Section> &sections) {
     this->sections = sections;
 }
 
 std::list<std::pair<Glib::ustring, Glib::ustring>>
-DRI::DriverConfiguration::getEnumValuesForOption(const Glib::ustring &optionName) {
+DriverConfiguration::getEnumValuesForOption(const Glib::ustring &optionName) {
     for (const auto &section : this->sections) {
         for (const auto &option : section.getOptions()) {
             if (option.getName() == optionName) {
@@ -35,13 +35,13 @@ DRI::DriverConfiguration::getEnumValuesForOption(const Glib::ustring &optionName
     }
 }
 
-std::shared_ptr<DRI::Application> DRI::DriverConfiguration::generateApplication() const {
-    std::shared_ptr<DRI::Application> app = std::make_shared<DRI::Application>();
-    std::list<std::shared_ptr<DRI::ApplicationOption>> options;
+std::shared_ptr<Application> DriverConfiguration::generateApplication() const {
+    std::shared_ptr<Application> app = std::make_shared<Application>();
+    std::list<std::shared_ptr<ApplicationOption>> options;
 
     for (const auto &section : this->sections) {
         for (const auto &option : section.getOptions()) {
-            auto driverOpt = std::make_shared<DRI::ApplicationOption>();
+            auto driverOpt = std::make_shared<ApplicationOption>();
             driverOpt->setName(option.getName());
             driverOpt->setValue(option.getDefaultValue());
 
@@ -54,8 +54,8 @@ std::shared_ptr<DRI::Application> DRI::DriverConfiguration::generateApplication(
     return app;
 }
 
-void DRI::DriverConfiguration::sortSectionOptions() {
-    for(auto &section : this->sections) {
+void DriverConfiguration::sortSectionOptions() {
+    for (auto &section : this->sections) {
         section.sortOptions();
     }
 }

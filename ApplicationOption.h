@@ -3,21 +3,19 @@
 
 #include <glibmm/ustring.h>
 
-namespace DRI {
-    class ApplicationOption {
-    private:
-        Glib::ustring name;
-        Glib::ustring value;
+class ApplicationOption {
+private:
+    Glib::ustring name;
+    Glib::ustring value;
 
-    public:
-        const Glib::ustring &getName() const;
+public:
+    const Glib::ustring &getName() const;
 
-        void setName(Glib::ustring name);
+    void setName(Glib::ustring name);
 
-        const Glib::ustring &getValue() const;
+    const Glib::ustring &getValue() const;
 
-        void setValue(Glib::ustring value);
-    };
+    void setValue(Glib::ustring value);
+};
 
-}
 #endif

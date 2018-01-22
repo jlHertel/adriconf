@@ -8,13 +8,13 @@
 #include <iostream>
 #include <fstream>
 
-DRI::GUI::GUI() : currentApp(nullptr) {
+GUI::GUI() : currentApp(nullptr) {
     this->setupLocale();
 
     /* Load the configurations */
-    DRI::ConfigurationLoader configurationLoader;
+    ConfigurationLoader configurationLoader;
     this->driverConfiguration = configurationLoader.loadDriverSpecificConfiguration(this->locale);
-    for(auto &driver : this->driverConfiguration) {
+    for (auto &driver : this->driverConfiguration) {
         driver.sortSectionOptions();
     }
 
@@ -22,14 +22,14 @@ DRI::GUI::GUI() : currentApp(nullptr) {
     this->userDefinedConfiguration = configurationLoader.loadUserDefinedConfiguration();
 
     /* Merge all the options in a complete structure */
-    DRI::ConfigurationResolver::mergeOptionsForDisplay(
+    ConfigurationResolver::mergeOptionsForDisplay(
             this->systemWideConfiguration,
             this->driverConfiguration,
             this->userDefinedConfiguration
     );
 
     /* Filter invalid options */
-    DRI::ConfigurationResolver::filterDriverUnsupportedOptions(
+    ConfigurationResolver::filterDriverUnsupportedOptions(
             this->driverConfiguration,
             this->userDefinedConfiguration
     );
@@ -52,26 +52,26 @@ DRI::GUI::GUI() : currentApp(nullptr) {
     Gtk::ImageMenuItem *pQuitAction;
     this->gladeBuilder->get_widget("quitAction", pQuitAction);
     if (pQuitAction) {
-        pQuitAction->signal_activate().connect(sigc::mem_fun(this, &DRI::GUI::onQuitPressed));
+        pQuitAction->signal_activate().connect(sigc::mem_fun(this, &GUI::onQuitPressed));
     }
 
     /* Extract the save-menu */
     Gtk::ImageMenuItem *pSaveAction;
     this->gladeBuilder->get_widget("saveAction", pSaveAction);
     if (pSaveAction) {
-        pSaveAction->signal_activate().connect(sigc::mem_fun(this, &DRI::GUI::onSavePressed));
+        pSaveAction->signal_activate().connect(sigc::mem_fun(this, &GUI::onSavePressed));
     }
 
     /* Create the menu itens */
     this->pMenuAddApplication = Gtk::manage(new Gtk::MenuItem);
     this->pMenuAddApplication->set_visible(true);
     this->pMenuAddApplication->set_label(_("Add new"));
-    this->pMenuAddApplication->signal_activate().connect(sigc::mem_fun(this, &DRI::GUI::onAddApplicationPressed));
+    this->pMenuAddApplication->signal_activate().connect(sigc::mem_fun(this, &GUI::onAddApplicationPressed));
 
     this->pMenuRemoveApplication = Gtk::manage(new Gtk::MenuItem);
     this->pMenuRemoveApplication->set_visible(true);
     this->pMenuRemoveApplication->set_label(_("Remove current Application"));
-    this->pMenuRemoveApplication->signal_activate().connect(sigc::mem_fun(this, &DRI::GUI::onRemoveApplicationPressed));
+    this->pMenuRemoveApplication->signal_activate().connect(sigc::mem_fun(this, &GUI::onRemoveApplicationPressed));
 
     /* Extract & generate the menu with the applications */
     this->drawApplicationSelectionMenu();
@@ -83,22 +83,22 @@ DRI::GUI::GUI() : currentApp(nullptr) {
     this->setupAboutDialog();
 }
 
-DRI::GUI::~GUI() {
+GUI::~GUI() {
     delete this->pWindow;
 }
 
-void DRI::GUI::onQuitPressed() {
+void GUI::onQuitPressed() {
     if (this->pWindow != nullptr) {
         this->pWindow->hide();
     }
 }
 
-void DRI::GUI::onSavePressed() {
+void GUI::onSavePressed() {
     std::cout << _("Generating final XML for saving...") << std::endl;
-    auto resolvedOptions = DRI::ConfigurationResolver::resolveOptionsForSave(
+    auto resolvedOptions = ConfigurationResolver::resolveOptionsForSave(
             this->systemWideConfiguration, this->driverConfiguration, this->userDefinedConfiguration
     );
-    auto rawXML = DRI::Writer::generateRawXml(resolvedOptions);
+    auto rawXML = Writer::generateRawXml(resolvedOptions);
     std::cout << Glib::ustring::compose(_("Writing generated XML: %1"), rawXML) << std::endl;
     std::string userHome(std::getenv("HOME"));
     std::ofstream outFile(userHome + "/.drirc");
@@ -106,11 +106,11 @@ void DRI::GUI::onSavePressed() {
     outFile.close();
 }
 
-Gtk::Window *DRI::GUI::getWindowPointer() {
+Gtk::Window *GUI::getWindowPointer() {
     return this->pWindow;
 }
 
-void DRI::GUI::setupLocale() {
+void GUI::setupLocale() {
     boost::locale::generator gen;
     std::locale l = gen("");
     std::locale::global(l);
@@ -122,7 +122,7 @@ void DRI::GUI::setupLocale() {
     this->locale = langCode;
 }
 
-void DRI::GUI::drawApplicationSelectionMenu() {
+void GUI::drawApplicationSelectionMenu() {
     Gtk::Menu *pApplicationMenu;
     this->gladeBuilder->get_widget("ApplicationMenu", pApplicationMenu);
 
@@ -156,7 +156,7 @@ void DRI::GUI::drawApplicationSelectionMenu() {
 
                 // Locate the driver config
                 auto foundDriver = std::find_if(this->driverConfiguration.begin(), this->driverConfiguration.end(),
-                                                [this](DRI::DriverConfiguration d) {
+                                                [this](DriverConfiguration d) {
                                                     return d.getDriver() == this->currentSelectedDriver;
                                                 });
                 if (foundDriver == this->driverConfiguration.end()) {
@@ -191,7 +191,7 @@ void DRI::GUI::drawApplicationSelectionMenu() {
                 }
 
                 appMenuItem->signal_toggled().connect(sigc::bind<Glib::ustring, Glib::ustring>(
-                        sigc::mem_fun(this, &DRI::GUI::onApplicationSelected),
+                        sigc::mem_fun(this, &GUI::onApplicationSelected),
                         driver->getDriver(), possibleApp->getExecutable()
                 ));
 
@@ -205,7 +205,7 @@ void DRI::GUI::drawApplicationSelectionMenu() {
     }
 }
 
-void DRI::GUI::onApplicationSelected(const Glib::ustring driverName, const Glib::ustring applicationName) {
+void GUI::onApplicationSelected(const Glib::ustring driverName, const Glib::ustring applicationName) {
     if (driverName == this->currentSelectedDriver && applicationName == this->currentSelectedApplication) {
         return;
     }
@@ -215,13 +215,13 @@ void DRI::GUI::onApplicationSelected(const Glib::ustring driverName, const Glib:
 
     /* Find the application */
     auto userSelectedDriver = std::find_if(this->userDefinedConfiguration.begin(), this->userDefinedConfiguration.end(),
-                                           [this](std::shared_ptr<DRI::Device> device) {
+                                           [this](std::shared_ptr<Device> device) {
                                                return this->currentSelectedDriver == device->getDriver();
                                            }
     );
     auto selectedApp = std::find_if((*userSelectedDriver)->getApplications().begin(),
                                     (*userSelectedDriver)->getApplications().end(),
-                                    [this](std::shared_ptr<DRI::Application> app) {
+                                    [this](std::shared_ptr<Application> app) {
                                         return this->currentSelectedApplication == app->getExecutable();
                                     }
     );
@@ -235,7 +235,7 @@ void DRI::GUI::onApplicationSelected(const Glib::ustring driverName, const Glib:
     this->currentApp = *selectedApp;
 
     auto driverSelected = std::find_if(this->driverConfiguration.begin(), this->driverConfiguration.end(),
-                                       [this](const DRI::DriverConfiguration &d) {
+                                       [this](const DriverConfiguration &d) {
                                            return d.getDriver() == this->currentSelectedDriver;
                                        });
 
@@ -249,7 +249,7 @@ void DRI::GUI::onApplicationSelected(const Glib::ustring driverName, const Glib:
     this->drawApplicationOptions();
 }
 
-void DRI::GUI::drawApplicationOptions() {
+void GUI::drawApplicationOptions() {
     auto selectedAppOptions = this->currentApp->getOptions();
 
     /* Get the notebook itself */
@@ -287,7 +287,7 @@ void DRI::GUI::drawApplicationOptions() {
         /* Draw each field individually */
         for (auto &option : section.getOptions()) {
             auto optionValue = std::find_if(selectedAppOptions.begin(), selectedAppOptions.end(),
-                                            [&option](std::shared_ptr<DRI::ApplicationOption> o) {
+                                            [&option](std::shared_ptr<ApplicationOption> o) {
                                                 return option.getName() == o->getName();
                                             });
 
@@ -314,7 +314,7 @@ void DRI::GUI::drawApplicationOptions() {
                 }
 
                 optionSwitch->property_active().signal_changed().connect(sigc::bind<Glib::ustring>(
-                        sigc::mem_fun(this, &DRI::GUI::onCheckboxChanged), option.getName()
+                        sigc::mem_fun(this, &GUI::onCheckboxChanged), option.getName()
                 ));
 
                 optionBox->pack_end(*optionSwitch, false, false);
@@ -329,7 +329,7 @@ void DRI::GUI::drawApplicationOptions() {
                 }
 
                 optionSwitch->property_active().signal_changed().connect(sigc::bind<Glib::ustring>(
-                        sigc::mem_fun(this, &DRI::GUI::onFakeCheckBoxChanged), option.getName()
+                        sigc::mem_fun(this, &GUI::onFakeCheckBoxChanged), option.getName()
                 ));
 
                 optionBox->pack_end(*optionSwitch, false, false);
@@ -349,7 +349,7 @@ void DRI::GUI::drawApplicationOptions() {
                 }
 
                 optionCombo->signal_changed().connect(sigc::bind<Glib::ustring>(
-                        sigc::mem_fun(this, &DRI::GUI::onComboboxChanged), option.getName()
+                        sigc::mem_fun(this, &GUI::onComboboxChanged), option.getName()
                 ));
 
                 this->currentComboBoxes[option.getName()] = optionCombo;
@@ -373,7 +373,7 @@ void DRI::GUI::drawApplicationOptions() {
 
                 optionEntry->set_adjustment(adjustment);
                 optionEntry->signal_changed().connect(sigc::bind<Glib::ustring>(
-                        sigc::mem_fun(this, &DRI::GUI::onNumberEntryChanged), option.getName()
+                        sigc::mem_fun(this, &GUI::onNumberEntryChanged), option.getName()
                 ));
 
                 this->currentSpinButtons[option.getName()] = optionEntry;
@@ -401,11 +401,11 @@ void DRI::GUI::drawApplicationOptions() {
     }
 }
 
-void DRI::GUI::onCheckboxChanged(Glib::ustring optionName) {
+void GUI::onCheckboxChanged(Glib::ustring optionName) {
     auto eventSelectedAppOptions = this->currentApp->getOptions();
 
     auto currentOption = std::find_if(eventSelectedAppOptions.begin(), eventSelectedAppOptions.end(),
-                                      [&optionName](std::shared_ptr<DRI::ApplicationOption> a) {
+                                      [&optionName](std::shared_ptr<ApplicationOption> a) {
                                           return a->getName() == optionName;
                                       });
 
@@ -416,11 +416,11 @@ void DRI::GUI::onCheckboxChanged(Glib::ustring optionName) {
     }
 }
 
-void DRI::GUI::onFakeCheckBoxChanged(Glib::ustring optionName) {
+void GUI::onFakeCheckBoxChanged(Glib::ustring optionName) {
     auto eventSelectedAppOptions = this->currentApp->getOptions();
 
     auto currentOption = std::find_if(eventSelectedAppOptions.begin(), eventSelectedAppOptions.end(),
-                                      [&optionName](std::shared_ptr<DRI::ApplicationOption> a) {
+                                      [&optionName](std::shared_ptr<ApplicationOption> a) {
                                           return a->getName() == optionName;
                                       });
 
@@ -431,11 +431,11 @@ void DRI::GUI::onFakeCheckBoxChanged(Glib::ustring optionName) {
     }
 }
 
-void DRI::GUI::onComboboxChanged(Glib::ustring optionName) {
+void GUI::onComboboxChanged(Glib::ustring optionName) {
     auto eventSelectedAppOptions = this->currentApp->getOptions();
 
     auto currentOption = std::find_if(eventSelectedAppOptions.begin(), eventSelectedAppOptions.end(),
-                                      [&optionName](std::shared_ptr<DRI::ApplicationOption> a) {
+                                      [&optionName](std::shared_ptr<ApplicationOption> a) {
                                           return a->getName() == optionName;
                                       });
 
@@ -450,11 +450,11 @@ void DRI::GUI::onComboboxChanged(Glib::ustring optionName) {
 
 }
 
-void DRI::GUI::onNumberEntryChanged(Glib::ustring optionName) {
+void GUI::onNumberEntryChanged(Glib::ustring optionName) {
     auto eventSelectedAppOptions = this->currentApp->getOptions();
 
     auto currentOption = std::find_if(eventSelectedAppOptions.begin(), eventSelectedAppOptions.end(),
-                                      [&optionName](std::shared_ptr<DRI::ApplicationOption> a) {
+                                      [&optionName](std::shared_ptr<ApplicationOption> a) {
                                           return a->getName() == optionName;
                                       });
 
@@ -463,7 +463,7 @@ void DRI::GUI::onNumberEntryChanged(Glib::ustring optionName) {
     (*currentOption)->setValue(enteredValueStr);
 }
 
-void DRI::GUI::setupAboutDialog() {
+void GUI::setupAboutDialog() {
     this->aboutDialog.set_transient_for(*this->pWindow);
     this->aboutDialog.set_program_name("Advanced DRI Configurator");
     this->aboutDialog.set_version("1.0.0");
@@ -501,7 +501,7 @@ void DRI::GUI::setupAboutDialog() {
     }
 }
 
-void DRI::GUI::onRemoveApplicationPressed() {
+void GUI::onRemoveApplicationPressed() {
     if (this->currentApp->getExecutable().empty()) {
         Gtk::MessageDialog dialog(*(this->pWindow), _("The default application cannot be removed."));
         dialog.set_secondary_text(_("The driver needs a default configuration."));
@@ -511,7 +511,7 @@ void DRI::GUI::onRemoveApplicationPressed() {
 
     for (auto &device : this->userDefinedConfiguration) {
         if (device->getDriver() == this->currentDriver.getDriver()) {
-            device->getApplications().remove_if([this](const std::shared_ptr<DRI::Application> &app) {
+            device->getApplications().remove_if([this](const std::shared_ptr<Application> &app) {
                 return app->getExecutable() == this->currentApp->getExecutable();
             });
         }
@@ -525,7 +525,7 @@ void DRI::GUI::onRemoveApplicationPressed() {
     this->drawApplicationOptions();
 }
 
-void DRI::GUI::onAddApplicationPressed() {
+void GUI::onAddApplicationPressed() {
     Gtk::Dialog addAppDialog(_("New Application"), *(this->pWindow), true);
 
     Gtk::Box *contentArea = addAppDialog.get_content_area();
@@ -586,7 +586,7 @@ void DRI::GUI::onAddApplicationPressed() {
     addAppDialog.add_button(_("Save"), 50);
     addAppDialog.add_button(_("Cancel"), Gtk::RESPONSE_CANCEL);
 
-    std::shared_ptr<DRI::Application> newApplication;
+    std::shared_ptr<Application> newApplication;
     int result = addAppDialog.run();
 
     Gtk::MessageDialog dialog(*(this->pWindow), _("Application successfully added."));
@@ -604,7 +604,8 @@ void DRI::GUI::onAddApplicationPressed() {
             if (entryAppName->get_text().empty() || entryAppExecutable->get_text().empty() ||
                 comboAppDriver->get_active_text().empty()) {
                 Gtk::MessageDialog validationDialog(*(this->pWindow), _("Validation error"));
-                validationDialog.set_secondary_text(_("You need to specify the application name, executable and driver."));
+                validationDialog.set_secondary_text(
+                        _("You need to specify the application name, executable and driver."));
                 validationDialog.run();
                 return;
             }

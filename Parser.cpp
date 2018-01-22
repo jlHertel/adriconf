@@ -1,8 +1,8 @@
 #include "Parser.h"
 
-std::list<DRI::Section>
-DRI::Parser::parseAvailableConfiguration(const Glib::ustring &xml, const Glib::ustring &currentLocale) {
-    std::list<DRI::Section> availableSections;
+std::list<Section>
+Parser::parseAvailableConfiguration(const Glib::ustring &xml, const Glib::ustring &currentLocale) {
+    std::list<Section> availableSections;
     try {
         xmlpp::DomParser parser;
         parser.set_throw_messages(true);
@@ -15,7 +15,7 @@ DRI::Parser::parseAvailableConfiguration(const Glib::ustring &xml, const Glib::u
 
             auto sections = rootNode->get_children("section");
             for (auto section : sections) {
-                DRI::Section confSection;
+                Section confSection;
 
 
                 auto descriptions = section->get_children("description");
@@ -57,8 +57,8 @@ DRI::Parser::parseAvailableConfiguration(const Glib::ustring &xml, const Glib::u
     return availableSections;
 }
 
-DRI::DriverOption DRI::Parser::parseSectionOptions(xmlpp::Node *option, const Glib::ustring &currentLocale) {
-    DRI::DriverOption parsedOption;
+DriverOption Parser::parseSectionOptions(xmlpp::Node *option, const Glib::ustring &currentLocale) {
+    DriverOption parsedOption;
 
     auto optionElement = dynamic_cast<xmlpp::Element *>(option);
 
@@ -116,8 +116,8 @@ DRI::DriverOption DRI::Parser::parseSectionOptions(xmlpp::Node *option, const Gl
     return parsedOption;
 }
 
-std::list<std::shared_ptr<DRI::Device>> DRI::Parser::parseDevices(Glib::ustring &xml) {
-    std::list<std::shared_ptr<DRI::Device>> deviceList;
+std::list<std::shared_ptr<Device>> Parser::parseDevices(Glib::ustring &xml) {
+    std::list<std::shared_ptr<Device>> deviceList;
 
     try {
         xmlpp::DomParser parser;
@@ -131,7 +131,7 @@ std::list<std::shared_ptr<DRI::Device>> DRI::Parser::parseDevices(Glib::ustring 
 
             auto devices = rootNode->get_children("device");
             for (auto device : devices) {
-                auto deviceConf = std::make_shared<DRI::Device>();
+                auto deviceConf = std::make_shared<Device>();
 
                 auto deviceElement = dynamic_cast<xmlpp::Element *>(device);
                 auto deviceScreen = deviceElement->get_attribute("screen");
@@ -161,8 +161,8 @@ std::list<std::shared_ptr<DRI::Device>> DRI::Parser::parseDevices(Glib::ustring 
     return deviceList;
 }
 
-std::shared_ptr<DRI::Application> DRI::Parser::parseApplication(xmlpp::Node *application) {
-    auto app = std::make_shared<DRI::Application>();
+std::shared_ptr<Application> Parser::parseApplication(xmlpp::Node *application) {
+    auto app = std::make_shared<Application>();
 
     auto applicationElement = dynamic_cast<xmlpp::Element *>(application);
 
@@ -183,7 +183,7 @@ std::shared_ptr<DRI::Application> DRI::Parser::parseApplication(xmlpp::Node *app
         auto optionName = optionElement->get_attribute("name");
         auto optionValue = optionElement->get_attribute("value");
         if (optionName != nullptr && optionValue != nullptr) {
-            auto newOption = std::make_shared<DRI::ApplicationOption>();
+            auto newOption = std::make_shared<ApplicationOption>();
             newOption->setName(optionName->get_value());
             newOption->setValue(optionValue->get_value());
 
@@ -194,7 +194,7 @@ std::shared_ptr<DRI::Application> DRI::Parser::parseApplication(xmlpp::Node *app
     return app;
 }
 
-std::list<Glib::ustring> DRI::Parser::convertSectionsToOptions(const std::list<DRI::Section> &sections) {
+std::list<Glib::ustring> Parser::convertSectionsToOptions(const std::list<Section> &sections) {
     std::list<Glib::ustring> options;
 
     for (auto &section : sections) {
@@ -206,8 +206,8 @@ std::list<Glib::ustring> DRI::Parser::convertSectionsToOptions(const std::list<D
     return options;
 }
 
-std::list<DRI::DriverOption> DRI::Parser::convertSectionsToOptionsObject(const std::list<DRI::Section> &sections) {
-    std::list<DRI::DriverOption> options;
+std::list<DriverOption> Parser::convertSectionsToOptionsObject(const std::list<Section> &sections) {
+    std::list<DriverOption> options;
 
     for (const auto &section : sections) {
         for (const auto &option : section.getOptions()) {

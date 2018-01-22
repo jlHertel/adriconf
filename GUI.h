@@ -7,64 +7,62 @@
 #include "DriverConfiguration.h"
 #include "ConfigurationLoader.h"
 
-namespace DRI {
-    class GUI {
-    private:
-        /* GUI-Related */
-        Gtk::Window *pWindow;
-        Gtk::AboutDialog aboutDialog;
-        Gtk::MenuItem *pMenuAddApplication;
-        Gtk::MenuItem *pMenuRemoveApplication;
+class GUI {
+private:
+    /* GUI-Related */
+    Gtk::Window *pWindow;
+    Gtk::AboutDialog aboutDialog;
+    Gtk::MenuItem *pMenuAddApplication;
+    Gtk::MenuItem *pMenuRemoveApplication;
 
-        /* State-related */
-        std::shared_ptr<DRI::Device> systemWideConfiguration;
-        std::list<DRI::DriverConfiguration> driverConfiguration;
-        std::list<std::shared_ptr<DRI::Device>> userDefinedConfiguration;
-        Glib::ustring currentSelectedDriver;
-        Glib::ustring currentSelectedApplication;
-        std::shared_ptr<DRI::Application> currentApp;
-        DRI::DriverConfiguration currentDriver;
-        std::map<Glib::ustring, Gtk::ComboBoxText *> currentComboBoxes;
-        std::map<Glib::ustring, Gtk::SpinButton *> currentSpinButtons;
+    /* State-related */
+    std::shared_ptr<Device> systemWideConfiguration;
+    std::list<DriverConfiguration> driverConfiguration;
+    std::list<std::shared_ptr<Device>> userDefinedConfiguration;
+    Glib::ustring currentSelectedDriver;
+    Glib::ustring currentSelectedApplication;
+    std::shared_ptr<Application> currentApp;
+    DriverConfiguration currentDriver;
+    std::map<Glib::ustring, Gtk::ComboBoxText *> currentComboBoxes;
+    std::map<Glib::ustring, Gtk::SpinButton *> currentSpinButtons;
 
-        /* Helpers */
-        Glib::RefPtr<Gtk::Builder> gladeBuilder;
-        Glib::ustring locale;
+    /* Helpers */
+    Glib::RefPtr<Gtk::Builder> gladeBuilder;
+    Glib::ustring locale;
 
-        void setupLocale();
+    void setupLocale();
 
-        void drawApplicationSelectionMenu();
+    void drawApplicationSelectionMenu();
 
-        void drawApplicationOptions();
+    void drawApplicationOptions();
 
-        void setupAboutDialog();
+    void setupAboutDialog();
 
-    public:
-        GUI();
+public:
+    GUI();
 
-        virtual ~GUI();
+    virtual ~GUI();
 
-        Gtk::Window *getWindowPointer();
+    Gtk::Window *getWindowPointer();
 
-        /* Signal Handlers */
-        void onQuitPressed();
+    /* Signal Handlers */
+    void onQuitPressed();
 
-        void onSavePressed();
+    void onSavePressed();
 
-        void onApplicationSelected(Glib::ustring, Glib::ustring);
+    void onApplicationSelected(Glib::ustring, Glib::ustring);
 
-        void onCheckboxChanged(Glib::ustring);
+    void onCheckboxChanged(Glib::ustring);
 
-        void onFakeCheckBoxChanged(Glib::ustring);
+    void onFakeCheckBoxChanged(Glib::ustring);
 
-        void onComboboxChanged(Glib::ustring);
+    void onComboboxChanged(Glib::ustring);
 
-        void onNumberEntryChanged(Glib::ustring);
+    void onNumberEntryChanged(Glib::ustring);
 
-        void onRemoveApplicationPressed();
+    void onRemoveApplicationPressed();
 
-        void onAddApplicationPressed();
-    };
-}
+    void onAddApplicationPressed();
+};
 
 #endif

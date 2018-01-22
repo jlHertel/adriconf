@@ -7,7 +7,7 @@ int main(int argc, char *argv[]) {
     /* Start the GUI work */
     auto app = Gtk::Application::create(argc, argv, "br.com.jeanhertel.adriconf");
     try {
-        DRI::GUI gui;
+        GUI gui;
 
         /* No need to worry about the window pointer as the gui object owns it */
         Gtk::Window *pWindow = gui.getWindowPointer();
