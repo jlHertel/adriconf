@@ -1,7 +1,7 @@
 #include "Writer.h"
 #include <libxml++/libxml++.h>
 
-Glib::ustring Writer::generateRawXml(const std::list<std::shared_ptr<Device>> &devices) {
+Glib::ustring Writer::generateRawXml(const std::list<Device_ptr> &devices) {
     Glib::ustring output("<driconf>\n");
 
     for (const auto &device : devices) {

@@ -18,21 +18,21 @@ void Device::setScreen(int screen) {
     this->screen = screen;
 }
 
-std::list<std::shared_ptr<Application>> &Device::getApplications() {
+std::list<Application_ptr> &Device::getApplications() {
     return this->applications;
 }
 
-const std::list<std::shared_ptr<Application>> &Device::getApplications() const {
+const std::list<Application_ptr> &Device::getApplications() const {
     return this->applications;
 }
 
-void Device::addApplication(std::shared_ptr<Application> application) {
+void Device::addApplication(Application_ptr application) {
     this->applications.emplace_back(application);
 }
 
 Device::Device() : driver(""), screen(-1), applications() {}
 
-std::shared_ptr<Application> Device::findApplication(const Glib::ustring &executable) const {
+Application_ptr Device::findApplication(const Glib::ustring &executable) const {
     for (auto app : this->applications) {
         if (app->getExecutable() == executable) {
             return app;
@@ -43,7 +43,7 @@ std::shared_ptr<Application> Device::findApplication(const Glib::ustring &execut
 }
 
 void Device::sortApplications() {
-    this->applications.sort([](std::shared_ptr<Application> a, std::shared_ptr<Application> b) {
+    this->applications.sort([](Application_ptr a, Application_ptr b) {
         return a->getName() < b->getName();
     });
 }

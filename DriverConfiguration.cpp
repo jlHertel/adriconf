@@ -35,9 +35,9 @@ DriverConfiguration::getEnumValuesForOption(const Glib::ustring &optionName) {
     }
 }
 
-std::shared_ptr<Application> DriverConfiguration::generateApplication() const {
-    std::shared_ptr<Application> app = std::make_shared<Application>();
-    std::list<std::shared_ptr<ApplicationOption>> options;
+Application_ptr DriverConfiguration::generateApplication() const {
+    Application_ptr app = std::make_shared<Application>();
+    std::list<ApplicationOption_ptr> options;
 
     for (const auto &section : this->sections) {
         for (const auto &option : section.getOptions()) {

@@ -116,8 +116,8 @@ DriverOption Parser::parseSectionOptions(xmlpp::Node *option, const Glib::ustrin
     return parsedOption;
 }
 
-std::list<std::shared_ptr<Device>> Parser::parseDevices(Glib::ustring &xml) {
-    std::list<std::shared_ptr<Device>> deviceList;
+std::list<Device_ptr> Parser::parseDevices(Glib::ustring &xml) {
+    std::list<Device_ptr> deviceList;
 
     try {
         xmlpp::DomParser parser;
@@ -161,7 +161,7 @@ std::list<std::shared_ptr<Device>> Parser::parseDevices(Glib::ustring &xml) {
     return deviceList;
 }
 
-std::shared_ptr<Application> Parser::parseApplication(xmlpp::Node *application) {
+Application_ptr Parser::parseApplication(xmlpp::Node *application) {
     auto app = std::make_shared<Application>();
 
     auto applicationElement = dynamic_cast<xmlpp::Element *>(application);

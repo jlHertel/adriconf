@@ -10,7 +10,7 @@ class Application {
 private:
     Glib::ustring name;
     Glib::ustring executable;
-    std::list<std::shared_ptr<ApplicationOption>> options;
+    std::list<ApplicationOption_ptr> options;
 
 public:
     const Glib::ustring &getName() const;
@@ -21,11 +21,13 @@ public:
 
     void setExecutable(Glib::ustring executable);
 
-    std::list<std::shared_ptr<ApplicationOption>> &getOptions();
+    std::list<ApplicationOption_ptr> &getOptions();
 
-    void addOption(std::shared_ptr<ApplicationOption> option);
+    void addOption(ApplicationOption_ptr option);
 
-    void setOptions(std::list<std::shared_ptr<ApplicationOption>>);
+    void setOptions(std::list<ApplicationOption_ptr>);
 };
+
+typedef std::shared_ptr<Application> Application_ptr;
 
 #endif

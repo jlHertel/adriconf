@@ -28,7 +28,7 @@ public:
     std::list<std::pair<Glib::ustring, Glib::ustring>> getEnumValuesForOption(const Glib::ustring &);
 
     /* Generate a new application based on this driver-supported options */
-    std::shared_ptr<Application> generateApplication() const;
+    Application_ptr generateApplication() const;
 
     /* Sort the options inside each section to be more user-friendly */
     void sortSectionOptions();

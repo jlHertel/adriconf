@@ -10,7 +10,7 @@ class Device {
 private:
     Glib::ustring driver;
     int screen;
-    std::list<std::shared_ptr<Application>> applications;
+    std::list<Application_ptr> applications;
 
 public:
     const Glib::ustring &getDriver() const;
@@ -21,17 +21,19 @@ public:
 
     void setScreen(int screen);
 
-    std::list<std::shared_ptr<Application>> &getApplications();
+    std::list<Application_ptr> &getApplications();
 
-    const std::list<std::shared_ptr<Application>> &getApplications() const;
+    const std::list<Application_ptr> &getApplications() const;
 
-    void addApplication(std::shared_ptr<Application> application);
+    void addApplication(Application_ptr application);
 
-    std::shared_ptr<Application> findApplication(const Glib::ustring &executable) const;
+    Application_ptr findApplication(const Glib::ustring &executable) const;
 
     void sortApplications();
 
     Device();
 };
+
+typedef std::shared_ptr<Device> Device_ptr;
 
 #endif

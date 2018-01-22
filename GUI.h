@@ -16,12 +16,12 @@ private:
     Gtk::MenuItem *pMenuRemoveApplication;
 
     /* State-related */
-    std::shared_ptr<Device> systemWideConfiguration;
+    Device_ptr systemWideConfiguration;
     std::list<DriverConfiguration> driverConfiguration;
-    std::list<std::shared_ptr<Device>> userDefinedConfiguration;
+    std::list<Device_ptr> userDefinedConfiguration;
     Glib::ustring currentSelectedDriver;
     Glib::ustring currentSelectedApplication;
-    std::shared_ptr<Application> currentApp;
+    Application_ptr currentApp;
     DriverConfiguration currentDriver;
     std::map<Glib::ustring, Gtk::ComboBoxText *> currentComboBoxes;
     std::map<Glib::ustring, Gtk::SpinButton *> currentSpinButtons;

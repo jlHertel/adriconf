@@ -6,7 +6,7 @@
 #include "Device.h"
 
 namespace Writer {
-    Glib::ustring generateRawXml(const std::list<std::shared_ptr<Device>> &devices);
+    Glib::ustring generateRawXml(const std::list<Device_ptr> &devices);
 }
 
 #endif

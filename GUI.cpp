@@ -215,13 +215,13 @@ void GUI::onApplicationSelected(const Glib::ustring driverName, const Glib::ustr
 
     /* Find the application */
     auto userSelectedDriver = std::find_if(this->userDefinedConfiguration.begin(), this->userDefinedConfiguration.end(),
-                                           [this](std::shared_ptr<Device> device) {
+                                           [this](Device_ptr device) {
                                                return this->currentSelectedDriver == device->getDriver();
                                            }
     );
     auto selectedApp = std::find_if((*userSelectedDriver)->getApplications().begin(),
                                     (*userSelectedDriver)->getApplications().end(),
-                                    [this](std::shared_ptr<Application> app) {
+                                    [this](Application_ptr app) {
                                         return this->currentSelectedApplication == app->getExecutable();
                                     }
     );
@@ -287,7 +287,7 @@ void GUI::drawApplicationOptions() {
         /* Draw each field individually */
         for (auto &option : section.getOptions()) {
             auto optionValue = std::find_if(selectedAppOptions.begin(), selectedAppOptions.end(),
-                                            [&option](std::shared_ptr<ApplicationOption> o) {
+                                            [&option](ApplicationOption_ptr o) {
                                                 return option.getName() == o->getName();
                                             });
 
@@ -405,7 +405,7 @@ void GUI::onCheckboxChanged(Glib::ustring optionName) {
     auto eventSelectedAppOptions = this->currentApp->getOptions();
 
     auto currentOption = std::find_if(eventSelectedAppOptions.begin(), eventSelectedAppOptions.end(),
-                                      [&optionName](std::shared_ptr<ApplicationOption> a) {
+                                      [&optionName](ApplicationOption_ptr a) {
                                           return a->getName() == optionName;
                                       });
 
@@ -420,7 +420,7 @@ void GUI::onFakeCheckBoxChanged(Glib::ustring optionName) {
     auto eventSelectedAppOptions = this->currentApp->getOptions();
 
     auto currentOption = std::find_if(eventSelectedAppOptions.begin(), eventSelectedAppOptions.end(),
-                                      [&optionName](std::shared_ptr<ApplicationOption> a) {
+                                      [&optionName](ApplicationOption_ptr a) {
                                           return a->getName() == optionName;
                                       });
 
@@ -435,7 +435,7 @@ void GUI::onComboboxChanged(Glib::ustring optionName) {
     auto eventSelectedAppOptions = this->currentApp->getOptions();
 
     auto currentOption = std::find_if(eventSelectedAppOptions.begin(), eventSelectedAppOptions.end(),
-                                      [&optionName](std::shared_ptr<ApplicationOption> a) {
+                                      [&optionName](ApplicationOption_ptr a) {
                                           return a->getName() == optionName;
                                       });
 
@@ -454,7 +454,7 @@ void GUI::onNumberEntryChanged(Glib::ustring optionName) {
     auto eventSelectedAppOptions = this->currentApp->getOptions();
 
     auto currentOption = std::find_if(eventSelectedAppOptions.begin(), eventSelectedAppOptions.end(),
-                                      [&optionName](std::shared_ptr<ApplicationOption> a) {
+                                      [&optionName](ApplicationOption_ptr a) {
                                           return a->getName() == optionName;
                                       });
 
@@ -511,7 +511,7 @@ void GUI::onRemoveApplicationPressed() {
 
     for (auto &device : this->userDefinedConfiguration) {
         if (device->getDriver() == this->currentDriver.getDriver()) {
-            device->getApplications().remove_if([this](const std::shared_ptr<Application> &app) {
+            device->getApplications().remove_if([this](const Application_ptr &app) {
                 return app->getExecutable() == this->currentApp->getExecutable();
             });
         }
@@ -586,7 +586,7 @@ void GUI::onAddApplicationPressed() {
     addAppDialog.add_button(_("Save"), 50);
     addAppDialog.add_button(_("Cancel"), Gtk::RESPONSE_CANCEL);
 
-    std::shared_ptr<Application> newApplication;
+    Application_ptr newApplication;
     int result = addAppDialog.run();
 
     Gtk::MessageDialog dialog(*(this->pWindow), _("Application successfully added."));

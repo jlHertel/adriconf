@@ -17,10 +17,10 @@ namespace ConfigurationResolver {
      * @param userDefinedOptions
      * @return A lista of new devices ready to be written to disk
      */
-    std::list<std::shared_ptr<Device>> resolveOptionsForSave(
-            const std::shared_ptr<Device> &,
+    std::list<Device_ptr> resolveOptionsForSave(
+            const Device_ptr &,
             const std::list<DriverConfiguration> &,
-            const std::list<std::shared_ptr<Device>> &
+            const std::list<Device_ptr> &
     );
 
     /**
@@ -31,7 +31,7 @@ namespace ConfigurationResolver {
      */
     void filterDriverUnsupportedOptions(
             const std::list<DriverConfiguration> &,
-            std::list<std::shared_ptr<Device>> &
+            std::list<Device_ptr> &
     );
 
     /**
@@ -42,9 +42,9 @@ namespace ConfigurationResolver {
      * @param userDefinedOptions
      */
     void mergeOptionsForDisplay(
-            const std::shared_ptr<Device> &,
+            const Device_ptr &,
             const std::list<DriverConfiguration> &,
-            std::list<std::shared_ptr<Device>> &
+            std::list<Device_ptr> &
     );
 };
 

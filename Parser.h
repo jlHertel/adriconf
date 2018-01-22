@@ -12,9 +12,9 @@ namespace Parser {
 
     DriverOption parseSectionOptions(xmlpp::Node *option, const Glib::ustring &currentLocale);
 
-    std::list<std::shared_ptr<Device>> parseDevices(Glib::ustring &xml);
+    std::list<Device_ptr> parseDevices(Glib::ustring &xml);
 
-    std::shared_ptr<Application> parseApplication(xmlpp::Node *application);
+    Application_ptr parseApplication(xmlpp::Node *application);
 
     std::list<DriverOption> convertSectionsToOptionsObject(const std::list<Section> &sections);
 

@@ -35,9 +35,9 @@ std::list<DriverConfiguration> ConfigurationLoader::loadDriverSpecificConfigurat
     return query.queryDriverConfigurationOptions(locale);
 }
 
-std::shared_ptr<Device> ConfigurationLoader::loadSystemWideConfiguration() {
+Device_ptr ConfigurationLoader::loadSystemWideConfiguration() {
     Glib::ustring systemWideXML = this->readSystemWideXML();
-    std::list<std::shared_ptr<Device>> systemWideDevices = Parser::parseDevices(systemWideXML);
+    std::list<Device_ptr> systemWideDevices = Parser::parseDevices(systemWideXML);
 
     /* In case no configuration is available system-wide we generate an empty one */
     if (systemWideDevices.empty()) {
@@ -48,7 +48,7 @@ std::shared_ptr<Device> ConfigurationLoader::loadSystemWideConfiguration() {
     return systemWideDevices.front();
 }
 
-std::list<std::shared_ptr<Device>> ConfigurationLoader::loadUserDefinedConfiguration() {
+std::list<Device_ptr> ConfigurationLoader::loadUserDefinedConfiguration() {
     Glib::ustring userDefinedXML(this->readUserDefinedXML());
     return Parser::parseDevices(userDefinedXML);
 }

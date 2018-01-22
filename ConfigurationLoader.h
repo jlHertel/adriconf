@@ -16,9 +16,9 @@ private:
 public:
     std::list<DriverConfiguration> loadDriverSpecificConfiguration(const Glib::ustring &locale);
 
-    std::shared_ptr<Device> loadSystemWideConfiguration();
+    Device_ptr loadSystemWideConfiguration();
 
-    std::list<std::shared_ptr<Device>> loadUserDefinedConfiguration();
+    std::list<Device_ptr> loadUserDefinedConfiguration();
 };
 
 #endif

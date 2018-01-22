@@ -2,6 +2,7 @@
 #define ADRICONF_APPLICATIONOPTION_H
 
 #include <glibmm/ustring.h>
+#include <memory>
 
 class ApplicationOption {
 private:
@@ -17,5 +18,7 @@ public:
 
     void setValue(Glib::ustring value);
 };
+
+typedef std::shared_ptr<ApplicationOption> ApplicationOption_ptr;
 
 #endif
