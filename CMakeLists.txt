@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.8)
 project(adriconf)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 14)
 
 set(SOURCE_FILES main.cpp Device.cpp Device.h
         DriverOption.cpp DriverOption.h
@@ -23,7 +23,7 @@ include_directories(${GTKMM_INCLUDE_DIRS})
 link_directories(${GTKMM_LIBRARY_DIRS})
 
 # BOOST
-find_package(Boost 1.65 COMPONENTS locale)
+find_package(Boost 1.60 COMPONENTS locale)
 include_directories(${Boost_INCLUDE_DIRS})
 link_directories(${Boost_LIBRARY_DIRS})
 
