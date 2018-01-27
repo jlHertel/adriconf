@@ -12,7 +12,7 @@ set(SOURCE_FILES main.cpp Device.cpp Device.h
         DRIQuery.cpp DRIQuery.h
         DriverConfiguration.cpp DriverConfiguration.h
         Writer.cpp Writer.h GUI.cpp GUI.h ConfigurationLoader.cpp ConfigurationLoader.h ApplicationOption.cpp ApplicationOption.h
-        resources.c)
+        resources.c GPUInfo.cpp GPUInfo.h PCIDatabaseQuery.cpp PCIDatabaseQuery.h)
 
 find_package(PkgConfig REQUIRED)
 find_package(OpenGL REQUIRED)
@@ -36,6 +36,16 @@ link_directories(${LibXML++_LIBRARY_DIRS})
 pkg_check_modules(X11 REQUIRED x11)
 include_directories(${X11_INCLUDE_DIRS})
 link_directories(${X11_LIBRARY_DIRS})
+
+# LIBDRM
+pkg_check_modules(DRM REQUIRED libdrm)
+include_directories(${DRM_INCLUDE_DIRS})
+link_directories(${DRM_LIBRARY_DIRS})
+
+# LIBPCI
+pkg_check_modules(PCILIB REQUIRED libpci)
+include_directories(${PCILIB_INCLUDE_DIRS})
+link_directories(${PCILIB_LIBRARY_DIRS})
 
 # INTL
 find_package (Intl REQUIRED)
@@ -88,7 +98,8 @@ target_link_libraries(adriconf ${Boost_LOCALE_LIBRARIES})
 target_link_libraries(adriconf ${LibXML++_LIBRARIES})
 target_link_libraries(adriconf ${X11_LIBRARIES})
 target_link_libraries(adriconf ${OPENGL_gl_LIBRARY})
-target_link_libraries(adriconf ${Gtest_LIBRARIES})
+target_link_libraries(adriconf ${DRM_LIBRARIES})
+target_link_libraries(adriconf ${PCILIB_LIBRARIES})
 
 add_custom_command(OUTPUT ${CMAKE_SOURCE_DIR}/resources.c
     COMMAND glib-compile-resources adriconf.gresource.xml --target=resources.c --generate-source

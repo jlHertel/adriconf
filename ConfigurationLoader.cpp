@@ -32,6 +32,7 @@ Glib::ustring ConfigurationLoader::readUserDefinedXML() {
 
 std::list<DriverConfiguration> ConfigurationLoader::loadDriverSpecificConfiguration(const Glib::ustring &locale) {
     DRIQuery query;
+    query.enumerateDRIDevices();
     return query.queryDriverConfigurationOptions(locale);
 }
 
