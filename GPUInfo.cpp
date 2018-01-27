@@ -47,3 +47,7 @@ uint16_t GPUInfo::getDeviceId() const {
 void GPUInfo::setDeviceId(uint16_t deviceId) {
     GPUInfo::deviceId = deviceId;
 }
+
+bool GPUInfo::operator==(const GPUInfo &rhs) {
+    return this->getDeviceId() == rhs.getDeviceId() && this->getVendorId() == rhs.getVendorId();
+}

@@ -37,6 +37,8 @@ public:
     uint16_t getDeviceId() const;
 
     void setDeviceId(uint16_t deviceId);
+
+    bool operator==(const GPUInfo& rhs);
 };
 
 typedef std::shared_ptr<GPUInfo> GPUInfo_ptr;
