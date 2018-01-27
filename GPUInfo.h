@@ -10,6 +10,8 @@ private:
     Glib::ustring driverName;
     Glib::ustring deviceName;
     Glib::ustring vendorName;
+    uint16_t vendorId;
+    uint16_t deviceId;
 
 public:
     const Glib::ustring &getPciId() const;
@@ -27,6 +29,14 @@ public:
     const Glib::ustring &getVendorName() const;
 
     void setVendorName(const Glib::ustring &vendorName);
+
+    uint16_t getVendorId() const;
+
+    void setVendorId(uint16_t vendorId);
+
+    uint16_t getDeviceId() const;
+
+    void setDeviceId(uint16_t deviceId);
 };
 
 typedef std::shared_ptr<GPUInfo> GPUInfo_ptr;

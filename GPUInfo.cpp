@@ -31,3 +31,19 @@ const Glib::ustring &GPUInfo::getVendorName() const {
 void GPUInfo::setVendorName(const Glib::ustring &vendorName) {
     GPUInfo::vendorName = vendorName;
 }
+
+uint16_t GPUInfo::getVendorId() const {
+    return vendorId;
+}
+
+void GPUInfo::setVendorId(uint16_t vendorId) {
+    GPUInfo::vendorId = vendorId;
+}
+
+uint16_t GPUInfo::getDeviceId() const {
+    return deviceId;
+}
+
+void GPUInfo::setDeviceId(uint16_t deviceId) {
+    GPUInfo::deviceId = deviceId;
+}

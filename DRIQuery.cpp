@@ -83,11 +83,11 @@ std::list<GPUInfo_ptr> DRIQuery::enumerateDRIDevices() {
         drmFreeVersion(versionPtr);
         close(fd);
 
-        gpu->setVendorName(pciQuery.queryVendorName(enumeratedDevices[i]->deviceinfo.pci->vendor_id));
-        gpu->setDeviceName(pciQuery.queryDeviceName(
-                enumeratedDevices[i]->deviceinfo.pci->vendor_id,
-                enumeratedDevices[i]->deviceinfo.pci->device_id
-        ));
+        gpu->setVendorId(enumeratedDevices[i]->deviceinfo.pci->vendor_id);
+        gpu->setDeviceId(enumeratedDevices[i]->deviceinfo.pci->device_id);
+
+        gpu->setVendorName(pciQuery.queryVendorName(gpu->getVendorId()));
+        gpu->setDeviceName(pciQuery.queryDeviceName(gpu->getVendorId(), gpu->getDeviceId()));
 
         std::cout << std::endl << "****" << std::endl;
         std::cout << "PCI ID: " << gpu->getPciId() << std::endl;
