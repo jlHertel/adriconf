@@ -47,6 +47,8 @@ std::list<DriverConfiguration> DRIQuery::queryDriverConfigurationOptions(const G
         configurations.emplace_back(config);
     }
 
+    XCloseDisplay(display);
+
     return std::move(configurations);
 }
 
