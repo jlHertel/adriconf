@@ -2,6 +2,7 @@
 #include <xf86drm.h>
 #include <iomanip>
 #include <fcntl.h>
+#include <glibmm/i18n.h>
 
 #include "DRIQuery.h"
 #include "PCIDatabaseQuery.h"
@@ -13,7 +14,7 @@ DRIQuery::DRIQuery() {
     this->getRendererInfo = (glXQueryRenderer_t *) glXGetProcAddress((const GLubyte *) "glXQueryRendererIntegerMESA");
 
     if (!this->getScreenDriver || !this->getDriverConfig || !this->getRendererInfo) {
-        std::cerr << "Error getting function pointers. LibGL must be too old." << std::endl;
+        std::cerr << _("Error getting function pointers. LibGL must be too old.") << std::endl;
     }
 }
 
@@ -23,7 +24,7 @@ std::list<DriverConfiguration> DRIQuery::queryDriverConfigurationOptions(const G
     Display *display;
 
     if (!(display = XOpenDisplay(nullptr))) {
-        std::cerr << "Couldn't open X display" << std::endl;
+        std::cerr << _("Couldn't open X display") << std::endl;
         return configurations;
     }
 
@@ -67,7 +68,6 @@ std::map<Glib::ustring, GPUInfo_ptr> DRIQuery::enumerateDRIDevices() {
 
     drmDevicePtr enumeratedDevices[MESA_MAX_DRM_DEVICES];
     int deviceCount = drmGetDevices2(0, enumeratedDevices, MESA_MAX_DRM_DEVICES);
-    std::cout << "Enumerated a total of " << deviceCount << " devices" << std::endl;
 
     for (int i = 0; i < deviceCount; i++) {
         GPUInfo_ptr gpu = std::make_shared<GPUInfo>();
@@ -96,12 +96,6 @@ std::map<Glib::ustring, GPUInfo_ptr> DRIQuery::enumerateDRIDevices() {
 
         gpu->setVendorName(pciQuery.queryVendorName(gpu->getVendorId()));
         gpu->setDeviceName(pciQuery.queryDeviceName(gpu->getVendorId(), gpu->getDeviceId()));
-
-        std::cout << std::endl << "****" << std::endl;
-        std::cout << "PCI ID: " << gpu->getPciId() << std::endl;
-        std::cout << "Vendor name: " << gpu->getVendorName() << std::endl;
-        std::cout << "Device name: " << gpu->getDeviceName() << std::endl;
-        std::cout << "Driver name: " << gpu->getDriverName() << std::endl;
 
         gpus[gpu->getPciId()] = gpu;
     }

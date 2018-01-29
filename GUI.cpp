@@ -20,6 +20,7 @@ GUI::GUI() : currentApp(nullptr) {
 
     this->systemWideConfiguration = configurationLoader.loadSystemWideConfiguration();
     this->userDefinedConfiguration = configurationLoader.loadUserDefinedConfiguration();
+    this->availableGPUs = configurationLoader.loadAvailableGPUs();
 
     /* Merge all the options in a complete structure */
     ConfigurationResolver::mergeOptionsForDisplay(

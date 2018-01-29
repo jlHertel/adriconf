@@ -31,9 +31,11 @@ Glib::ustring ConfigurationLoader::readUserDefinedXML() {
 }
 
 std::list<DriverConfiguration> ConfigurationLoader::loadDriverSpecificConfiguration(const Glib::ustring &locale) {
-    DRIQuery query;
-    query.enumerateDRIDevices();
-    return query.queryDriverConfigurationOptions(locale);
+    return this->driQuery.queryDriverConfigurationOptions(locale);
+}
+
+std::map<Glib::ustring, GPUInfo_ptr> ConfigurationLoader::loadAvailableGPUs() {
+    return this->driQuery.enumerateDRIDevices();
 }
 
 Device_ptr ConfigurationLoader::loadSystemWideConfiguration() {

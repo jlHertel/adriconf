@@ -19,6 +19,7 @@ private:
     Device_ptr systemWideConfiguration;
     std::list<DriverConfiguration> driverConfiguration;
     std::list<Device_ptr> userDefinedConfiguration;
+    std::map<Glib::ustring, GPUInfo_ptr> availableGPUs;
     Glib::ustring currentSelectedDriver;
     Glib::ustring currentSelectedApplication;
     Application_ptr currentApp;
