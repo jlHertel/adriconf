@@ -136,7 +136,7 @@ void GUI::drawApplicationSelectionMenu() {
         /* Clear the items already selected */
         this->currentDriver = nullptr;
         /* No need to set the current application executables, as the default doesn't have one */
-        this->currentSelectedApplication = "";
+        this->currentApp = nullptr;
 
         /* Sort the applications to maintain a good human GUI */
         for (auto &driver : this->userDefinedConfiguration) {
@@ -204,11 +204,9 @@ void GUI::drawApplicationSelectionMenu() {
 }
 
 void GUI::onApplicationSelected(const Glib::ustring driverName, const Glib::ustring applicationName) {
-    if (driverName == this->currentDriver->getDriver() && applicationName == this->currentSelectedApplication) {
+    if (driverName == this->currentDriver->getDriver() && applicationName == this->currentApp->getExecutable()) {
         return;
     }
-
-    this->currentSelectedApplication = applicationName;
 
     /* Find the application */
     auto userSelectedDriver = std::find_if(this->userDefinedConfiguration.begin(), this->userDefinedConfiguration.end(),
@@ -218,13 +216,13 @@ void GUI::onApplicationSelected(const Glib::ustring driverName, const Glib::ustr
     );
     auto selectedApp = std::find_if((*userSelectedDriver)->getApplications().begin(),
                                     (*userSelectedDriver)->getApplications().end(),
-                                    [this](Application_ptr app) {
-                                        return this->currentSelectedApplication == app->getExecutable();
+                                    [applicationName](Application_ptr app) {
+                                        return applicationName == app->getExecutable();
                                     }
     );
 
     if (selectedApp == (*userSelectedDriver)->getApplications().end()) {
-        std::cerr << Glib::ustring::compose(_("Application %1 not found "), this->currentSelectedApplication)
+        std::cerr << Glib::ustring::compose(_("Application %1 not found "), applicationName)
                   << std::endl;
         return;
     }
