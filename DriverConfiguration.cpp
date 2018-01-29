@@ -59,3 +59,19 @@ void DriverConfiguration::sortSectionOptions() {
         section.sortOptions();
     }
 }
+
+uint16_t DriverConfiguration::getVendorId() const {
+    return vendorId;
+}
+
+void DriverConfiguration::setVendorId(uint16_t vendorId) {
+    DriverConfiguration::vendorId = vendorId;
+}
+
+uint16_t DriverConfiguration::getDeviceId() const {
+    return deviceId;
+}
+
+void DriverConfiguration::setDeviceId(uint16_t deviceId) {
+    DriverConfiguration::deviceId = deviceId;
+}

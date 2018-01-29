@@ -11,6 +11,8 @@ private:
     Glib::ustring driver;
     int screen;
     std::list<Section> sections;
+    uint16_t vendorId;
+    uint16_t deviceId;
 
 public:
     const Glib::ustring &getDriver() const;
@@ -26,6 +28,14 @@ public:
     void setSections(const std::list<Section> &sections);
 
     std::list<std::pair<Glib::ustring, Glib::ustring>> getEnumValuesForOption(const Glib::ustring &);
+
+    uint16_t getVendorId() const;
+
+    void setVendorId(uint16_t vendorId);
+
+    uint16_t getDeviceId() const;
+
+    void setDeviceId(uint16_t deviceId);
 
     /* Generate a new application based on this driver-supported options */
     Application_ptr generateApplication() const;

@@ -10,8 +10,9 @@
 DRIQuery::DRIQuery() {
     this->getScreenDriver = (glXGetScreenDriver_t *) glXGetProcAddress((const GLubyte *) "glXGetScreenDriver");
     this->getDriverConfig = (glXGetDriverConfig_t *) glXGetProcAddress((const GLubyte *) "glXGetDriverConfig");
+    this->getRendererInfo = (glXQueryRenderer_t *) glXGetProcAddress((const GLubyte *) "glXQueryRendererIntegerMESA");
 
-    if (!this->getScreenDriver || !this->getDriverConfig) {
+    if (!this->getScreenDriver || !this->getDriverConfig || !this->getRendererInfo) {
         std::cerr << "Error getting function pointers. LibGL must be too old." << std::endl;
     }
 }
@@ -35,6 +36,13 @@ std::list<DriverConfiguration> DRIQuery::queryDriverConfigurationOptions(const G
         DriverConfiguration config;
         config.setScreen(i);
 
+        unsigned int pciID = 0;
+        (*(this->getRendererInfo))(display, i, 0, GLX_RENDERER_VENDOR_ID_MESA, &pciID);
+        config.setVendorId(static_cast<uint16_t>(pciID));
+
+        (*(this->getRendererInfo))(display, i, 0, GLX_RENDERER_DEVICE_ID_MESA, &pciID);
+        config.setDeviceId(static_cast<uint16_t>(pciID));
+
         auto driverName = (*(this->getScreenDriver))(display, i);
         config.setDriver(driverName);
 
@@ -52,8 +60,8 @@ std::list<DriverConfiguration> DRIQuery::queryDriverConfigurationOptions(const G
     return std::move(configurations);
 }
 
-std::list<GPUInfo_ptr> DRIQuery::enumerateDRIDevices() {
-    std::list<GPUInfo_ptr> gpus;
+std::map<Glib::ustring, GPUInfo_ptr> DRIQuery::enumerateDRIDevices() {
+    std::map<Glib::ustring, GPUInfo_ptr> gpus;
 
     PCIDatabaseQuery pciQuery;
 
@@ -95,7 +103,7 @@ std::list<GPUInfo_ptr> DRIQuery::enumerateDRIDevices() {
         std::cout << "Device name: " << gpu->getDeviceName() << std::endl;
         std::cout << "Driver name: " << gpu->getDriverName() << std::endl;
 
-        gpus.emplace_back(gpu);
+        gpus[gpu->getPciId()] = gpu;
     }
 
     drmFreeDevices(enumeratedDevices, deviceCount);
