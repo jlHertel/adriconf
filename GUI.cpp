@@ -8,7 +8,7 @@
 #include <iostream>
 #include <fstream>
 
-GUI::GUI() : currentApp(nullptr) {
+GUI::GUI() : currentApp(nullptr), currentDriver(nullptr) {
     this->setupLocale();
 
     /* Load the configurations */
@@ -134,7 +134,7 @@ void GUI::drawApplicationSelectionMenu() {
         }
 
         /* Clear the items already selected */
-        this->currentSelectedDriver = "";
+        this->currentDriver = nullptr;
         /* No need to set the current application executables, as the default doesn't have one */
         this->currentSelectedApplication = "";
 
@@ -152,19 +152,16 @@ void GUI::drawApplicationSelectionMenu() {
 
         for (auto &driver : this->userDefinedConfiguration) {
 
-            if (this->currentSelectedDriver.empty()) {
-                this->currentSelectedDriver = driver->getDriver();
-
+            if (this->currentDriver == nullptr) {
                 // Locate the driver config
                 auto foundDriver = std::find_if(this->driverConfiguration.begin(), this->driverConfiguration.end(),
-                                                [this](DriverConfiguration d) {
-                                                    return d.getDriver() == this->currentSelectedDriver;
+                                                [driver](const DriverConfiguration &d) {
+                                                    return d.getDriver() == driver->getDriver();
                                                 });
                 if (foundDriver == this->driverConfiguration.end()) {
-                    std::cerr << Glib::ustring::compose(_("Driver %1 not found"), this->currentSelectedDriver)
-                              << std::endl;
+                    std::cerr << Glib::ustring::compose(_("Driver %1 not found"), driver) << std::endl;
                 }
-                this->currentDriver = *foundDriver;
+                this->currentDriver = &(*foundDriver);
             }
 
             Gtk::MenuItem *driverMenuItem = Gtk::manage(new Gtk::MenuItem);
@@ -185,7 +182,7 @@ void GUI::drawApplicationSelectionMenu() {
                     appMenuItem->set_group(appRadioGroup);
                 }
 
-                if (this->currentSelectedDriver == driver->getDriver() && possibleApp->getExecutable().empty()) {
+                if (this->currentDriver->getDriver() == driver->getDriver() && possibleApp->getExecutable().empty()) {
                     appMenuItem->set_active(true);
 
                     this->currentApp = possibleApp;
@@ -207,17 +204,16 @@ void GUI::drawApplicationSelectionMenu() {
 }
 
 void GUI::onApplicationSelected(const Glib::ustring driverName, const Glib::ustring applicationName) {
-    if (driverName == this->currentSelectedDriver && applicationName == this->currentSelectedApplication) {
+    if (driverName == this->currentDriver->getDriver() && applicationName == this->currentSelectedApplication) {
         return;
     }
 
-    this->currentSelectedDriver = driverName;
     this->currentSelectedApplication = applicationName;
 
     /* Find the application */
     auto userSelectedDriver = std::find_if(this->userDefinedConfiguration.begin(), this->userDefinedConfiguration.end(),
-                                           [this](Device_ptr device) {
-                                               return this->currentSelectedDriver == device->getDriver();
+                                           [driverName](Device_ptr device) {
+                                               return driverName == device->getDriver();
                                            }
     );
     auto selectedApp = std::find_if((*userSelectedDriver)->getApplications().begin(),
@@ -236,16 +232,16 @@ void GUI::onApplicationSelected(const Glib::ustring driverName, const Glib::ustr
     this->currentApp = *selectedApp;
 
     auto driverSelected = std::find_if(this->driverConfiguration.begin(), this->driverConfiguration.end(),
-                                       [this](const DriverConfiguration &d) {
-                                           return d.getDriver() == this->currentSelectedDriver;
+                                       [driverName](const DriverConfiguration &d) {
+                                           return d.getDriver() == driverName;
                                        });
 
     if (driverSelected == this->driverConfiguration.end()) {
-        std::cerr << Glib::ustring::compose(_("Driver %1 not found "), this->currentSelectedDriver) << std::endl;
+        std::cerr << Glib::ustring::compose(_("Driver %1 not found "), driverName) << std::endl;
         return;
     }
 
-    this->currentDriver = *driverSelected;
+    this->currentDriver = &(*driverSelected);
 
     this->drawApplicationOptions();
 }
@@ -276,7 +272,7 @@ void GUI::drawApplicationOptions() {
     pNotebook->set_visible(true);
 
     /* Draw each section as a tab */
-    for (auto &section : this->currentDriver.getSections()) {
+    for (auto &section : this->currentDriver->getSections()) {
         Gtk::Box *tabBox = Gtk::manage(new Gtk::Box);
         tabBox->set_visible(true);
         tabBox->set_orientation(Gtk::Orientation::ORIENTATION_VERTICAL);
@@ -442,7 +438,7 @@ void GUI::onComboboxChanged(Glib::ustring optionName) {
 
     auto selectedOptionText = this->currentComboBoxes[optionName]->get_active_text();
 
-    auto enumValues = this->currentDriver.getEnumValuesForOption(optionName);
+    auto enumValues = this->currentDriver->getEnumValuesForOption(optionName);
     for (const auto &enumValue : enumValues) {
         if (enumValue.first == selectedOptionText) {
             (*currentOption)->setValue(enumValue.second);
@@ -511,7 +507,7 @@ void GUI::onRemoveApplicationPressed() {
     }
 
     for (auto &device : this->userDefinedConfiguration) {
-        if (device->getDriver() == this->currentDriver.getDriver()) {
+        if (device->getDriver() == this->currentDriver->getDriver()) {
             device->getApplications().remove_if([this](const Application_ptr &app) {
                 return app->getExecutable() == this->currentApp->getExecutable();
             });
