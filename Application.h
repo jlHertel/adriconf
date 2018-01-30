@@ -11,6 +11,8 @@ private:
     Glib::ustring name;
     Glib::ustring executable;
     std::list<ApplicationOption_ptr> options;
+    bool isUsingPrime;
+    Glib::ustring primeDriverName;
 
 public:
     const Glib::ustring &getName() const;
@@ -26,6 +28,14 @@ public:
     void addOption(ApplicationOption_ptr option);
 
     void setOptions(std::list<ApplicationOption_ptr>);
+
+    bool isIsUsingPrime() const;
+
+    void setIsUsingPrime(bool isUsingPrime);
+
+    const Glib::ustring &getPrimeDriverName() const;
+
+    void setPrimeDriverName(const Glib::ustring &primeDriverName);
 };
 
 typedef std::shared_ptr<Application> Application_ptr;
