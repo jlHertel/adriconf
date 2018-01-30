@@ -20,6 +20,7 @@ private:
     std::list<DriverConfiguration> driverConfiguration;
     std::list<Device_ptr> userDefinedConfiguration;
     std::map<Glib::ustring, GPUInfo_ptr> availableGPUs;
+    bool isPrimeSetup;
     Application_ptr currentApp;
     DriverConfiguration * currentDriver;
     std::map<Glib::ustring, Gtk::ComboBoxText *> currentComboBoxes;

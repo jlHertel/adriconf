@@ -2,10 +2,13 @@
 #define DRICONF3_CONFIGURATIONRESOLVER_H
 
 #include <list>
+#include <map>
 #include <glibmm/ustring.h>
-#include "Device.h"
 #include <algorithm>
+
+#include "Device.h"
 #include "DriverConfiguration.h"
+#include "GPUInfo.h"
 
 namespace ConfigurationResolver {
     /**
@@ -46,6 +49,11 @@ namespace ConfigurationResolver {
             const std::list<DriverConfiguration> &,
             std::list<Device_ptr> &
     );
+
+    /**
+     * For each application check if it has a device_id defined and update its driver name accordingly
+     */
+    void updatePrimeApplications(std::list<Device_ptr> &, const std::map<Glib::ustring, GPUInfo_ptr> &);
 };
 
 

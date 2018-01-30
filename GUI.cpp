@@ -21,12 +21,19 @@ GUI::GUI() : currentApp(nullptr), currentDriver(nullptr) {
     this->systemWideConfiguration = configurationLoader.loadSystemWideConfiguration();
     this->userDefinedConfiguration = configurationLoader.loadUserDefinedConfiguration();
     this->availableGPUs = configurationLoader.loadAvailableGPUs();
+    this->isPrimeSetup = this->availableGPUs.size() > 1;
 
     /* Merge all the options in a complete structure */
     ConfigurationResolver::mergeOptionsForDisplay(
             this->systemWideConfiguration,
             this->driverConfiguration,
             this->userDefinedConfiguration
+    );
+
+    /* For each app setup their prime driver name */
+    ConfigurationResolver::updatePrimeApplications(
+            this->userDefinedConfiguration,
+            this->availableGPUs
     );
 
     /* Filter invalid options */
@@ -187,6 +194,11 @@ void GUI::drawApplicationSelectionMenu() {
 
                     this->currentApp = possibleApp;
                 }
+
+                /*
+                 * TODO: Check if this application has another driver defined with PRIME
+                 * If yes, then we need to pass this driver name instead of the config-defined
+                 */
 
                 appMenuItem->signal_toggled().connect(sigc::bind<Glib::ustring, Glib::ustring>(
                         sigc::mem_fun(this, &GUI::onApplicationSelected),

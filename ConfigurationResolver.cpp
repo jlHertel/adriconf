@@ -166,8 +166,19 @@ void ConfigurationResolver::filterDriverUnsupportedOptions(
         for (auto &userDefinedApp : userDefinedApplications) {
             auto options = userDefinedApp->getOptions();
 
+            /*
+             * TODO: Check if this device has a device_id option
+             * If yes we need to match the options against the driver of the defined device instead of this driver
+             */
+
             auto itr = options.begin();
             while (itr != options.end()) {
+                // Ignore PRIME device option
+                if ((*itr)->getName() == "device_id") {
+                    ++itr;
+                    continue;
+                }
+
                 auto driverSupports = std::find(driverOptions.begin(), driverOptions.end(), (*itr)->getName());
 
                 if (driverSupports == driverOptions.end()) {
@@ -186,8 +197,6 @@ void ConfigurationResolver::filterDriverUnsupportedOptions(
             userDefinedApp->setOptions(options);
         }
     }
-
-
 }
 
 void ConfigurationResolver::mergeOptionsForDisplay(
@@ -300,6 +309,27 @@ void ConfigurationResolver::mergeOptionsForDisplay(
 
         if (addDeviceToList) {
             userDefinedOptions.emplace_back(userDefinedDevice);
+        }
+    }
+}
+
+void ConfigurationResolver::updatePrimeApplications(std::list<Device_ptr> &userDefinedDevices,
+                                                    const std::map<Glib::ustring, GPUInfo_ptr> &availableGPUs) {
+    for (auto &device : userDefinedDevices) {
+        for (auto &app : device->getApplications()) {
+            app->setIsUsingPrime(false);
+            auto primeOption = std::find_if(app->getOptions().begin(), app->getOptions().end(),
+                                            [](const ApplicationOption_ptr &o) {
+                                                return o->getName() == "device_id";
+                                            });
+
+            if (primeOption != app->getOptions().end()) {
+                auto foundGpu = availableGPUs.find((*primeOption)->getValue());
+                if (foundGpu != availableGPUs.end()) {
+                    app->setIsUsingPrime(true);
+                    app->setPrimeDriverName(foundGpu->second->getDriverName());
+                }
+            }
         }
     }
 }
