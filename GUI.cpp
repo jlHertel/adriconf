@@ -195,11 +195,6 @@ void GUI::drawApplicationSelectionMenu() {
                     this->currentApp = possibleApp;
                 }
 
-                /*
-                 * TODO: Check if this application has another driver defined with PRIME
-                 * If yes, then we need to pass this driver name instead of the config-defined
-                 */
-
                 appMenuItem->signal_toggled().connect(sigc::bind<Glib::ustring, Glib::ustring>(
                         sigc::mem_fun(this, &GUI::onApplicationSelected),
                         driver->getDriver(), possibleApp->getExecutable()
@@ -281,8 +276,15 @@ void GUI::drawApplicationOptions() {
 
     pNotebook->set_visible(true);
 
+    std::list<Section> definedSections;
+    if (this->currentApp->getIsUsingPrime()) {
+        definedSections = this->availableGPUs[this->currentApp->getDevicePCIId()]->getSections();
+    } else {
+        definedSections = this->currentDriver->getSections();
+    }
+
     /* Draw each section as a tab */
-    for (auto &section : this->currentDriver->getSections()) {
+    for (auto &section : definedSections) {
         Gtk::Box *tabBox = Gtk::manage(new Gtk::Box);
         tabBox->set_visible(true);
         tabBox->set_orientation(Gtk::Orientation::ORIENTATION_VERTICAL);
@@ -412,7 +414,7 @@ void GUI::onCheckboxChanged(Glib::ustring optionName) {
     auto eventSelectedAppOptions = this->currentApp->getOptions();
 
     auto currentOption = std::find_if(eventSelectedAppOptions.begin(), eventSelectedAppOptions.end(),
-                                      [&optionName](ApplicationOption_ptr a) {
+                                      [&optionName](const ApplicationOption_ptr &a) {
                                           return a->getName() == optionName;
                                       });
 
@@ -427,7 +429,7 @@ void GUI::onFakeCheckBoxChanged(Glib::ustring optionName) {
     auto eventSelectedAppOptions = this->currentApp->getOptions();
 
     auto currentOption = std::find_if(eventSelectedAppOptions.begin(), eventSelectedAppOptions.end(),
-                                      [&optionName](ApplicationOption_ptr a) {
+                                      [&optionName](const ApplicationOption_ptr &a) {
                                           return a->getName() == optionName;
                                       });
 
@@ -442,12 +444,12 @@ void GUI::onComboboxChanged(Glib::ustring optionName) {
     auto eventSelectedAppOptions = this->currentApp->getOptions();
 
     auto currentOption = std::find_if(eventSelectedAppOptions.begin(), eventSelectedAppOptions.end(),
-                                      [&optionName](ApplicationOption_ptr a) {
+                                      [&optionName](const ApplicationOption_ptr &a) {
                                           return a->getName() == optionName;
                                       });
 
     auto selectedOptionText = this->currentComboBoxes[optionName]->get_active_text();
-
+    /* TODO: Refactor this, we must get it from GPUInfo if PRIME */
     auto enumValues = this->currentDriver->getEnumValuesForOption(optionName);
     for (const auto &enumValue : enumValues) {
         if (enumValue.first == selectedOptionText) {
