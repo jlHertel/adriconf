@@ -1,6 +1,5 @@
 #include <iostream>
 #include <gtkmm.h>
-#include <glibmm/i18n.h>
 #include "GUI.h"
 
 int main(int argc, char *argv[]) {

@@ -1,11 +1,8 @@
 #include "GUI.h"
 
 #include <boost/locale.hpp>
-#include "Parser.h"
 #include "ConfigurationResolver.h"
-#include "DRIQuery.h"
 #include "Writer.h"
-#include <iostream>
 #include <fstream>
 
 GUI::GUI() : currentApp(nullptr), currentDriver(nullptr) {

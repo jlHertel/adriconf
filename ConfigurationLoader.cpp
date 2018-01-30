@@ -1,7 +1,6 @@
 #include "ConfigurationLoader.h"
 
 #include <fstream>
-#include "DRIQuery.h"
 
 Glib::ustring ConfigurationLoader::readSystemWideXML() {
     std::ostringstream buffer;
