@@ -20,7 +20,7 @@ GUI::GUI() : currentApp(nullptr), currentDriver(nullptr) {
 
     this->systemWideConfiguration = configurationLoader.loadSystemWideConfiguration();
     this->userDefinedConfiguration = configurationLoader.loadUserDefinedConfiguration();
-    this->availableGPUs = configurationLoader.loadAvailableGPUs();
+    this->availableGPUs = configurationLoader.loadAvailableGPUs(this->locale);
     this->isPrimeSetup = this->availableGPUs.size() > 1;
 
     /* Merge all the options in a complete structure */

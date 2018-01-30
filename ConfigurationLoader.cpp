@@ -34,8 +34,8 @@ std::list<DriverConfiguration> ConfigurationLoader::loadDriverSpecificConfigurat
     return this->driQuery.queryDriverConfigurationOptions(locale);
 }
 
-std::map<Glib::ustring, GPUInfo_ptr> ConfigurationLoader::loadAvailableGPUs() {
-    return this->driQuery.enumerateDRIDevices();
+std::map<Glib::ustring, GPUInfo_ptr> ConfigurationLoader::loadAvailableGPUs(const Glib::ustring &locale) {
+    return this->driQuery.enumerateDRIDevices(locale);
 }
 
 Device_ptr ConfigurationLoader::loadSystemWideConfiguration() {

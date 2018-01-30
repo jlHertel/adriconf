@@ -25,7 +25,7 @@ public:
 
     std::list<Device_ptr> loadUserDefinedConfiguration();
 
-    std::map<Glib::ustring, GPUInfo_ptr> loadAvailableGPUs();
+    std::map<Glib::ustring, GPUInfo_ptr> loadAvailableGPUs(const Glib::ustring &locale);
 };
 
 #endif

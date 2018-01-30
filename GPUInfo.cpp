@@ -48,6 +48,14 @@ void GPUInfo::setDeviceId(uint16_t deviceId) {
     GPUInfo::deviceId = deviceId;
 }
 
+const std::list<Section> &GPUInfo::getSections() const {
+    return sections;
+}
+
+void GPUInfo::setSections(const std::list<Section> &sections) {
+    this->sections = sections;
+}
+
 bool GPUInfo::operator==(const GPUInfo &rhs) {
     return this->getDeviceId() == rhs.getDeviceId() && this->getVendorId() == rhs.getVendorId();
 }

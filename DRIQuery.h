@@ -30,7 +30,7 @@ public:
 
     std::list<DriverConfiguration> queryDriverConfigurationOptions(const Glib::ustring &locale);
 
-    std::map<Glib::ustring, GPUInfo_ptr> enumerateDRIDevices();
+    std::map<Glib::ustring, GPUInfo_ptr> enumerateDRIDevices(const Glib::ustring &locale);
 };
 
 #endif

@@ -4,6 +4,8 @@
 #include <glibmm/ustring.h>
 #include <memory>
 
+#include "Section.h"
+
 class GPUInfo {
 private:
     Glib::ustring pciId;
@@ -12,6 +14,7 @@ private:
     Glib::ustring vendorName;
     uint16_t vendorId;
     uint16_t deviceId;
+    std::list<Section> sections;
 
 public:
     const Glib::ustring &getPciId() const;
@@ -38,7 +41,11 @@ public:
 
     void setDeviceId(uint16_t deviceId);
 
-    bool operator==(const GPUInfo& rhs);
+    bool operator==(const GPUInfo &rhs);
+
+    const std::list<Section> &getSections() const;
+
+    void setSections(const std::list<Section> &sections);
 };
 
 typedef std::shared_ptr<GPUInfo> GPUInfo_ptr;

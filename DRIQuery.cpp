@@ -61,7 +61,7 @@ std::list<DriverConfiguration> DRIQuery::queryDriverConfigurationOptions(const G
     return std::move(configurations);
 }
 
-std::map<Glib::ustring, GPUInfo_ptr> DRIQuery::enumerateDRIDevices() {
+std::map<Glib::ustring, GPUInfo_ptr> DRIQuery::enumerateDRIDevices(const Glib::ustring &locale) {
     std::map<Glib::ustring, GPUInfo_ptr> gpus;
 
     PCIDatabaseQuery pciQuery;
@@ -96,6 +96,13 @@ std::map<Glib::ustring, GPUInfo_ptr> DRIQuery::enumerateDRIDevices() {
 
         gpu->setVendorName(pciQuery.queryVendorName(gpu->getVendorId()));
         gpu->setDeviceName(pciQuery.queryDeviceName(gpu->getVendorId(), gpu->getDeviceId()));
+
+        // Load the driver supported options
+        auto driverOptions = (*(this->getDriverConfig))(gpu->getDriverName().c_str());
+        Glib::ustring options(driverOptions);
+
+        auto parsedSections = Parser::parseAvailableConfiguration(options, locale);
+        gpu->setSections(parsedSections);
 
         gpus[gpu->getPciId()] = gpu;
     }
