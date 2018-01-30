@@ -7,6 +7,7 @@ std::list<Device_ptr> ConfigurationResolver::resolveOptionsForSave(
         const std::list<DriverConfiguration> &driverAvailableOptions,
         const std::list<Device_ptr> &userDefinedDevices
 ) {
+    /* TODO: Refactor this to properly support PRIME */
     /* Create the final driverList */
     std::list<Device_ptr> mergedDevices;
 
@@ -328,6 +329,7 @@ void ConfigurationResolver::updatePrimeApplications(std::list<Device_ptr> &userD
                 if (foundGpu != availableGPUs.end()) {
                     app->setIsUsingPrime(true);
                     app->setPrimeDriverName(foundGpu->second->getDriverName());
+                    app->setDevicePCIId(foundGpu->second->getPciId());
                 }
             }
         }

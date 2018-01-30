@@ -13,6 +13,7 @@ private:
     std::list<ApplicationOption_ptr> options;
     bool isUsingPrime;
     Glib::ustring primeDriverName;
+    Glib::ustring devicePCIId;
 
 public:
     const Glib::ustring &getName() const;
@@ -29,13 +30,17 @@ public:
 
     void setOptions(std::list<ApplicationOption_ptr>);
 
-    bool isIsUsingPrime() const;
+    bool getIsUsingPrime() const;
 
     void setIsUsingPrime(bool isUsingPrime);
 
     const Glib::ustring &getPrimeDriverName() const;
 
     void setPrimeDriverName(const Glib::ustring &primeDriverName);
+
+    const Glib::ustring &getDevicePCIId() const;
+
+    void setDevicePCIId(const Glib::ustring &devicePCIId);
 };
 
 typedef std::shared_ptr<Application> Application_ptr;

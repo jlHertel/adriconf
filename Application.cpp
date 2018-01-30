@@ -28,7 +28,7 @@ void Application::setOptions(std::list<ApplicationOption_ptr> options) {
     this->options = std::move(options);
 }
 
-bool Application::isIsUsingPrime() const {
+bool Application::getIsUsingPrime() const {
     return isUsingPrime;
 }
 
@@ -42,4 +42,12 @@ const Glib::ustring &Application::getPrimeDriverName() const {
 
 void Application::setPrimeDriverName(const Glib::ustring &primeDriverName) {
     Application::primeDriverName = primeDriverName;
+}
+
+const Glib::ustring &Application::getDevicePCIId() const {
+    return devicePCIId;
+}
+
+void Application::setDevicePCIId(const Glib::ustring &devicePCIId) {
+    Application::devicePCIId = devicePCIId;
 }
