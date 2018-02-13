@@ -342,17 +342,26 @@ void GUI::drawApplicationOptions() {
             }
 
             if (option.getType() == "enum" && !option.isFakeBool()) {
-                Gtk::ComboBoxText *optionCombo = Gtk::manage(new Gtk::ComboBoxText);
+                Gtk::ComboBox *optionCombo = Gtk::manage(new Gtk::ComboBox);
                 optionCombo->set_visible(true);
+
+                Glib::RefPtr<Gtk::ListStore> listStore = Gtk::ListStore::create(this->comboColumns);
+                optionCombo->set_model(listStore);
+
 
                 int counter = 0;
                 for (auto const &enumOption : option.getEnumValues()) {
-                    optionCombo->append(enumOption.first);
+                    Gtk::TreeModel::Row row = *(listStore->append());
+                    row[this->comboColumns.optionName] = enumOption.first;
+                    row[this->comboColumns.optionValue] = enumOption.second;
+
                     if (enumOption.second == (*optionValue)->getValue()) {
-                        optionCombo->set_active(counter);
+                        optionCombo->set_active(row);
                     }
                     counter++;
                 }
+
+                optionCombo->pack_start(this->comboColumns.optionName);
 
                 optionCombo->signal_changed().connect(sigc::bind<Glib::ustring>(
                         sigc::mem_fun(this, &GUI::onComboboxChanged), option.getName()
@@ -445,15 +454,12 @@ void GUI::onComboboxChanged(Glib::ustring optionName) {
                                           return a->getName() == optionName;
                                       });
 
-    auto selectedOptionText = this->currentComboBoxes[optionName]->get_active_text();
-    /* TODO: Refactor this, we must get it from GPUInfo if PRIME */
-    auto enumValues = this->currentDriver->getEnumValuesForOption(optionName);
-    for (const auto &enumValue : enumValues) {
-        if (enumValue.first == selectedOptionText) {
-            (*currentOption)->setValue(enumValue.second);
-        }
-    }
+    Gtk::TreeModel::iterator iter = this->currentComboBoxes[optionName]->get_active();
+    if (iter) {
+        Gtk::TreeModel::Row selectedRow = *iter;
 
+        (*currentOption)->setValue(selectedRow[comboColumns.optionValue]);
+    }
 }
 
 void GUI::onNumberEntryChanged(Glib::ustring optionName) {

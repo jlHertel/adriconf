@@ -12,7 +12,7 @@ set(SOURCE_FILES main.cpp Device.cpp Device.h
         DRIQuery.cpp DRIQuery.h
         DriverConfiguration.cpp DriverConfiguration.h
         Writer.cpp Writer.h GUI.cpp GUI.h ConfigurationLoader.cpp ConfigurationLoader.h ApplicationOption.cpp ApplicationOption.h
-        resources.c GPUInfo.cpp GPUInfo.h PCIDatabaseQuery.cpp PCIDatabaseQuery.h)
+        resources.c GPUInfo.cpp GPUInfo.h PCIDatabaseQuery.cpp PCIDatabaseQuery.h ComboBoxColumn.h)
 
 find_package(PkgConfig REQUIRED)
 find_package(OpenGL REQUIRED)

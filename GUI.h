@@ -6,6 +6,7 @@
 #include "Device.h"
 #include "DriverConfiguration.h"
 #include "ConfigurationLoader.h"
+#include "ComboBoxColumn.h"
 
 class GUI {
 private:
@@ -14,6 +15,7 @@ private:
     Gtk::AboutDialog aboutDialog;
     Gtk::MenuItem *pMenuAddApplication;
     Gtk::MenuItem *pMenuRemoveApplication;
+    ComboBoxColumn comboColumns;
 
     /* State-related */
     Device_ptr systemWideConfiguration;
@@ -23,7 +25,7 @@ private:
     bool isPrimeSetup;
     Application_ptr currentApp;
     DriverConfiguration * currentDriver;
-    std::map<Glib::ustring, Gtk::ComboBoxText *> currentComboBoxes;
+    std::map<Glib::ustring, Gtk::ComboBox *> currentComboBoxes;
     std::map<Glib::ustring, Gtk::SpinButton *> currentSpinButtons;
 
     /* Helpers */
