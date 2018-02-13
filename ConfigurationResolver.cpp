@@ -252,6 +252,7 @@ void ConfigurationResolver::mergeOptionsForDisplay(
 
         /* Check if the user-defined apps are missing any of the driver option */
         for (auto &userDefinedApp : newDeviceApps) {
+            /* TODO: If we are under PRIME we should add the prime-device options instead of this driver options */
             for (const auto &driverDefinedOption : driverOptions) {
                 auto optionExists = std::find_if(userDefinedApp->getOptions().begin(),
                                                  userDefinedApp->getOptions().end(),
