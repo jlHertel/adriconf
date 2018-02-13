@@ -36,7 +36,8 @@ GUI::GUI() : currentApp(nullptr), currentDriver(nullptr) {
     /* Filter invalid options */
     ConfigurationResolver::filterDriverUnsupportedOptions(
             this->driverConfiguration,
-            this->userDefinedConfiguration
+            this->userDefinedConfiguration,
+            this->availableGPUs
     );
 
     /* Load the GUI file */

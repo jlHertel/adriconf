@@ -31,10 +31,12 @@ namespace ConfigurationResolver {
      * This function will directly change the userDefinedOptions list passed as argument
      * @param driverAvailableOptions
      * @param userDefinedOptions
+     * @param availableGPUs
      */
     void filterDriverUnsupportedOptions(
             const std::list<DriverConfiguration> &,
-            std::list<Device_ptr> &
+            std::list<Device_ptr> &,
+            std::map<Glib::ustring, GPUInfo_ptr> &
     );
 
     /**

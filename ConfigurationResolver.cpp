@@ -117,7 +117,8 @@ std::list<Device_ptr> ConfigurationResolver::resolveOptionsForSave(
 
 void ConfigurationResolver::filterDriverUnsupportedOptions(
         const std::list<DriverConfiguration> &driverAvailableOptions,
-        std::list<Device_ptr> &userDefinedDevices
+        std::list<Device_ptr> &userDefinedDevices,
+        std::map<Glib::ustring, GPUInfo_ptr> &availableGPUs
 ) {
     // Remove user-defined configurations that don't exists at driver level
     auto deviceIterator = userDefinedDevices.begin();
@@ -158,6 +159,7 @@ void ConfigurationResolver::filterDriverUnsupportedOptions(
                                          });
 
         std::list<Glib::ustring> driverOptions;
+        Glib::ustring correctDriverName;
 
         if (driverConfig != driverAvailableOptions.end()) {
             driverOptions = Parser::convertSectionsToOptions(driverConfig->getSections());
@@ -167,10 +169,29 @@ void ConfigurationResolver::filterDriverUnsupportedOptions(
         for (auto &userDefinedApp : userDefinedApplications) {
             auto options = userDefinedApp->getOptions();
 
-            /*
-             * TODO: Check if this device has a device_id option
-             * If yes we need to match the options against the driver of the defined device instead of this driver
-             */
+            correctDriverName = driverConfig->getDriver();
+
+            auto deviceOption = std::find_if(options.begin(), options.end(),
+                                             [](const ApplicationOption_ptr &option_ptr) {
+                                                 return option_ptr->getName() == "device_id";
+                                             });
+
+            std::list<Glib::ustring> driverRealOptions;
+
+            if (deviceOption == options.end()) {
+                driverRealOptions = driverOptions;
+            } else {
+                Glib::ustring devicePCIId = (*deviceOption)->getValue();
+                /* Check if this GPU exists at all */
+                if (availableGPUs.count(devicePCIId) == 0) {
+                    driverRealOptions = driverOptions;
+                } else {
+                    GPUInfo_ptr gpuSelected = availableGPUs[devicePCIId];
+
+                    driverRealOptions = Parser::convertSectionsToOptions(gpuSelected->getSections());
+                    correctDriverName = gpuSelected->getDriverName();
+                }
+            }
 
             auto itr = options.begin();
             while (itr != options.end()) {
@@ -180,12 +201,12 @@ void ConfigurationResolver::filterDriverUnsupportedOptions(
                     continue;
                 }
 
-                auto driverSupports = std::find(driverOptions.begin(), driverOptions.end(), (*itr)->getName());
+                auto driverSupports = std::find(driverRealOptions.begin(), driverRealOptions.end(), (*itr)->getName());
 
-                if (driverSupports == driverOptions.end()) {
+                if (driverSupports == driverRealOptions.end()) {
                     std::cerr << Glib::ustring::compose(
                             _("Driver '%1' doesn't support option '%2' on application '%3'. Option removed."),
-                            driverConfig->getDriver(),
+                            correctDriverName,
                             (*itr)->getName(),
                             userDefinedApp->getName()
                     ) << std::endl;
