@@ -13,17 +13,18 @@
 namespace ConfigurationResolver {
     /**
      * Takes all the options set and filter out the options already defined system-wide
-     * Also filter out any empty application (applications which options are equal to system-wide or driver-default)
      * Filters also the options that have the value equal to driver-default
      * @param systemWideOptions
      * @param driverAvailableOptions
      * @param userDefinedOptions
+     * @param availableGPUs
      * @return A lista of new devices ready to be written to disk
      */
     std::list<Device_ptr> resolveOptionsForSave(
             const Device_ptr &,
             const std::list<DriverConfiguration> &,
-            const std::list<Device_ptr> &
+            const std::list<Device_ptr> &,
+            std::map<Glib::ustring, GPUInfo_ptr> &
     );
 
     /**

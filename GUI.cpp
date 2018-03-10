@@ -102,7 +102,8 @@ void GUI::onQuitPressed() {
 void GUI::onSavePressed() {
     std::cout << _("Generating final XML for saving...") << std::endl;
     auto resolvedOptions = ConfigurationResolver::resolveOptionsForSave(
-            this->systemWideConfiguration, this->driverConfiguration, this->userDefinedConfiguration
+            this->systemWideConfiguration, this->driverConfiguration, this->userDefinedConfiguration,
+            this->availableGPUs
     );
     auto rawXML = Writer::generateRawXml(resolvedOptions);
     std::cout << Glib::ustring::compose(_("Writing generated XML: %1"), rawXML) << std::endl;
