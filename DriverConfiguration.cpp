@@ -76,7 +76,7 @@ void DriverConfiguration::setDeviceId(uint16_t deviceId) {
     DriverConfiguration::deviceId = deviceId;
 }
 
-std::map<Glib::ustring, Glib::ustring> DriverConfiguration::getOptionsMap() {
+std::map<Glib::ustring, Glib::ustring> DriverConfiguration::getOptionsMap() const {
     std::map<Glib::ustring, Glib::ustring> optionMap;
 
     for (const auto &section : this->sections) {

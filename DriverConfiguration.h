@@ -29,7 +29,7 @@ public:
 
     std::list<std::pair<Glib::ustring, Glib::ustring>> getEnumValuesForOption(const Glib::ustring &);
 
-    std::map<Glib::ustring,Glib::ustring> getOptionsMap();
+    std::map<Glib::ustring,Glib::ustring> getOptionsMap() const;
 
     uint16_t getVendorId() const;
 
