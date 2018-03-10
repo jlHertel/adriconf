@@ -51,3 +51,13 @@ const Glib::ustring &Application::getDevicePCIId() const {
 void Application::setDevicePCIId(const Glib::ustring &devicePCIId) {
     Application::devicePCIId = devicePCIId;
 }
+
+std::map<Glib::ustring, Glib::ustring> Application::getOptionsAsMap() {
+    std::map<Glib::ustring, Glib::ustring> optionMap;
+
+    for(auto & option : this->options) {
+        optionMap[option->getName()] = option->getValue();
+    }
+
+    return optionMap;
+}

@@ -59,3 +59,15 @@ void GPUInfo::setSections(const std::list<Section> &sections) {
 bool GPUInfo::operator==(const GPUInfo &rhs) {
     return this->getDeviceId() == rhs.getDeviceId() && this->getVendorId() == rhs.getVendorId();
 }
+
+std::map<Glib::ustring, Glib::ustring> GPUInfo::getOptionsMap() {
+    std::map<Glib::ustring, Glib::ustring> optionMap;
+
+    for (const auto &section : this->sections) {
+        for (const auto &option : section.getOptions()) {
+            optionMap[option.getName()] = option.getDefaultValue();
+        }
+    }
+
+    return optionMap;
+}

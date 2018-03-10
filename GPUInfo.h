@@ -3,6 +3,7 @@
 
 #include <glibmm/ustring.h>
 #include <memory>
+#include <map>
 
 #include "Section.h"
 
@@ -46,6 +47,8 @@ public:
     const std::list<Section> &getSections() const;
 
     void setSections(const std::list<Section> &sections);
+
+    std::map<Glib::ustring,Glib::ustring> getOptionsMap();
 };
 
 typedef std::shared_ptr<GPUInfo> GPUInfo_ptr;

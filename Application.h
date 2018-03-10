@@ -3,6 +3,7 @@
 
 #include <glibmm/ustring.h>
 #include <list>
+#include <map>
 #include "ApplicationOption.h"
 #include <memory>
 
@@ -25,6 +26,8 @@ public:
     void setExecutable(Glib::ustring executable);
 
     std::list<ApplicationOption_ptr> &getOptions();
+
+    std::map<Glib::ustring, Glib::ustring> getOptionsAsMap();
 
     void addOption(ApplicationOption_ptr option);
 
