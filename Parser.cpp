@@ -51,7 +51,8 @@ Parser::parseAvailableConfiguration(const Glib::ustring &xml, const Glib::ustrin
         }
 
     } catch (const std::exception &ex) {
-        std::cerr << "Exception caught: " << ex.what() << std::endl;
+        std::cerr << "LibXML exception caught: " << ex.what() << std::endl;
+        std::cerr << "XML Parsed: " << xml << std::endl;
     }
 
     return availableSections;
