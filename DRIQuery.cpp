@@ -101,10 +101,13 @@ std::map<Glib::ustring, GPUInfo_ptr> DRIQuery::enumerateDRIDevices(const Glib::u
         auto driverOptions = (*(this->getDriverConfig))(gpu->getDriverName().c_str());
         Glib::ustring options(driverOptions);
 
-        auto parsedSections = Parser::parseAvailableConfiguration(options, locale);
-        gpu->setSections(parsedSections);
+        // If for some reason mesa is unable to query the options we simply skip this gpu
+        if(!options.empty()) {
+            auto parsedSections = Parser::parseAvailableConfiguration(options, locale);
+            gpu->setSections(parsedSections);
 
-        gpus[gpu->getPciId()] = gpu;
+            gpus[gpu->getPciId()] = gpu;
+        }
     }
 
     drmFreeDevices(enumeratedDevices, deviceCount);
