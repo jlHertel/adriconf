@@ -46,11 +46,13 @@ namespace ConfigurationResolver {
      * @param systemWideOptions
      * @param driverAvailableOptions
      * @param userDefinedOptions
+     * @param availableGPUs
      */
     void mergeOptionsForDisplay(
             const Device_ptr &,
             const std::list<DriverConfiguration> &,
-            std::list<Device_ptr> &
+            std::list<Device_ptr> &,
+            std::map<Glib::ustring, GPUInfo_ptr> &
     );
 
     /**

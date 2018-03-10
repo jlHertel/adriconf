@@ -38,6 +38,7 @@ std::list<Device_ptr> ConfigurationResolver::resolveOptionsForSave(
             mergedApp->setExecutable(userDefinedApplication->getExecutable());
             mergedApp->setName(userDefinedApplication->getName());
 
+            driverOptions = realDriverOptions;
             /* PRIME: Check if we should use the app-specific driver options */
             if (userDefinedApplication->getIsUsingPrime()) {
                 /* Check for empty because we set this value when no GPU is selected under prime */
@@ -50,8 +51,6 @@ std::list<Device_ptr> ConfigurationResolver::resolveOptionsForSave(
                     newMergedOption->setValue(userDefinedApplication->getDevicePCIId());
                     mergedApp->addOption(newMergedOption);
                 }
-            } else {
-                driverOptions = realDriverOptions;
             }
 
             Application_ptr systemWideApp = systemWideDevice->findApplication(userDefinedApplication->getExecutable());
@@ -228,7 +227,8 @@ void ConfigurationResolver::filterDriverUnsupportedOptions(
 void ConfigurationResolver::mergeOptionsForDisplay(
         const Device_ptr &systemWideDevice,
         const std::list<DriverConfiguration> &driverAvailableOptions,
-        std::list<Device_ptr> &userDefinedOptions
+        std::list<Device_ptr> &userDefinedOptions,
+        std::map<Glib::ustring, GPUInfo_ptr> &availableGPUs
 ) {
     for (const auto &driverConf : driverAvailableOptions) {
         /* Check if user-config has any config for this screen/driver */
@@ -250,29 +250,39 @@ void ConfigurationResolver::mergeOptionsForDisplay(
             userDefinedDevice = *userSearchDefinedDevice;
         }
 
-        std::list<DriverOption> driverOptions = Parser::convertSectionsToOptionsObject(driverConf.getSections());
+        std::map<Glib::ustring, Glib::ustring> realDriverOptions = driverConf.getOptionsMap();
+        std::map<Glib::ustring, Glib::ustring> driverOptions;
 
         std::list<Application_ptr> newDeviceApps = userDefinedDevice->getApplications();
 
         /* Check if the user-defined apps are missing any of the driver option */
         for (auto &userDefinedApp : newDeviceApps) {
-            /* TODO: If we are under PRIME we should add the prime-device options instead of this driver options */
+            driverOptions = realDriverOptions;
+            if (userDefinedApp->getIsUsingPrime()) {
+                /* Check for empty because we set this value when no GPU is selected under prime */
+                if (!userDefinedApp->getDevicePCIId().empty()) {
+                    driverOptions = availableGPUs[userDefinedApp->getDevicePCIId()]->getOptionsMap();
+                }
+            }
+
             for (const auto &driverDefinedOption : driverOptions) {
                 auto optionExists = std::find_if(userDefinedApp->getOptions().begin(),
                                                  userDefinedApp->getOptions().end(),
                                                  [&driverDefinedOption](const ApplicationOption_ptr &o) {
-                                                     return o->getName() == driverDefinedOption.getName();
+                                                     return o->getName() == driverDefinedOption.first;
                                                  });
                 /* Option doesn't exists, lets add it */
                 if (optionExists == userDefinedApp->getOptions().end()) {
                     ApplicationOption_ptr newDriverOpt = std::make_shared<ApplicationOption>();
-                    newDriverOpt->setName(driverDefinedOption.getName());
-                    newDriverOpt->setValue(driverDefinedOption.getDefaultValue());
+                    newDriverOpt->setName(driverDefinedOption.first);
+                    newDriverOpt->setValue(driverDefinedOption.second);
 
                     userDefinedApp->addOption(newDriverOpt);
                 }
             }
         }
+
+        driverOptions = realDriverOptions;
 
         /* Check if we can add any of the system-wide apps for this config */
         for (const auto &systemWideApp : systemWideDevice->getApplications()) {
@@ -290,13 +300,13 @@ void ConfigurationResolver::mergeOptionsForDisplay(
                     auto optionExists = std::find_if(systemWideApp->getOptions().begin(),
                                                      systemWideApp->getOptions().end(),
                                                      [&driverOptionObj](const ApplicationOption_ptr &a) {
-                                                         return driverOptionObj.getName() == a->getName();
+                                                         return driverOptionObj.first == a->getName();
                                                      });
 
                     if (optionExists == systemWideApp->getOptions().end()) {
                         ApplicationOption_ptr newDriverOpt = std::make_shared<ApplicationOption>();
-                        newDriverOpt->setName(driverOptionObj.getName());
-                        newDriverOpt->setValue(driverOptionObj.getDefaultValue());
+                        newDriverOpt->setName(driverOptionObj.first);
+                        newDriverOpt->setValue(driverOptionObj.second);
 
                         systemDefinedApp->addOption(newDriverOpt);
                     } else {
@@ -325,8 +335,8 @@ void ConfigurationResolver::mergeOptionsForDisplay(
             auto defaultAppOptions = defaultApplication->getOptions();
             for (auto &driverOptionObj : driverOptions) {
                 ApplicationOption_ptr newDriverOpt = std::make_shared<ApplicationOption>();
-                newDriverOpt->setName(driverOptionObj.getName());
-                newDriverOpt->setValue(driverOptionObj.getDefaultValue());
+                newDriverOpt->setName(driverOptionObj.first);
+                newDriverOpt->setValue(driverOptionObj.second);
 
                 defaultApplication->addOption(newDriverOpt);
             }

@@ -20,15 +20,16 @@ GUI::GUI() : currentApp(nullptr), currentDriver(nullptr) {
     this->availableGPUs = configurationLoader.loadAvailableGPUs(this->locale);
     this->isPrimeSetup = this->availableGPUs.size() > 1;
 
+    /* For each app setup their prime driver name */
+    ConfigurationResolver::updatePrimeApplications(
+            this->userDefinedConfiguration,
+            this->availableGPUs
+    );
+
     /* Merge all the options in a complete structure */
     ConfigurationResolver::mergeOptionsForDisplay(
             this->systemWideConfiguration,
             this->driverConfiguration,
-            this->userDefinedConfiguration
-    );
-
-    /* For each app setup their prime driver name */
-    ConfigurationResolver::updatePrimeApplications(
             this->userDefinedConfiguration,
             this->availableGPUs
     );
