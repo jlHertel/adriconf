@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-15 17:19-0200\n"
+"POT-Creation-Date: 2018-03-17 19:13-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,7 +17,13 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../ConfigurationResolver.cpp:148
+#: ../ConfigurationResolver.cpp:143
+msgid ""
+"User-defined driver '%1' on screen '%2' doesn't have a driver loaded on "
+"system. Configuration removed."
+msgstr ""
+
+#: ../ConfigurationResolver.cpp:211
 msgid ""
 "Driver '%1' doesn't support option '%2' on application '%3'. Option removed."
 msgstr ""
@@ -34,118 +40,134 @@ msgstr ""
 msgid "_Help"
 msgstr ""
 
-#: ../GUI.cpp:44
-msgid "Main window object is not in glade file!"
-msgstr ""
-
-#: ../GUI.cpp:68
-msgid "Add new"
-msgstr ""
-
-#: ../GUI.cpp:73
-msgid "Remove current Application"
-msgstr ""
-
-#: ../GUI.cpp:100
-msgid "Generating final XML for saving..."
-msgstr ""
-
-#: ../GUI.cpp:105
-msgid "Writing generated XML: %1"
-msgstr ""
-
-#: ../GUI.cpp:123
-msgid "Current language code is %1"
-msgstr ""
-
-#: ../GUI.cpp:166
-msgid "Driver %1 not found"
-msgstr ""
-
-#: ../GUI.cpp:233
-msgid "Application %1 not found "
-msgstr ""
-
-#: ../GUI.cpp:246
-msgid "Driver %1 not found "
-msgstr ""
-
-#: ../GUI.cpp:262
-msgid "Notebook object not found in glade file!"
-msgstr ""
-
-#: ../GUI.cpp:299
-msgid "Option %1 doesn't exist in application %2. Merge failed"
-msgstr ""
-
-#: ../GUI.cpp:444
-msgid "An advanced DRI configurator tool."
-msgstr ""
-
-#: ../GUI.cpp:448
-msgid "Source Code"
-msgstr ""
-
-#: ../GUI.cpp:462
-msgid "Unexpected response code from about dialog: %1"
-msgstr ""
-
-#: ../GUI.cpp:479
-msgid "The default application cannot be removed."
-msgstr ""
-
-#: ../GUI.cpp:480
-msgid "The driver needs a default configuration."
-msgstr ""
-
-#: ../GUI.cpp:493
-msgid "Application removed successfully."
-msgstr ""
-
-#: ../GUI.cpp:494
-msgid "The application has been removed."
-msgstr ""
-
-#: ../GUI.cpp:502
-msgid "New Application"
-msgstr ""
-
-#: ../GUI.cpp:513
-msgid "Application name"
-msgstr ""
-
-#: ../GUI.cpp:529
-msgid "Application executable"
-msgstr ""
-
-#: ../GUI.cpp:545
-msgid "Driver"
-msgstr ""
-
-#: ../GUI.cpp:559
-msgid "Save"
-msgstr ""
-
-#: ../GUI.cpp:560
+#: ../DriConf.glade.h:4
 msgid "Cancel"
 msgstr ""
 
-#: ../GUI.cpp:565
-msgid "Application successfully added."
+#: ../DriConf.glade.h:5
+msgid "Application name:"
 msgstr ""
 
-#: ../GUI.cpp:566
-msgid "The application was successfully added. Reloading default app options."
+#: ../DriConf.glade.h:6
+msgid "Application executable:"
 msgstr ""
 
-#: ../GUI.cpp:579
+#: ../DriConf.glade.h:7
+msgid "Driver:"
+msgstr ""
+
+#: ../GUI.cpp:51
+msgid "Main window object is not in glade file!"
+msgstr ""
+
+#: ../GUI.cpp:75
+msgid "Add new"
+msgstr ""
+
+#: ../GUI.cpp:80
+msgid "Remove current Application"
+msgstr ""
+
+#: ../GUI.cpp:104
+msgid "Generating final XML for saving..."
+msgstr ""
+
+#: ../GUI.cpp:110
+msgid "Writing generated XML: %1"
+msgstr ""
+
+#: ../GUI.cpp:128
+msgid "Current language code is %1"
+msgstr ""
+
+#: ../GUI.cpp:169
+msgid "Driver %1 not found"
+msgstr ""
+
+#: ../GUI.cpp:232
+msgid "Application %1 not found "
+msgstr ""
+
+#: ../GUI.cpp:245
+msgid "Driver %1 not found "
+msgstr ""
+
+#: ../GUI.cpp:261
+msgid "Notebook object not found in glade file!"
+msgstr ""
+
+#: ../GUI.cpp:305
+msgid "Option %1 doesn't exist in application %2. Merge failed"
+msgstr ""
+
+#: ../GUI.cpp:486
+msgid "An advanced DRI configurator tool."
+msgstr ""
+
+#: ../GUI.cpp:490
+msgid "Source Code"
+msgstr ""
+
+#: ../GUI.cpp:504
+msgid "Unexpected response code from about dialog: %1"
+msgstr ""
+
+#: ../GUI.cpp:521
+msgid "The default application cannot be removed."
+msgstr ""
+
+#: ../GUI.cpp:522
+msgid "The driver needs a default configuration."
+msgstr ""
+
+#: ../GUI.cpp:535
+msgid "Application removed successfully."
+msgstr ""
+
+#: ../GUI.cpp:536
+msgid "The application has been removed."
+msgstr ""
+
+#: ../GUI.cpp:551
+msgid "Add Application dialog is not in glade file!"
+msgstr ""
+
+#: ../GUI.cpp:557
+msgid "Add Application app name widget is not in glade file!"
+msgstr ""
+
+#: ../GUI.cpp:563
+msgid "Add Application app executable widget is not in glade file!"
+msgstr ""
+
+#: ../GUI.cpp:569
+msgid "Add Application app driver widget is not in glade file!"
+msgstr ""
+
+#: ../GUI.cpp:592
 msgid "Validation error"
 msgstr ""
 
-#: ../GUI.cpp:580
+#: ../GUI.cpp:594
 msgid "You need to specify the application name, executable and driver."
 msgstr ""
 
-#: ../GUI.cpp:609
-msgid "Undefined response returned by dialog: %1"
+#: ../GUI.cpp:616
+msgid "Application successfully added."
+msgstr ""
+
+#: ../GUI.cpp:617
+msgid "The application was successfully added. Reloading default app options."
+msgstr ""
+
+#: ../DRIQuery.cpp:17
+msgid "Error getting function pointers. LibGL must be too old."
+msgstr ""
+
+#: ../DRIQuery.cpp:27
+msgid "Couldn't open X display"
+msgstr ""
+
+#: ../DRIQuery.cpp:106 ../DRIQuery.cpp:115
+msgid "Unable to extract configuration for driver %1"
 msgstr ""
