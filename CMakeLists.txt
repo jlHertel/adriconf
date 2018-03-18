@@ -3,7 +3,7 @@ project(adriconf)
 
 set(CMAKE_CXX_STANDARD 14)
 
-set(SOURCE_FILES main.cpp Device.cpp Device.h
+set(SOURCE_FILES Device.cpp Device.h
         DriverOption.cpp DriverOption.h
         Section.cpp Section.h
         Parser.cpp Parser.h
@@ -53,6 +53,11 @@ find_package(Gettext REQUIRED)
 include_directories(${INTL_INCLUDE_DIRS})
 link_directories(${INTL_LIBRARY_DIRS})
 
+# GTEST
+pkg_check_modules(GTEST REQUIRED gtest)
+include_directories(${GTEST_INCLUDE_DIRS})
+link_directories(${GTEST_LIBRARY_DIRS})
+
 #INTL INSTALL TRANSLATIONS
 FIND_PROGRAM(GETTEXT_MSGFMT_EXECUTABLE msgfmt)
 
@@ -91,7 +96,7 @@ ENDIF(NOT GETTEXT_MSGFMT_EXECUTABLE)
 
 
 # Define the executable itself
-add_executable(adriconf ${SOURCE_FILES})
+add_executable(adriconf main.cpp ${SOURCE_FILES})
 
 target_link_libraries(adriconf ${GTKMM_LIBRARIES})
 target_link_libraries(adriconf ${Boost_LOCALE_LIBRARIES})
@@ -115,3 +120,20 @@ add_custom_command(
         COMMAND ${CMAKE_COMMAND} -E copy
         ${CMAKE_SOURCE_DIR}/DriConf.glade
         ${CMAKE_CURRENT_BINARY_DIR}/)
+
+enable_testing()
+
+add_executable(runUnitTests ${SOURCE_FILES} tests/testMain.cpp tests/ConfigurationResolverTest.cpp)
+target_link_libraries(runUnitTests gtest gtest_main)
+target_link_libraries(runUnitTests ${GTKMM_LIBRARIES})
+target_link_libraries(runUnitTests ${Boost_LOCALE_LIBRARIES})
+target_link_libraries(runUnitTests ${LibXML++_LIBRARIES})
+target_link_libraries(runUnitTests ${X11_LIBRARIES})
+target_link_libraries(runUnitTests ${OPENGL_gl_LIBRARY})
+target_link_libraries(runUnitTests ${DRM_LIBRARIES})
+target_link_libraries(runUnitTests ${PCILIB_LIBRARIES})
+
+add_test(
+        NAME runUnitTests
+        COMMAND runUnitTests
+)
