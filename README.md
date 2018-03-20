@@ -19,8 +19,8 @@ TODOs
 Some things that still need to be done:
 
 - Properly support a system without X (wayland systems?) Currently the glX functions mandate a Xlib display object. There must be another way to get the driver options
-- Properly deal with PRIME setups (how do we get more information from the driver? hardware ids?)
-- Tests? Implementing testing for the software would be very nice
+- Properly test PRIME setups (PRIME is already available but still not very largely tested due to lack of hardware/configurations)
+- Tests? Currently only one function is tested. We need to implement tests for the whole software.
 
 Author
 ------
