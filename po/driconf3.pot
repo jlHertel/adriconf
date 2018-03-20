@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-17 19:13-0300\n"
+"POT-Creation-Date: 2018-03-20 20:13-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -96,67 +96,79 @@ msgstr ""
 msgid "Notebook object not found in glade file!"
 msgstr ""
 
-#: ../GUI.cpp:305
+#: ../GUI.cpp:306
 msgid "Option %1 doesn't exist in application %2. Merge failed"
 msgstr ""
 
-#: ../GUI.cpp:486
+#: ../GUI.cpp:438
+msgid "Use default GPU of screen"
+msgstr ""
+
+#: ../GUI.cpp:465
+msgid "Force Application to use GPU"
+msgstr ""
+
+#: ../GUI.cpp:480
+msgid "PRIME Settings"
+msgstr ""
+
+#: ../GUI.cpp:584
 msgid "An advanced DRI configurator tool."
 msgstr ""
 
-#: ../GUI.cpp:490
+#: ../GUI.cpp:588
 msgid "Source Code"
 msgstr ""
 
-#: ../GUI.cpp:504
+#: ../GUI.cpp:602
 msgid "Unexpected response code from about dialog: %1"
 msgstr ""
 
-#: ../GUI.cpp:521
+#: ../GUI.cpp:619
 msgid "The default application cannot be removed."
 msgstr ""
 
-#: ../GUI.cpp:522
+#: ../GUI.cpp:620
 msgid "The driver needs a default configuration."
 msgstr ""
 
-#: ../GUI.cpp:535
+#: ../GUI.cpp:633
 msgid "Application removed successfully."
 msgstr ""
 
-#: ../GUI.cpp:536
+#: ../GUI.cpp:634
 msgid "The application has been removed."
 msgstr ""
 
-#: ../GUI.cpp:551
+#: ../GUI.cpp:649
 msgid "Add Application dialog is not in glade file!"
 msgstr ""
 
-#: ../GUI.cpp:557
+#: ../GUI.cpp:655
 msgid "Add Application app name widget is not in glade file!"
 msgstr ""
 
-#: ../GUI.cpp:563
+#: ../GUI.cpp:661
 msgid "Add Application app executable widget is not in glade file!"
 msgstr ""
 
-#: ../GUI.cpp:569
+#: ../GUI.cpp:667
 msgid "Add Application app driver widget is not in glade file!"
 msgstr ""
 
-#: ../GUI.cpp:592
+#: ../GUI.cpp:690
 msgid "Validation error"
 msgstr ""
 
-#: ../GUI.cpp:594
+#: ../GUI.cpp:692
 msgid "You need to specify the application name, executable and driver."
 msgstr ""
 
-#: ../GUI.cpp:616
+#: ../GUI.cpp:714
 msgid "Application successfully added."
 msgstr ""
 
-#: ../GUI.cpp:617
+#: ../GUI.cpp:715
 msgid "The application was successfully added. Reloading default app options."
 msgstr ""
 

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-17 19:07-0300\n"
+"POT-Creation-Date: 2018-03-20 20:13-0300\n"
 "PO-Revision-Date: 2018-01-30 19:15+0100\n"
 "Last-Translator: gogo <trebelnik2@gmail.com>\n"
 "Language-Team: \n"
@@ -101,72 +101,85 @@ msgstr "Upravljački program %1 nije pronađen "
 msgid "Notebook object not found in glade file!"
 msgstr "Objekta bilješke nema u glade datoteci!"
 
-#: ../GUI.cpp:305
+#: ../GUI.cpp:306
 msgid "Option %1 doesn't exist in application %2. Merge failed"
 msgstr "Mogućnost %1 ne postoji u aplikaciji %2. Spajanje neuspjelo"
 
-#: ../GUI.cpp:486
+#: ../GUI.cpp:438
+msgid "Use default GPU of screen"
+msgstr ""
+
+#: ../GUI.cpp:465
+#, fuzzy
+msgid "Force Application to use GPU"
+msgstr "Nova aplikacija"
+
+#: ../GUI.cpp:480
+msgid "PRIME Settings"
+msgstr ""
+
+#: ../GUI.cpp:584
 msgid "An advanced DRI configurator tool."
 msgstr "Napredni alat za DRI podešavanje."
 
-#: ../GUI.cpp:490
+#: ../GUI.cpp:588
 msgid "Source Code"
 msgstr "Izvorni kôd"
 
-#: ../GUI.cpp:504
+#: ../GUI.cpp:602
 msgid "Unexpected response code from about dialog: %1"
 msgstr "Neočekivani odgovor kôda iz dijaloga o programu: %1"
 
-#: ../GUI.cpp:521
+#: ../GUI.cpp:619
 msgid "The default application cannot be removed."
 msgstr "Zadana aplikacija se ne može ukloniti."
 
-#: ../GUI.cpp:522
+#: ../GUI.cpp:620
 msgid "The driver needs a default configuration."
 msgstr "Upravljački program zahtijeva zadano podešavanje."
 
-#: ../GUI.cpp:535
+#: ../GUI.cpp:633
 msgid "Application removed successfully."
 msgstr "Aplikacija je uklonjena uspješno."
 
-#: ../GUI.cpp:536
+#: ../GUI.cpp:634
 msgid "The application has been removed."
 msgstr "Aplikacija je uklonjena."
 
-#: ../GUI.cpp:551
+#: ../GUI.cpp:649
 #, fuzzy
 msgid "Add Application dialog is not in glade file!"
 msgstr "Glavnog objekta prozora nema u glade datoteci!"
 
-#: ../GUI.cpp:557
+#: ../GUI.cpp:655
 #, fuzzy
 msgid "Add Application app name widget is not in glade file!"
 msgstr "Glavnog objekta prozora nema u glade datoteci!"
 
-#: ../GUI.cpp:563
+#: ../GUI.cpp:661
 #, fuzzy
 msgid "Add Application app executable widget is not in glade file!"
 msgstr "Glavnog objekta prozora nema u glade datoteci!"
 
-#: ../GUI.cpp:569
+#: ../GUI.cpp:667
 #, fuzzy
 msgid "Add Application app driver widget is not in glade file!"
 msgstr "Glavnog objekta prozora nema u glade datoteci!"
 
-#: ../GUI.cpp:592
+#: ../GUI.cpp:690
 msgid "Validation error"
 msgstr "Greška provjere"
 
-#: ../GUI.cpp:594
+#: ../GUI.cpp:692
 msgid "You need to specify the application name, executable and driver."
 msgstr ""
 "Morate navesti naziv aplikacije, izvršnu datoteku i upravljački program."
 
-#: ../GUI.cpp:616
+#: ../GUI.cpp:714
 msgid "Application successfully added."
 msgstr "Aplikacija je dodana uspješno."
 
-#: ../GUI.cpp:617
+#: ../GUI.cpp:715
 msgid "The application was successfully added. Reloading default app options."
 msgstr ""
 "Aplikacija je uspješno dodana. Ponovno učitavanje zadanih mogućnosti "
@@ -183,9 +196,6 @@ msgstr ""
 #: ../DRIQuery.cpp:106 ../DRIQuery.cpp:115
 msgid "Unable to extract configuration for driver %1"
 msgstr ""
-
-#~ msgid "New Application"
-#~ msgstr "Nova aplikacija"
 
 #~ msgid "Save"
 #~ msgstr "Spremi"

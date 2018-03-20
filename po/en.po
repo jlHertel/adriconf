@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-17 19:07-0300\n"
+"POT-Creation-Date: 2018-03-20 20:12-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -101,71 +101,84 @@ msgstr "Driver %1 not found "
 msgid "Notebook object not found in glade file!"
 msgstr "Notebook object not found in glade file!"
 
-#: ../GUI.cpp:305
+#: ../GUI.cpp:306
 msgid "Option %1 doesn't exist in application %2. Merge failed"
 msgstr "Option %1 doesn't exist in application %2. Merge failed"
 
-#: ../GUI.cpp:486
+#: ../GUI.cpp:438
+msgid "Use default GPU of screen"
+msgstr "Use default GPU of screen"
+
+#: ../GUI.cpp:465
+#, fuzzy
+msgid "Force Application to use GPU"
+msgstr "Application %1 not found "
+
+#: ../GUI.cpp:480
+msgid "PRIME Settings"
+msgstr "PRIME Settings"
+
+#: ../GUI.cpp:584
 msgid "An advanced DRI configurator tool."
 msgstr "An advanced DRI configurator tool."
 
-#: ../GUI.cpp:490
+#: ../GUI.cpp:588
 msgid "Source Code"
 msgstr "Source Code"
 
-#: ../GUI.cpp:504
+#: ../GUI.cpp:602
 msgid "Unexpected response code from about dialog: %1"
 msgstr "Unexpected response code from about dialog: %1"
 
-#: ../GUI.cpp:521
+#: ../GUI.cpp:619
 msgid "The default application cannot be removed."
 msgstr "The default application cannot be removed."
 
-#: ../GUI.cpp:522
+#: ../GUI.cpp:620
 msgid "The driver needs a default configuration."
 msgstr "The driver needs a default configuration."
 
-#: ../GUI.cpp:535
+#: ../GUI.cpp:633
 msgid "Application removed successfully."
 msgstr "Application removed successfully."
 
-#: ../GUI.cpp:536
+#: ../GUI.cpp:634
 msgid "The application has been removed."
 msgstr "The application has been removed."
 
-#: ../GUI.cpp:551
+#: ../GUI.cpp:649
 #, fuzzy
 msgid "Add Application dialog is not in glade file!"
 msgstr "Main window object is not in glade file!"
 
-#: ../GUI.cpp:557
+#: ../GUI.cpp:655
 #, fuzzy
 msgid "Add Application app name widget is not in glade file!"
 msgstr "Main window object is not in glade file!"
 
-#: ../GUI.cpp:563
+#: ../GUI.cpp:661
 #, fuzzy
 msgid "Add Application app executable widget is not in glade file!"
 msgstr "Main window object is not in glade file!"
 
-#: ../GUI.cpp:569
+#: ../GUI.cpp:667
 #, fuzzy
 msgid "Add Application app driver widget is not in glade file!"
 msgstr "Main window object is not in glade file!"
 
-#: ../GUI.cpp:592
+#: ../GUI.cpp:690
 msgid "Validation error"
 msgstr "Validation error"
 
-#: ../GUI.cpp:594
+#: ../GUI.cpp:692
 msgid "You need to specify the application name, executable and driver."
 msgstr "You need to specify the application name, executable and driver."
 
-#: ../GUI.cpp:616
+#: ../GUI.cpp:714
 msgid "Application successfully added."
 msgstr "Application successfully added."
 
-#: ../GUI.cpp:617
+#: ../GUI.cpp:715
 msgid "The application was successfully added. Reloading default app options."
 msgstr "The application was successfully added. Reloading default app options."
 
