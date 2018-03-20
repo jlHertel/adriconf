@@ -371,3 +371,18 @@ void ConfigurationResolver::updatePrimeApplications(std::list<Device_ptr> &userD
         }
     }
 }
+
+void ConfigurationResolver::addMissingDriverOptions(Application_ptr app,
+                                                    std::map<Glib::ustring, Glib::ustring> driverOptions) {
+
+    std::map<Glib::ustring, Glib::ustring> appOptions = app->getOptionsAsMap();
+    for (auto driverOpt : driverOptions) {
+        if(appOptions.count(driverOpt.first) == 0) {
+            ApplicationOption_ptr newOption = std::make_shared<ApplicationOption>();
+            newOption->setName(driverOpt.first);
+            newOption->setValue(driverOpt.second);
+
+            app->addOption(newOption);
+        }
+    }
+}

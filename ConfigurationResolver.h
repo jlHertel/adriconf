@@ -59,6 +59,8 @@ namespace ConfigurationResolver {
      * For each application check if it has a device_id defined and update its driver name accordingly
      */
     void updatePrimeApplications(std::list<Device_ptr> &, const std::map<Glib::ustring, GPUInfo_ptr> &);
+
+    void addMissingDriverOptions(Application_ptr app, std::map<Glib::ustring, Glib::ustring> driverOptions);
 };
 
 

@@ -285,6 +285,7 @@ void GUI::drawApplicationOptions() {
 
     /* Draw each section as a tab */
     for (auto &section : definedSections) {
+
         Gtk::Box *tabBox = Gtk::manage(new Gtk::Box);
         tabBox->set_visible(true);
         tabBox->set_orientation(Gtk::Orientation::ORIENTATION_VERTICAL);
@@ -417,6 +418,68 @@ void GUI::drawApplicationOptions() {
 
         pNotebook->append_page(*scrolledWindow, section.getDescription());
     }
+
+    /* If we have more than one GPU then we are under PRIME */
+    if (this->availableGPUs.size() > 1) {
+        Gtk::Box *primeTabBox = Gtk::manage(new Gtk::Box);
+        primeTabBox->set_visible(true);
+        primeTabBox->set_orientation(Gtk::Orientation::ORIENTATION_VERTICAL);
+        primeTabBox->set_margin_start(8);
+        primeTabBox->set_margin_end(8);
+        primeTabBox->set_margin_top(10);
+
+        Gtk::ComboBox *gpuCombo = Gtk::manage(new Gtk::ComboBox);
+        gpuCombo->set_visible(true);
+
+        Glib::RefPtr<Gtk::ListStore> listStore = Gtk::ListStore::create(this->comboColumns);
+        gpuCombo->set_model(listStore);
+
+        Gtk::TreeModel::Row firstRow = *(listStore->append());
+        firstRow[this->comboColumns.optionName] = _("Use default GPU of screen");
+        firstRow[this->comboColumns.optionValue] = "";
+
+        if (!this->currentApp->getIsUsingPrime()) {
+            gpuCombo->set_active(firstRow);
+        }
+
+        for (auto const &enumOption : this->availableGPUs) {
+            Gtk::TreeModel::Row row = *(listStore->append());
+            row[this->comboColumns.optionName] = enumOption.second->getDeviceName();
+            row[this->comboColumns.optionValue] = enumOption.second->getPciId();
+
+            if (this->currentApp->getDevicePCIId() == enumOption.second->getPciId()) {
+                gpuCombo->set_active(row);
+            }
+        }
+
+        gpuCombo->pack_start(this->comboColumns.optionName);
+
+        gpuCombo->signal_changed().connect(sigc::bind<Glib::ustring>(
+                sigc::mem_fun(this, &GUI::onComboboxChanged), "device_id"
+        ));
+
+        this->currentComboBoxes["device_id"] = gpuCombo;
+
+
+        Gtk::Label *label = Gtk::manage(new Gtk::Label);
+        label->set_label(_("Force Application to use GPU"));
+        label->set_visible(true);
+        label->set_justify(Gtk::Justification::JUSTIFY_LEFT);
+        label->set_line_wrap(true);
+        label->set_margin_start(10);
+
+        Gtk::Box *optionBox = Gtk::manage(new Gtk::Box);
+        optionBox->set_visible(true);
+        optionBox->set_orientation(Gtk::Orientation::ORIENTATION_HORIZONTAL);
+        optionBox->set_margin_bottom(10);
+
+        optionBox->pack_end(*gpuCombo, false, false);
+        optionBox->pack_start(*label, false, true);
+        primeTabBox->add(*optionBox);
+
+        pNotebook->append_page(*primeTabBox, _("PRIME Settings"));
+    }
+
 }
 
 void GUI::onCheckboxChanged(Glib::ustring optionName) {
@@ -452,16 +515,51 @@ void GUI::onFakeCheckBoxChanged(Glib::ustring optionName) {
 void GUI::onComboboxChanged(Glib::ustring optionName) {
     auto eventSelectedAppOptions = this->currentApp->getOptions();
 
-    auto currentOption = std::find_if(eventSelectedAppOptions.begin(), eventSelectedAppOptions.end(),
-                                      [&optionName](const ApplicationOption_ptr &a) {
-                                          return a->getName() == optionName;
-                                      });
+    auto currentOptionPtr = std::find_if(eventSelectedAppOptions.begin(), eventSelectedAppOptions.end(),
+                                         [&optionName](const ApplicationOption_ptr &a) {
+                                             return a->getName() == optionName;
+                                         });
+
+    ApplicationOption_ptr currentOption = nullptr;
+
+    /* If the PRIME option doesn't exist, lets add it */
+    if (optionName == "device_id" && currentOptionPtr == eventSelectedAppOptions.end()) {
+        ApplicationOption_ptr primeOpt = std::make_shared<ApplicationOption>();
+        primeOpt->setName("device_id");
+        this->currentApp->addOption(primeOpt);
+
+        currentOption = primeOpt;
+    } else {
+        currentOption = *currentOptionPtr;
+    }
 
     Gtk::TreeModel::iterator iter = this->currentComboBoxes[optionName]->get_active();
     if (iter) {
         Gtk::TreeModel::Row selectedRow = *iter;
 
-        (*currentOption)->setValue(selectedRow[comboColumns.optionValue]);
+        currentOption->setValue(selectedRow[comboColumns.optionValue]);
+
+
+        if (optionName == "device_id") {
+            /* Reset to default */
+            if (selectedRow[comboColumns.optionValue] == "") {
+                this->currentApp->setIsUsingPrime(false);
+                this->currentApp->setDevicePCIId("");
+            } else {
+                /* Set this app as a prime-enabled app */
+                this->currentApp->setPrimeDriverName(
+                        this->availableGPUs[selectedRow[comboColumns.optionValue]]->getDriverName()
+                );
+                this->currentApp->setIsUsingPrime(true);
+                this->currentApp->setDevicePCIId(selectedRow[comboColumns.optionValue]);
+
+                /* Add the missing options of the new driver */
+                auto newDriverOptions = this->availableGPUs[selectedRow[comboColumns.optionValue]]->getOptionsMap();
+                ConfigurationResolver::addMissingDriverOptions(this->currentApp, newDriverOptions);
+
+                /* TODO: We should trigget a full-redraw of the available options, but how? */
+            }
+        }
     }
 }
 
