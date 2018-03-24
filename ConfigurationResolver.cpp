@@ -136,11 +136,11 @@ void ConfigurationResolver::filterDriverUnsupportedOptions(
                                              );
                                          });
 
-        std::list<Glib::ustring> driverOptions;
+        std::map<Glib::ustring, Glib::ustring> driverOptions, driverRealOptions;
         Glib::ustring correctDriverName;
 
         if (driverConfig != driverAvailableOptions.end()) {
-            driverOptions = Parser::convertSectionsToOptions(driverConfig->getSections());
+            driverOptions = driverConfig->getOptionsMap();
         }
 
         auto userDefinedApplications = userDefinedDevice->getApplications();
@@ -154,8 +154,6 @@ void ConfigurationResolver::filterDriverUnsupportedOptions(
                                                  return option_ptr->getName() == "device_id";
                                              });
 
-            std::list<Glib::ustring> driverRealOptions;
-
             if (deviceOption == options.end()) {
                 driverRealOptions = driverOptions;
             } else {
@@ -166,7 +164,7 @@ void ConfigurationResolver::filterDriverUnsupportedOptions(
                 } else {
                     GPUInfo_ptr gpuSelected = availableGPUs[devicePCIId];
 
-                    driverRealOptions = Parser::convertSectionsToOptions(gpuSelected->getSections());
+                    driverRealOptions = gpuSelected->getOptionsMap();
                     correctDriverName = gpuSelected->getDriverName();
                 }
             }
@@ -179,9 +177,7 @@ void ConfigurationResolver::filterDriverUnsupportedOptions(
                     continue;
                 }
 
-                auto driverSupports = std::find(driverRealOptions.begin(), driverRealOptions.end(), (*itr)->getName());
-
-                if (driverSupports == driverRealOptions.end()) {
+                if (driverRealOptions.count((*itr)->getName()) == 0) {
                     std::cerr << Glib::ustring::compose(
                             _("Driver '%1' doesn't support option '%2' on application '%3'. Option removed."),
                             correctDriverName,

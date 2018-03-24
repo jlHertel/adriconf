@@ -194,27 +194,3 @@ Application_ptr Parser::parseApplication(xmlpp::Node *application) {
 
     return app;
 }
-
-std::list<Glib::ustring> Parser::convertSectionsToOptions(const std::list<Section> &sections) {
-    std::list<Glib::ustring> options;
-
-    for (auto &section : sections) {
-        for (const auto &option : section.getOptions()) {
-            options.emplace_back(option.getName());
-        }
-    }
-
-    return options;
-}
-
-std::list<DriverOption> Parser::convertSectionsToOptionsObject(const std::list<Section> &sections) {
-    std::list<DriverOption> options;
-
-    for (const auto &section : sections) {
-        for (const auto &option : section.getOptions()) {
-            options.emplace_back(option);
-        }
-    }
-
-    return options;
-}

@@ -15,10 +15,6 @@ namespace Parser {
     std::list<Device_ptr> parseDevices(Glib::ustring &xml);
 
     Application_ptr parseApplication(xmlpp::Node *application);
-
-    std::list<DriverOption> convertSectionsToOptionsObject(const std::list<Section> &sections);
-
-    std::list<Glib::ustring> convertSectionsToOptions(const std::list<Section> &sections);
 };
 
 #endif
