@@ -62,6 +62,8 @@ namespace ConfigurationResolver {
 
     void addMissingDriverOptions(Application_ptr app, std::map<Glib::ustring, Glib::ustring> driverOptions);
 
+    void addMissingApplications(const Device_ptr &sourceDevice, Device_ptr &targetDevice);
+
     void removeInvalidDrivers(const std::list<DriverConfiguration> &availableDrivers,
                               std::list<Device_ptr> &userDefinedDevices);
 };
