@@ -163,7 +163,7 @@ void GUI::drawApplicationSelectionMenu() {
                 // Locate the driver config
                 auto foundDriver = std::find_if(this->driverConfiguration.begin(), this->driverConfiguration.end(),
                                                 [driver](const DriverConfiguration &d) {
-                                                    return d.getDriver() == driver->getDriver();
+                                                    return d.getDriverName() == driver->getDriver();
                                                 });
                 if (foundDriver == this->driverConfiguration.end()) {
                     std::cerr << Glib::ustring::compose(_("Driver %1 not found"), driver) << std::endl;
@@ -189,7 +189,7 @@ void GUI::drawApplicationSelectionMenu() {
                     appMenuItem->set_group(appRadioGroup);
                 }
 
-                if (this->currentDriver->getDriver() == driver->getDriver() && possibleApp->getExecutable().empty()) {
+                if (this->currentDriver->getDriverName() == driver->getDriver() && possibleApp->getExecutable().empty()) {
                     appMenuItem->set_active(true);
 
                     this->currentApp = possibleApp;
@@ -211,7 +211,7 @@ void GUI::drawApplicationSelectionMenu() {
 }
 
 void GUI::onApplicationSelected(const Glib::ustring driverName, const Glib::ustring applicationName) {
-    if (driverName == this->currentDriver->getDriver() && applicationName == this->currentApp->getExecutable()) {
+    if (driverName == this->currentDriver->getDriverName() && applicationName == this->currentApp->getExecutable()) {
         return;
     }
 
@@ -238,7 +238,7 @@ void GUI::onApplicationSelected(const Glib::ustring driverName, const Glib::ustr
 
     auto driverSelected = std::find_if(this->driverConfiguration.begin(), this->driverConfiguration.end(),
                                        [driverName](const DriverConfiguration &d) {
-                                           return d.getDriver() == driverName;
+                                           return d.getDriverName() == driverName;
                                        });
 
     if (driverSelected == this->driverConfiguration.end()) {
@@ -623,7 +623,7 @@ void GUI::onRemoveApplicationPressed() {
     }
 
     for (auto &device : this->userDefinedConfiguration) {
-        if (device->getDriver() == this->currentDriver->getDriver()) {
+        if (device->getDriver() == this->currentDriver->getDriverName()) {
             device->getApplications().remove_if([this](const Application_ptr &app) {
                 return app->getExecutable() == this->currentApp->getExecutable();
             });
@@ -674,7 +674,7 @@ void GUI::onAddApplicationPressed() {
     pAppDriver->remove_all();
 
     for (const auto &driverConfig : this->driverConfiguration) {
-        pAppDriver->append(driverConfig.getDriver());
+        pAppDriver->append(driverConfig.getDriverName());
     }
 
     pAppDriver->set_active(0);
@@ -697,7 +697,7 @@ void GUI::onAddApplicationPressed() {
         Application_ptr newApplication;
 
         for (const auto &driver : this->driverConfiguration) {
-            if (driver.getDriver() == pAppDriver->get_active_text()) {
+            if (driver.getDriverName() == pAppDriver->get_active_text()) {
                 newApplication = driver.generateApplication();
             }
         }

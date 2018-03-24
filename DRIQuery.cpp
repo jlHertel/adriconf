@@ -45,7 +45,7 @@ std::list<DriverConfiguration> DRIQuery::queryDriverConfigurationOptions(const G
         config.setDeviceId(static_cast<uint16_t>(pciID));
 
         auto driverName = (*(this->getScreenDriver))(display, i);
-        config.setDriver(driverName);
+        config.setDriverName(driverName);
 
         auto driverOptions = (*(this->getDriverConfig))(driverName);
         Glib::ustring options(driverOptions);

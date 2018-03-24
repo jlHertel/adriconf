@@ -6,6 +6,7 @@
 #include <map>
 
 #include "Section.h"
+#include "Application.h"
 
 class GPUInfo {
 private:
@@ -48,7 +49,13 @@ public:
 
     void setSections(const std::list<Section> &sections);
 
-    std::map<Glib::ustring,Glib::ustring> getOptionsMap();
+    std::map<Glib::ustring,Glib::ustring> getOptionsMap() const;
+
+    /* Sort the options inside each section to be more user-friendly */
+    void sortSectionOptions();
+
+    /* Generate a new application based on this driver-supported options */
+    Application_ptr generateApplication() const;
 };
 
 typedef std::shared_ptr<GPUInfo> GPUInfo_ptr;

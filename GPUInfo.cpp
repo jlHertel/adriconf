@@ -60,7 +60,7 @@ bool GPUInfo::operator==(const GPUInfo &rhs) {
     return this->getDeviceId() == rhs.getDeviceId() && this->getVendorId() == rhs.getVendorId();
 }
 
-std::map<Glib::ustring, Glib::ustring> GPUInfo::getOptionsMap() {
+std::map<Glib::ustring, Glib::ustring> GPUInfo::getOptionsMap() const {
     std::map<Glib::ustring, Glib::ustring> optionMap;
 
     for (const auto &section : this->sections) {
@@ -70,4 +70,29 @@ std::map<Glib::ustring, Glib::ustring> GPUInfo::getOptionsMap() {
     }
 
     return optionMap;
+}
+
+void GPUInfo::sortSectionOptions() {
+    for (auto &section : this->sections) {
+        section.sortOptions();
+    }
+}
+
+Application_ptr GPUInfo::generateApplication() const {
+    Application_ptr app = std::make_shared<Application>();
+    std::list<ApplicationOption_ptr> options;
+
+    for (const auto &section : this->sections) {
+        for (const auto &option : section.getOptions()) {
+            auto driverOpt = std::make_shared<ApplicationOption>();
+            driverOpt->setName(option.getName());
+            driverOpt->setValue(option.getDefaultValue());
+
+            options.emplace_back(driverOpt);
+        }
+    }
+
+    app->setOptions(options);
+
+    return app;
 }

@@ -21,7 +21,7 @@ std::list<Device_ptr> ConfigurationResolver::resolveOptionsForSave(
         auto driverConfig = std::find_if(driverAvailableOptions.begin(), driverAvailableOptions.end(),
                                          [&userDefinedDevice](const DriverConfiguration &d) {
                                              return d.getScreen() == userDefinedDevice->getScreen()
-                                                    && d.getDriver() == userDefinedDevice->getDriver();
+                                                    && d.getDriverName() == userDefinedDevice->getDriver();
                                          });
 
         std::map<Glib::ustring, Glib::ustring> realDriverOptions;
@@ -132,7 +132,7 @@ void ConfigurationResolver::filterDriverUnsupportedOptions(
                                            [&currentUserDefinedDriver, &currentUserDefinedScreen](
                                                    const DriverConfiguration &d) {
                                                return (
-                                                       d.getDriver() == currentUserDefinedDriver
+                                                       d.getDriverName() == currentUserDefinedDriver
                                                        &&
                                                        d.getScreen() == currentUserDefinedScreen
                                                );
@@ -157,7 +157,7 @@ void ConfigurationResolver::filterDriverUnsupportedOptions(
                                              return (
                                                      d.getScreen() == userDefinedDevice->getScreen()
                                                      &&
-                                                     d.getDriver() == userDefinedDevice->getDriver()
+                                                     d.getDriverName() == userDefinedDevice->getDriver()
                                              );
                                          });
 
@@ -172,7 +172,7 @@ void ConfigurationResolver::filterDriverUnsupportedOptions(
         for (auto &userDefinedApp : userDefinedApplications) {
             auto options = userDefinedApp->getOptions();
 
-            correctDriverName = driverConfig->getDriver();
+            correctDriverName = driverConfig->getDriverName();
 
             auto deviceOption = std::find_if(options.begin(), options.end(),
                                              [](const ApplicationOption_ptr &option_ptr) {
@@ -234,7 +234,7 @@ void ConfigurationResolver::mergeOptionsForDisplay(
         /* Check if user-config has any config for this screen/driver */
         auto userSearchDefinedDevice = std::find_if(userDefinedOptions.begin(), userDefinedOptions.end(),
                                                     [&driverConf](const Device_ptr &d) {
-                                                        return d->getDriver() == driverConf.getDriver()
+                                                        return d->getDriver() == driverConf.getDriverName()
                                                                && d->getScreen() == driverConf.getScreen();
                                                     });
         Device_ptr userDefinedDevice = nullptr;
@@ -243,7 +243,7 @@ void ConfigurationResolver::mergeOptionsForDisplay(
 
         if (userSearchDefinedDevice == userDefinedOptions.end()) {
             userDefinedDevice = std::make_shared<Device>();
-            userDefinedDevice->setDriver(driverConf.getDriver());
+            userDefinedDevice->setDriver(driverConf.getDriverName());
             userDefinedDevice->setScreen(driverConf.getScreen());
             addDeviceToList = true;
         } else {
