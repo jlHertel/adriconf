@@ -148,3 +148,154 @@ TEST_F(RemoveInvalidDriversTest, correctScreenAndDriver) {
 
     EXPECT_EQ(2, userDefinedDevices.size());
 }
+
+
+class FilterDriverUnsupportedOptionsTest : public ::testing::Test {
+public:
+    std::list<DriverConfiguration> availableDrivers;
+    std::map<Glib::ustring, GPUInfo_ptr> availableGPUs;
+
+    FilterDriverUnsupportedOptionsTest() {
+        DriverConfiguration conf1;
+        conf1.setDriverName("i965");
+        conf1.setScreen(0);
+
+        Section performanceSection;
+        performanceSection.setDescription("Performance");
+
+        DriverOption boReuse;
+        boReuse.setName("bo_reuse");
+        boReuse.setDefaultValue("0");
+        performanceSection.addOption(boReuse);
+
+        DriverOption mesaNoError;
+        mesaNoError.setName("mesa_no_error");
+        mesaNoError.setDefaultValue("0");
+        performanceSection.addOption(mesaNoError);
+
+        std::list<Section> sections;
+        sections.emplace_back(performanceSection);
+        conf1.setSections(sections);
+
+        availableDrivers.emplace_back(conf1);
+
+        /* Setup GPUs */
+        GPUInfo_ptr radeon = std::make_shared<GPUInfo>();
+        radeon->setPciId("pci-radeon");
+        radeon->setDriverName("r600g");
+        radeon->setSections(sections);
+
+
+        GPUInfo_ptr intel = std::make_shared<GPUInfo>();
+        intel->setPciId("pci-intel");
+        intel->setDriverName("i965");
+
+        Section imageQuality;
+        imageQuality.setDescription("Image Quality");
+
+        DriverOption preciseTrig;
+        preciseTrig.setName("precise_trig");
+        preciseTrig.setDefaultValue("false");
+        imageQuality.addOption(preciseTrig);
+
+        std::list<Section> sectionsIntel;
+        sectionsIntel.emplace_back(imageQuality);
+        intel->setSections(sectionsIntel);
+
+
+        availableGPUs["pci-radeon"] = radeon;
+        availableGPUs["pci-intel"] = intel;
+    }
+};
+
+TEST_F(FilterDriverUnsupportedOptionsTest, invalidOption) {
+    std::list<Device_ptr> userDefinedDevices;
+    Device_ptr d = std::make_shared<Device>();
+    d->setDriver("i965");
+    d->setScreen(0);
+
+    Application_ptr app = std::make_shared<Application>();
+    app->setName("App Name");
+    ApplicationOption_ptr opt = std::make_shared<ApplicationOption>();
+    opt->setName("invalid_name");
+
+    app->addOption(opt);
+    d->addApplication(app);
+    userDefinedDevices.emplace_back(d);
+
+    ConfigurationResolver::filterDriverUnsupportedOptions(availableDrivers, userDefinedDevices, availableGPUs);
+
+    EXPECT_EQ(0, app->getOptions().size());
+}
+
+TEST_F(FilterDriverUnsupportedOptionsTest, validOption) {
+    std::list<Device_ptr> userDefinedDevices;
+    Device_ptr d = std::make_shared<Device>();
+    d->setDriver("i965");
+    d->setScreen(0);
+
+    Application_ptr app = std::make_shared<Application>();
+    app->setName("App Name");
+    ApplicationOption_ptr opt = std::make_shared<ApplicationOption>();
+    opt->setName("bo_reuse");
+
+    app->addOption(opt);
+    d->addApplication(app);
+    userDefinedDevices.emplace_back(d);
+
+    ConfigurationResolver::filterDriverUnsupportedOptions(availableDrivers, userDefinedDevices, availableGPUs);
+
+    EXPECT_EQ(1, app->getOptions().size());
+}
+
+TEST_F(FilterDriverUnsupportedOptionsTest, invalidOptionPrime) {
+    std::list<Device_ptr> userDefinedDevices;
+    Device_ptr d = std::make_shared<Device>();
+    d->setDriver("i965");
+    d->setScreen(0);
+
+    Application_ptr app = std::make_shared<Application>();
+    app->setName("App Name");
+    ApplicationOption_ptr opt = std::make_shared<ApplicationOption>();
+    opt->setName("invalid_name");
+    app->addOption(opt);
+
+    ApplicationOption_ptr optDevice = std::make_shared<ApplicationOption>();
+    optDevice->setName("device_id");
+    optDevice->setValue("pci-radeon");
+    app->addOption(optDevice);
+
+
+    d->addApplication(app);
+    userDefinedDevices.emplace_back(d);
+
+    ConfigurationResolver::filterDriverUnsupportedOptions(availableDrivers, userDefinedDevices, availableGPUs);
+
+    EXPECT_EQ(1, app->getOptions().size());
+}
+
+TEST_F(FilterDriverUnsupportedOptionsTest, validOptionPrime) {
+    std::list<Device_ptr> userDefinedDevices;
+    Device_ptr d = std::make_shared<Device>();
+    d->setDriver("i965");
+    d->setScreen(0);
+
+    Application_ptr app = std::make_shared<Application>();
+    app->setName("App Name");
+    ApplicationOption_ptr opt = std::make_shared<ApplicationOption>();
+    opt->setName("precise_trig");
+    app->addOption(opt);
+
+    ApplicationOption_ptr optDevice = std::make_shared<ApplicationOption>();
+    optDevice->setName("device_id");
+    optDevice->setValue("pci-intel");
+    app->addOption(optDevice);
+
+
+    d->addApplication(app);
+    userDefinedDevices.emplace_back(d);
+
+    ConfigurationResolver::filterDriverUnsupportedOptions(availableDrivers, userDefinedDevices, availableGPUs);
+
+    EXPECT_EQ(2, app->getOptions().size());
+}
