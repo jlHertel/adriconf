@@ -61,6 +61,9 @@ namespace ConfigurationResolver {
     void updatePrimeApplications(std::list<Device_ptr> &, const std::map<Glib::ustring, GPUInfo_ptr> &);
 
     void addMissingDriverOptions(Application_ptr app, std::map<Glib::ustring, Glib::ustring> driverOptions);
+
+    void removeInvalidDrivers(const std::list<DriverConfiguration> &availableDrivers,
+                              std::list<Device_ptr> &userDefinedDevices);
 };
 
 

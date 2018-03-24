@@ -124,32 +124,7 @@ void ConfigurationResolver::filterDriverUnsupportedOptions(
         std::map<Glib::ustring, GPUInfo_ptr> &availableGPUs
 ) {
     // Remove user-defined configurations that don't exists at driver level
-    auto deviceIterator = userDefinedDevices.begin();
-    while (deviceIterator != userDefinedDevices.end()) {
-        Glib::ustring currentUserDefinedDriver((*deviceIterator)->getDriver());
-        int currentUserDefinedScreen = (*deviceIterator)->getScreen();
-        auto driverSupports = std::find_if(driverAvailableOptions.begin(), driverAvailableOptions.end(),
-                                           [&currentUserDefinedDriver, &currentUserDefinedScreen](
-                                                   const DriverConfiguration &d) {
-                                               return (
-                                                       d.getDriverName() == currentUserDefinedDriver
-                                                       &&
-                                                       d.getScreen() == currentUserDefinedScreen
-                                               );
-                                           });
-
-        if (driverSupports == driverAvailableOptions.end()) {
-            std::cerr << Glib::ustring::compose(
-                    _("User-defined driver '%1' on screen '%2' doesn't have a driver loaded on system. Configuration removed."),
-                    currentUserDefinedDriver,
-                    currentUserDefinedScreen
-            ) << std::endl;
-
-            deviceIterator = userDefinedDevices.erase(deviceIterator);
-        } else {
-            ++deviceIterator;
-        }
-    }
+    ConfigurationResolver::removeInvalidDrivers(driverAvailableOptions, userDefinedDevices);
 
     for (auto &userDefinedDevice : userDefinedDevices) {
         auto driverConfig = std::find_if(driverAvailableOptions.begin(), driverAvailableOptions.end(),
@@ -377,12 +352,44 @@ void ConfigurationResolver::addMissingDriverOptions(Application_ptr app,
 
     std::map<Glib::ustring, Glib::ustring> appOptions = app->getOptionsAsMap();
     for (auto driverOpt : driverOptions) {
-        if(appOptions.count(driverOpt.first) == 0) {
+        if (appOptions.count(driverOpt.first) == 0) {
             ApplicationOption_ptr newOption = std::make_shared<ApplicationOption>();
             newOption->setName(driverOpt.first);
             newOption->setValue(driverOpt.second);
 
             app->addOption(newOption);
+        }
+    }
+}
+
+void ConfigurationResolver::removeInvalidDrivers(
+        const std::list<DriverConfiguration> &availableDrivers,
+        std::list<Device_ptr> &userDefinedDevices
+) {
+    auto deviceIterator = userDefinedDevices.begin();
+    while (deviceIterator != userDefinedDevices.end()) {
+        Glib::ustring currentUserDefinedDriver((*deviceIterator)->getDriver());
+        int currentUserDefinedScreen = (*deviceIterator)->getScreen();
+        auto driverSupports = std::find_if(availableDrivers.begin(), availableDrivers.end(),
+                                           [&currentUserDefinedDriver, &currentUserDefinedScreen](
+                                                   const DriverConfiguration &d) {
+                                               return (
+                                                       d.getDriverName() == currentUserDefinedDriver
+                                                       &&
+                                                       d.getScreen() == currentUserDefinedScreen
+                                               );
+                                           });
+
+        if (driverSupports == availableDrivers.end()) {
+            std::cerr << Glib::ustring::compose(
+                    _("User-defined driver '%1' on screen '%2' doesn't have a driver loaded on system. Configuration removed."),
+                    currentUserDefinedDriver,
+                    currentUserDefinedScreen
+            ) << std::endl;
+
+            deviceIterator = userDefinedDevices.erase(deviceIterator);
+        } else {
+            ++deviceIterator;
         }
     }
 }
