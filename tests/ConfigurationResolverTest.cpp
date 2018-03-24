@@ -299,3 +299,89 @@ TEST_F(FilterDriverUnsupportedOptionsTest, validOptionPrime) {
 
     EXPECT_EQ(2, app->getOptions().size());
 }
+
+
+class AddMissingApplicationsTest : public ::testing::Test {
+public:
+    Device_ptr sourceDevice;
+
+    AddMissingApplicationsTest() {
+        sourceDevice = std::make_shared<Device>();
+
+        Application_ptr app1 = std::make_shared<Application>();
+        app1->setName("App 1");
+        app1->setExecutable("app1");
+
+        ApplicationOption_ptr option1 = std::make_shared<ApplicationOption>();
+        option1->setName("option_1");
+        option1->setValue("value_1");
+        app1->addOption(option1);
+
+        ApplicationOption_ptr option2 = std::make_shared<ApplicationOption>();
+        option2->setName("option_2");
+        option2->setValue("value_2");
+        app1->addOption(option2);
+
+        sourceDevice->addApplication(app1);
+
+
+        Application_ptr app2 = std::make_shared<Application>();
+        app2->setName("App 2");
+        app2->setExecutable("app2");
+
+        ApplicationOption_ptr option3 = std::make_shared<ApplicationOption>();
+        option3->setName("option_3");
+        option3->setValue("value_3");
+        app2->addOption(option3);
+
+        ApplicationOption_ptr option4 = std::make_shared<ApplicationOption>();
+        option4->setName("option_4");
+        option4->setValue("value_4");
+        app2->addOption(option4);
+
+        sourceDevice->addApplication(app2);
+    }
+};
+
+TEST_F(AddMissingApplicationsTest, missingApplication) {
+    Device_ptr targetDevice = std::make_shared<Device>();
+
+    Application_ptr app1 = std::make_shared<Application>();
+    app1->setName("App Test");
+    app1->setExecutable("tester");
+
+    ApplicationOption_ptr option1 = std::make_shared<ApplicationOption>();
+    option1->setName("option_1");
+    option1->setValue("value_1");
+    app1->addOption(option1);
+
+    ApplicationOption_ptr option2 = std::make_shared<ApplicationOption>();
+    option2->setName("option_2");
+    option2->setValue("value_2");
+    app1->addOption(option2);
+
+    sourceDevice->addApplication(app1);
+
+    ConfigurationResolver::addMissingApplications(sourceDevice, targetDevice);
+
+    EXPECT_EQ(3, targetDevice->getApplications().size());
+}
+
+TEST_F(AddMissingApplicationsTest, existingApplication) {
+    Device_ptr targetDevice = std::make_shared<Device>();
+
+    Application_ptr app1 = std::make_shared<Application>();
+    app1->setName("App Test");
+    app1->setExecutable("app2");
+
+    ApplicationOption_ptr option1 = std::make_shared<ApplicationOption>();
+    option1->setName("option_test");
+    option1->setValue("value_teste");
+    app1->addOption(option1);
+
+    sourceDevice->addApplication(app1);
+
+    ConfigurationResolver::addMissingApplications(sourceDevice, targetDevice);
+
+    EXPECT_EQ(2, targetDevice->getApplications().size());
+}
