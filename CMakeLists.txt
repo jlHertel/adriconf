@@ -111,13 +111,6 @@ set_source_files_properties(${CMAKE_SOURCE_DIR}/resources.c PROPERTIES
     GENERATED TRUE
 )
 
-# Move the glade file
-add_custom_command(
-        TARGET adriconf POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy
-        ${CMAKE_SOURCE_DIR}/DriConf.glade
-        ${CMAKE_CURRENT_BINARY_DIR}/)
-
 # GTEST
 enable_testing()
 find_package(GTest REQUIRED)
