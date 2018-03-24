@@ -14,6 +14,8 @@ set(SOURCE_FILES Device.cpp Device.h
         Writer.cpp Writer.h GUI.cpp GUI.h ConfigurationLoader.cpp ConfigurationLoader.h ApplicationOption.cpp ApplicationOption.h
         resources.c GPUInfo.cpp GPUInfo.h PCIDatabaseQuery.cpp PCIDatabaseQuery.h ComboBoxColumn.h)
 
+set(SOURCE_TESTS tests/ConfigurationResolverTest.cpp)
+
 find_package(PkgConfig REQUIRED)
 find_package(OpenGL REQUIRED)
 
@@ -52,11 +54,6 @@ find_package (Intl REQUIRED)
 find_package(Gettext REQUIRED)
 include_directories(${INTL_INCLUDE_DIRS})
 link_directories(${INTL_LIBRARY_DIRS})
-
-# GTEST
-pkg_check_modules(GTEST REQUIRED gtest)
-include_directories(${GTEST_INCLUDE_DIRS})
-link_directories(${GTEST_LIBRARY_DIRS})
 
 #INTL INSTALL TRANSLATIONS
 FIND_PROGRAM(GETTEXT_MSGFMT_EXECUTABLE msgfmt)
@@ -121,10 +118,12 @@ add_custom_command(
         ${CMAKE_SOURCE_DIR}/DriConf.glade
         ${CMAKE_CURRENT_BINARY_DIR}/)
 
+# GTEST
 enable_testing()
+find_package(GTest REQUIRED)
 
-add_executable(runUnitTests ${SOURCE_FILES} tests/testMain.cpp tests/ConfigurationResolverTest.cpp)
-target_link_libraries(runUnitTests gtest gtest_main)
+add_executable(runUnitTests ${SOURCE_FILES} ${SOURCE_TESTS})
+target_link_libraries(runUnitTests GTest::GTest GTest::Main)
 target_link_libraries(runUnitTests ${GTKMM_LIBRARIES})
 target_link_libraries(runUnitTests ${Boost_LOCALE_LIBRARIES})
 target_link_libraries(runUnitTests ${LibXML++_LIBRARIES})
@@ -132,8 +131,3 @@ target_link_libraries(runUnitTests ${X11_LIBRARIES})
 target_link_libraries(runUnitTests ${OPENGL_gl_LIBRARY})
 target_link_libraries(runUnitTests ${DRM_LIBRARIES})
 target_link_libraries(runUnitTests ${PCILIB_LIBRARIES})
-
-add_test(
-        NAME runUnitTests
-        COMMAND runUnitTests
-)
