@@ -81,7 +81,7 @@ set_source_files_properties(${CMAKE_SOURCE_DIR}/resources.c PROPERTIES
 enable_testing()
 find_package(GTest REQUIRED)
 
-add_executable(runUnitTests ${SOURCE_FILES} ${SOURCE_TESTS})
+add_executable(runUnitTests EXCLUDE_FROM_ALL ${SOURCE_FILES} ${SOURCE_TESTS})
 target_link_libraries(runUnitTests GTest::GTest GTest::Main)
 target_link_libraries(runUnitTests ${GTKMM_LIBRARIES})
 target_link_libraries(runUnitTests ${Boost_LOCALE_LIBRARIES})
