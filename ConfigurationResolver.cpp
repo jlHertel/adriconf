@@ -224,10 +224,10 @@ void ConfigurationResolver::mergeOptionsForDisplay(
         std::map<Glib::ustring, Glib::ustring> realDriverOptions = driverConf.getOptionsMap();
         std::map<Glib::ustring, Glib::ustring> driverOptions;
 
-        std::list<Application_ptr> newDeviceApps = userDefinedDevice->getApplications();
-
         /* Check if we can add any of the system-wide apps for this config */
         ConfigurationResolver::addMissingApplications(systemWideDevice, userDefinedDevice);
+
+        std::list<Application_ptr> newDeviceApps = userDefinedDevice->getApplications();
 
         /* Check if the user-defined apps are missing any of the driver option */
         for (auto &userDefinedApp : newDeviceApps) {
