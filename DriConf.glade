@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.20.4 -->
+<!-- Generated with glade 3.22.1 -->
 <interface>
   <requires lib="gtk+" version="3.20"/>
   <object class="GtkApplicationWindow" id="mainwindow">
     <property name="can_focus">False</property>
+    <child type="titlebar">
+      <placeholder/>
+    </child>
     <child>
       <object class="GtkBox">
         <property name="visible">True</property>
@@ -30,6 +33,7 @@
                         <property name="can_focus">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
+                        <accelerator key="s" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                     </child>
                     <child>
@@ -39,6 +43,7 @@
                         <property name="can_focus">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
+                        <accelerator key="q" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                       </object>
                     </child>
                   </object>
@@ -121,9 +126,6 @@
         </child>
       </object>
     </child>
-    <child type="titlebar">
-      <placeholder/>
-    </child>
   </object>
   <object class="GtkDialog" id="newAppDialog">
     <property name="width_request">350</property>
@@ -135,6 +137,9 @@
     <property name="destroy_with_parent">True</property>
     <property name="type_hint">dialog</property>
     <property name="transient_for">mainwindow</property>
+    <child type="titlebar">
+      <placeholder/>
+    </child>
     <child internal-child="vbox">
       <object class="GtkBox">
         <property name="can_focus">False</property>
@@ -321,8 +326,5 @@
       <action-widget response="10">button2</action-widget>
       <action-widget response="50">button1</action-widget>
     </action-widgets>
-    <child type="titlebar">
-      <placeholder/>
-    </child>
   </object>
 </interface>

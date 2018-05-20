@@ -69,16 +69,31 @@ GUI::GUI() : currentApp(nullptr), currentDriver(nullptr) {
         pSaveAction->signal_activate().connect(sigc::mem_fun(this, &GUI::onSavePressed));
     }
 
+    Glib::RefPtr <Gtk::AccelGroup> accelGroup = this->pWindow->get_accel_group();
     /* Create the menu itens */
     this->pMenuAddApplication = Gtk::manage(new Gtk::MenuItem);
     this->pMenuAddApplication->set_visible(true);
     this->pMenuAddApplication->set_label(_("Add new"));
     this->pMenuAddApplication->signal_activate().connect(sigc::mem_fun(this, &GUI::onAddApplicationPressed));
+    this->pMenuAddApplication->add_accelerator(
+            "activate",
+            accelGroup,
+            gdk_keyval_from_name("n"),
+            Gdk::ModifierType::CONTROL_MASK,
+            Gtk::AccelFlags::ACCEL_MASK
+    );
 
     this->pMenuRemoveApplication = Gtk::manage(new Gtk::MenuItem);
     this->pMenuRemoveApplication->set_visible(true);
     this->pMenuRemoveApplication->set_label(_("Remove current Application"));
     this->pMenuRemoveApplication->signal_activate().connect(sigc::mem_fun(this, &GUI::onRemoveApplicationPressed));
+    this->pMenuRemoveApplication->add_accelerator(
+            "activate",
+            accelGroup,
+            gdk_keyval_from_name("d"),
+            Gdk::ModifierType::CONTROL_MASK,
+            Gtk::AccelFlags::ACCEL_MASK
+    );
 
     /* Extract & generate the menu with the applications */
     this->drawApplicationSelectionMenu();
@@ -123,7 +138,7 @@ void GUI::setupLocale() {
     std::locale l = gen("");
     std::locale::global(l);
     std::cout.imbue(l);
-    bindtextdomain("adriconf","/usr/share/locale");
+    bindtextdomain("adriconf", "/usr/share/locale");
     textdomain("adriconf");
 
     Glib::ustring langCode(std::use_facet<boost::locale::info>(l).language());
@@ -192,7 +207,8 @@ void GUI::drawApplicationSelectionMenu() {
                     appMenuItem->set_group(appRadioGroup);
                 }
 
-                if (this->currentDriver->getDriverName() == driver->getDriver() && possibleApp->getExecutable().empty()) {
+                if (this->currentDriver->getDriverName() == driver->getDriver() &&
+                    possibleApp->getExecutable().empty()) {
                     appMenuItem->set_active(true);
 
                     this->currentApp = possibleApp;
@@ -352,7 +368,7 @@ void GUI::drawApplicationOptions() {
                 Gtk::ComboBox *optionCombo = Gtk::manage(new Gtk::ComboBox);
                 optionCombo->set_visible(true);
 
-                Glib::RefPtr<Gtk::ListStore> listStore = Gtk::ListStore::create(this->comboColumns);
+                Glib::RefPtr <Gtk::ListStore> listStore = Gtk::ListStore::create(this->comboColumns);
                 optionCombo->set_model(listStore);
 
 
@@ -434,7 +450,7 @@ void GUI::drawApplicationOptions() {
         Gtk::ComboBox *gpuCombo = Gtk::manage(new Gtk::ComboBox);
         gpuCombo->set_visible(true);
 
-        Glib::RefPtr<Gtk::ListStore> listStore = Gtk::ListStore::create(this->comboColumns);
+        Glib::RefPtr <Gtk::ListStore> listStore = Gtk::ListStore::create(this->comboColumns);
         gpuCombo->set_model(listStore);
 
         Gtk::TreeModel::Row firstRow = *(listStore->append());
@@ -575,7 +591,8 @@ void GUI::onNumberEntryChanged(Glib::ustring optionName) {
                                       });
 
     auto enteredValue = this->currentSpinButtons[optionName]->get_value();
-    Glib::ustring enteredValueStr(std::to_string((int) enteredValue));
+    Glib::ustring
+    enteredValueStr(std::to_string((int) enteredValue));
     (*currentOption)->setValue(enteredValueStr);
 }
 
