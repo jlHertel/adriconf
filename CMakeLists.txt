@@ -17,6 +17,7 @@ set(SOURCE_FILES Device.cpp Device.h
 set(SOURCE_TESTS tests/ConfigurationResolverTest.cpp)
 
 find_package(PkgConfig REQUIRED)
+set(OpenGL_GL_PREFERENCE "GLVND")
 find_package(OpenGL REQUIRED)
 
 # GTKMM
@@ -66,6 +67,9 @@ target_link_libraries(adriconf ${Boost_LOCALE_LIBRARIES})
 target_link_libraries(adriconf ${LibXML++_LIBRARIES})
 target_link_libraries(adriconf ${X11_LIBRARIES})
 target_link_libraries(adriconf ${OPENGL_gl_LIBRARY})
+if(OpenGL_GLX_FOUND)
+    target_link_libraries(adriconf ${OPENGL_glx_LIBRARY})
+endif()
 target_link_libraries(adriconf ${DRM_LIBRARIES})
 target_link_libraries(adriconf ${PCILIB_LIBRARIES})
 
