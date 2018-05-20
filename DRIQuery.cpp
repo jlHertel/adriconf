@@ -87,6 +87,13 @@ std::map<Glib::ustring, GPUInfo_ptr> DRIQuery::enumerateDRIDevices(const Glib::u
         drmVersionPtr versionPtr = drmGetVersion(fd);
 
         gpu->setDriverName(versionPtr->name);
+        /* LibDRM returns the kernel-level driver name
+         * This is wrong for AMD cards, because at kernel it's called amdgpu and at mesa-level it is radeonsi
+         * This is small fix to try to solve this issue
+         */
+        if(gpu->getDriverName() == "amdgpu") {
+            gpu->setDriverName("radeonsi");
+        }
 
         drmFreeVersion(versionPtr);
         close(fd);
