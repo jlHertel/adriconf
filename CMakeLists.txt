@@ -76,6 +76,7 @@ target_link_libraries(adriconf ${PCILIB_LIBRARIES})
 add_custom_command(OUTPUT ${CMAKE_SOURCE_DIR}/resources.c
     COMMAND glib-compile-resources adriconf.gresource.xml --target=resources.c --generate-source
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    DEPENDS  ${CMAKE_SOURCE_DIR}/DriConf.glade
 )
 set_source_files_properties(${CMAKE_SOURCE_DIR}/resources.c PROPERTIES
     GENERATED TRUE
