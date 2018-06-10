@@ -26,7 +26,7 @@ include_directories(${GTKMM_INCLUDE_DIRS})
 link_directories(${GTKMM_LIBRARY_DIRS})
 
 # BOOST
-find_package(Boost 1.60 COMPONENTS locale)
+find_package(Boost 1.60 REQUIRED COMPONENTS locale)
 include_directories(${Boost_INCLUDE_DIRS})
 link_directories(${Boost_LIBRARY_DIRS})
 
