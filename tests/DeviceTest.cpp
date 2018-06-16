@@ -59,6 +59,7 @@ public:
     Device_ptr d;
 
     DeviceApplicationTest() {
+        d = std::make_shared<Device>();
         Application_ptr testApp1 = std::make_shared<Application>();
         testApp1->setName("app1");
         testApp1->setExecutable("app1-executable");
