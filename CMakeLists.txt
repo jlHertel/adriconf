@@ -14,7 +14,9 @@ set(SOURCE_FILES Device.cpp Device.h
         Writer.cpp Writer.h GUI.cpp GUI.h ConfigurationLoader.cpp ConfigurationLoader.h ApplicationOption.cpp ApplicationOption.h
         resources.c GPUInfo.cpp GPUInfo.h PCIDatabaseQuery.cpp PCIDatabaseQuery.h ComboBoxColumn.h)
 
-set(SOURCE_TESTS tests/ConfigurationResolverTest.cpp)
+set(SOURCE_TESTS tests/ConfigurationResolverTest.cpp
+                 tests/DeviceTest.cpp
+)
 
 find_package(PkgConfig REQUIRED)
 set(OpenGL_GL_PREFERENCE "GLVND")
