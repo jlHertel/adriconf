@@ -98,11 +98,8 @@ TEST_F (ApplicationTest, optionsAsMapTest) {
 
     ASSERT_EQ(2, options.size());
 
-    bool found = true, found1 = true;
-    if (optMap.find("fancy-option") == optMap.end()) found = false;
-    EXPECT_TRUE(found);
-    if (optMap.find("locale-option") == optMap.end()) found1 = false;
-    EXPECT_TRUE(found1);
+    EXPECT_TRUE(optMap.find("fancy-option") != optMap.end());
+    EXPECT_TRUE(optMap.find("locale-option") != optMap.end());
 }
 
 TEST_F (ApplicationTest, primeTest) {
