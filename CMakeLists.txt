@@ -17,6 +17,7 @@ set(SOURCE_FILES Device.cpp Device.h
 set(SOURCE_TESTS tests/ConfigurationResolverTest.cpp
                  tests/DeviceTest.cpp
                  tests/ApplicationTest.cpp
+                 tests/ApplicationOptionTest.cpp
 )
 
 find_package(PkgConfig REQUIRED)
