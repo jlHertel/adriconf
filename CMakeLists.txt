@@ -35,7 +35,7 @@ include_directories(${Boost_INCLUDE_DIRS})
 link_directories(${Boost_LIBRARY_DIRS})
 
 # LIBXML
-pkg_check_modules(LibXML++ REQUIRED libxml++-3.0)
+pkg_check_modules(LibXML++ REQUIRED libxml++-2.6)
 include_directories(${LibXML++_INCLUDE_DIRS})
 link_directories(${LibXML++_LIBRARY_DIRS})
 
