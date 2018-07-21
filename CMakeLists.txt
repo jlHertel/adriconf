@@ -19,6 +19,7 @@ set(SOURCE_TESTS tests/ConfigurationResolverTest.cpp
                  tests/ApplicationTest.cpp
                  tests/ApplicationOptionTest.cpp
                  tests/DriverConfigurationTest.cpp
+                 tests/DriverOptionTest.cpp
 )
 
 find_package(PkgConfig REQUIRED)
