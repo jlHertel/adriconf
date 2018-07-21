@@ -6,6 +6,7 @@
 #include "Device.h"
 #include <libxml++/libxml++.h>
 #include <list>
+#include <iostream>
 
 namespace Parser {
     std::list<Section> parseAvailableConfiguration(const Glib::ustring &xml, const Glib::ustring &currentLocale);

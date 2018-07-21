@@ -1,7 +1,6 @@
 #ifndef DRICONF3_OPTION_H
 #define DRICONF3_OPTION_H
 
-#include <iostream>
 #include <glibmm/ustring.h>
 #include <list>
 
