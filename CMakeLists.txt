@@ -21,6 +21,7 @@ set(SOURCE_TESTS tests/ConfigurationResolverTest.cpp
                  tests/DriverConfigurationTest.cpp
                  tests/DriverOptionTest.cpp
                  tests/SectionTest.cpp
+                 tests/GPUInfoTest.cpp
 )
 
 find_package(PkgConfig REQUIRED)
