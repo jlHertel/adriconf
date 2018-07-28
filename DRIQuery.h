@@ -21,12 +21,15 @@ typedef const char *glXQueryExtensionsString_t(Display *dpy, int screen);
 
 typedef Bool *glXQueryRenderer_t(Display *dpy, int screen, int renderer, int attribute, unsigned int *value);
 
+typedef const char *glGetString_t(GLenum name);
+
 class DRIQuery {
 private:
     glXGetScreenDriver_t *getScreenDriver;
     glXGetDriverConfig_t *getDriverConfig;
     glXQueryRenderer_t *getRendererInfo;
-    glXQueryExtensionsString_t *getExtensionsString;
+    glXQueryExtensionsString_t *getGlxExtensionsString;
+    glGetString_t *getGlExtensionsString;
 
 public:
     DRIQuery();

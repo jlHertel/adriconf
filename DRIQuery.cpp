@@ -13,7 +13,8 @@ DRIQuery::DRIQuery() {
     this->getScreenDriver = (glXGetScreenDriver_t *) glXGetProcAddress((const GLubyte *) "glXGetScreenDriver");
     this->getDriverConfig = (glXGetDriverConfig_t *) glXGetProcAddress((const GLubyte *) "glXGetDriverConfig");
     this->getRendererInfo = (glXQueryRenderer_t *) glXGetProcAddress((const GLubyte *) "glXQueryRendererIntegerMESA");
-    this->getExtensionsString = (glXQueryExtensionsString_t *) glXGetProcAddress((const GLubyte *) "glXQueryExtensionsString");
+    this->getGlxExtensionsString = (glXQueryExtensionsString_t *) glXGetProcAddress((const GLubyte *) "glXQueryExtensionsString");
+    this->getGlExtensionsString = (glGetString_t *) glXGetProcAddressARB((const GLubyte *) "glGetString");
 
     if (!this->getScreenDriver || !this->getDriverConfig || !this->getRendererInfo) {
         std::cerr << _("Error getting function pointers. LibGL must be too old.") << std::endl;
@@ -40,12 +41,13 @@ std::list<DriverConfiguration> DRIQuery::queryDriverConfigurationOptions(const G
         config.setScreen(i);
 
 
-        //char *p = (char *)glGetString(GL_EXTENSIONS);
-        //std::cout << "GL string: " << p << std::endl;
+        char *p = (char *)(*(this->getGlExtensionsString))(GL_EXTENSIONS);
+        if (p == nullptr) std::cout << "No GL extensions available" << std::endl;
+        //else std::cout << "GL extensions: " << p << std::endl;
 
         /* Check if driver has mesa query extension or not? */
         const char *extensionString;
-        extensionString = (*(this->getExtensionsString))(display, i);
+        extensionString = (*(this->getGlxExtensionsString))(display, i);
         std::string possibleExts (extensionString);
         if (possibleExts.find("GLX_MESA_query_renderer") == std::string::npos) {
             std::cerr << "Closed source driver!!" << std::endl;
