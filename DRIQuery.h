@@ -34,6 +34,8 @@ private:
 public:
     DRIQuery();
 
+    bool canHandle();
+
     std::list<DriverConfiguration> queryDriverConfigurationOptions(const Glib::ustring &locale);
 
     std::map<Glib::ustring, GPUInfo_ptr> enumerateDRIDevices(const Glib::ustring &locale);
