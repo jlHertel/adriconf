@@ -3,6 +3,7 @@
 #include <iomanip>
 #include <fcntl.h>
 #include <glibmm/i18n.h>
+#include <string>
 
 #include "DRIQuery.h"
 #include "PCIDatabaseQuery.h"
@@ -12,6 +13,8 @@ DRIQuery::DRIQuery() {
     this->getScreenDriver = (glXGetScreenDriver_t *) glXGetProcAddress((const GLubyte *) "glXGetScreenDriver");
     this->getDriverConfig = (glXGetDriverConfig_t *) glXGetProcAddress((const GLubyte *) "glXGetDriverConfig");
     this->getRendererInfo = (glXQueryRenderer_t *) glXGetProcAddress((const GLubyte *) "glXQueryRendererIntegerMESA");
+    this->getGlxExtensionsString = (glXQueryExtensionsString_t *) glXGetProcAddress((const GLubyte *) "glXQueryExtensionsString");
+    this->getGlExtensionsString = (glGetString_t *) glXGetProcAddressARB((const GLubyte *) "glGetString");
 
     if (!this->getScreenDriver || !this->getDriverConfig || !this->getRendererInfo) {
         std::cerr << _("Error getting function pointers. LibGL must be too old.") << std::endl;
@@ -136,3 +139,36 @@ std::map<Glib::ustring, GPUInfo_ptr> DRIQuery::enumerateDRIDevices(const Glib::u
     return gpus;
 }
 
+bool DRIQuery::canHandle() {
+    Display *display;
+
+    if (!(display = XOpenDisplay(nullptr))) {
+        std::cerr << _("Couldn't open X display") << std::endl;
+        return false;
+    }
+
+    int screenCount = ScreenCount (display);
+
+    //Should handle multiple screen case
+    for (int i = 0; i < screenCount; i++) {
+        DriverConfiguration config;
+        config.setScreen(i);
+
+
+        char *p = (char *)(*(this->getGlExtensionsString))(GL_EXTENSIONS);
+        if (p == nullptr) std::cout << "GL extensions not available" << std::endl;
+        //else std::cout << "GL extensions: " << p << std::endl;
+
+        /* Check if driver has mesa query extension or not? */
+        const char *extensionString;
+        extensionString = (*(this->getGlxExtensionsString))(display, i);
+        std::string possibleExts (extensionString);
+        if (possibleExts.find("GLX_MESA_query_renderer") == std::string::npos) {
+            std::cerr << "Closed source driver!!" << std::endl;
+            return false;
+        }
+    }
+
+    return true;
+
+}
