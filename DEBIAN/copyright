@@ -1,0 +1,8 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: adriconf
+Upstream-Contact: Jean Hertel <jean.hertel@hotmail.com>
+Source: https://github.com/jlHertel/adriconf
+
+Files: *
+Copyright: 2018 Jean Hertel
+License: GPL-3+
