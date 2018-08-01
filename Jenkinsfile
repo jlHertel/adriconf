@@ -1,13 +1,6 @@
 pipeline {
     agent any
     stages {
-        stage('Clean') {
-            steps {
-                echo 'Running clean stage'
-                sh 'rm -rf build-dir/'
-                sh 'rm -f *.deb'
-            }
-        }
         stage('Build') {
             steps {
                 echo 'Running build stage'
@@ -24,7 +17,9 @@ pipeline {
             steps {
                 echo 'Running test stage'
                 dir('build-dir') {
-                    sh './runUnitTests'
+                    sh './runUnitTests --gtest_output=xml:gtestresults.xml'
+                    sh 'awk \'{ if ($1 == "<testcase" && match($0, "notrun")) print substr($0,0,length($0)-2) "><skipped/></testcase>"; else print $0;}\' gtestresults.xml > gtestresults-skipped.xml'
+                    sh 'mv gtestresults.xml gtestresults.off'
                 }
             }
         }
@@ -63,6 +58,13 @@ pipeline {
                 sh 'rm data.tar.gz'
                 sh 'rm debian-binary'
             }
+        }
+    }
+    post {
+        always {
+            archiveArtifacts 'build-dir/adriconf,build-dir/runUnitTests,*.deb'
+            junit 'build-dir/gtestresults-skipped.xml'
+            deleteDir()
         }
     }
 }
