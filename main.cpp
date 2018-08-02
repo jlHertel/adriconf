@@ -2,6 +2,7 @@
 #include <gtkmm.h>
 #include "GUI.h"
 #include "DRIQuery.h"
+#include <gtkmm/messagedialog.h>
 
 int main(int argc, char *argv[]) {
     /* Start the GUI work */
@@ -13,6 +14,9 @@ int main(int argc, char *argv[]) {
         if (!check.canHandle()) {
             std::cerr << "Not all screens have open source drivers" << std::endl;
             //pop up error window here
+            Gtk::MessageDialog errorDialog = Gtk::MessageDialog("Closed source driver(s) detected!",
+                                                                false, Gtk::MESSAGE_ERROR);
+            errorDialog.set_secondary_text("Currently adriconf cannot handle closed source drivers.");
             return 0;
         }
 
