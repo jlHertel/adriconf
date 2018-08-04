@@ -14,10 +14,13 @@ int main(int argc, char *argv[]) {
         if (!check.canHandle()) {
             std::cerr << "Not all screens have open source drivers" << std::endl;
             //pop up error window here
-            Gtk::MessageDialog errorDialog = Gtk::MessageDialog("Closed source driver(s) detected!",
-                                                                false, Gtk::MESSAGE_ERROR);
-            errorDialog.set_secondary_text("Currently adriconf cannot handle closed source drivers.");
-            return 0;
+            Gtk::MessageDialog *errorDialog = new Gtk::MessageDialog("Closed source driver(s) detected!",
+                                                                false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_CLOSE);
+            errorDialog->set_secondary_text("Currently adriconf cannot handle closed source drivers.");
+	    if (errorDialog->run()) {
+		errorDialog->close();
+            	return 0;
+	    }
         }
 
         GUI gui;
