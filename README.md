@@ -1,37 +1,51 @@
-Advanced DRI Configurator
-=========================
+# Advanced DRI Configurator
 
-The adriconf (**A**dvanced **DRI** **CONF**igurator) is a tool to set options and configure applications using the standard drirc file used by the Mesa drivers.
-In other words, It's a GUI tool used to configure the Open Source Driver of the Grapics Cards.
+adriconf (**A**dvanced **DRI** **CONF**igurator) is a GUI tool used to configure
+open source graphics drivers. It works by setting options and writing them to
+the standard `drirc` file used by the Mesa drivers.
 
-Features
---------
+## Features
 
-The main features of the tool include:
+The main features of the tool are:
 
-- Automatic removal of invalid options (Options that the driver doesn't support at all)
-- Options that have the same value as the system wide options or driver default will be ignored
-- System-Wide Applications with empty options (all options are the same as system-wide config or driver default) will be removed automatically
+- Automatic removal of invalid and unsupported options.
+- Options whose value is identical to the system-wide value or the driver's
+  default value will be ignored.
+- System-wide application options with redundant options will be
+  removed automatically.
 
-
-TODOs
------
+## TODOs
 
 Some things that still need to be done:
 
-- Properly support a system without X (wayland systems?) Currently the glX functions mandate a Xlib display object. There must be another way to get the driver options
-- Unit tests are always welcome. If you can contribute with one I will gladly accept it
-- Any improvement to the GUI which can make it easier to use or more user friendly is always welcome
-- Translations to more language are always welcome. Please keep in mind that the options descriptions come directly from the driver, therefore to translate the options you need to translate it directly on [mesa][1]
+- Properly support systems that do not have X installed
+  (such as some Wayland systems). Currently, the GLX functions mandate
+  a Xlib display object; there must be another way to get the driver options.
+- Unit tests are always welcome. If you can contribute some tests,
+  I will gladly accept them.
+- Usability improvements for the GUI are always welcome.
+- Additional language translations are always welcome too.
+  Please keep in mind that option descriptions come directly from the driver;
+  therefore, you need to translate them directly on
+  [Mesa](https://www.mesa3d.org/).
 
-Author
-------
+## Author
 
 This tool is written and maintained by Jean Lorenz Hertel.
 
-License
--------
+## License
 
-The tool is licensed under GPLv3 or superior.
+Copyright (C) 2018 Jean Lorenz Hertel
 
-[1]: https://www.mesa3d.org/
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
