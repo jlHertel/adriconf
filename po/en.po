@@ -6,46 +6,46 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-20 20:13-0300\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Project-Id-Version: 1.0.1\n"
+"Report-Msgid-Bugs-To: Jean Lorenz Hertel <jean.hertel@hotmail.com>\n"
+"POT-Creation-Date: 2018-08-06 08:10-0300\n"
+"PO-Revision-Date: 2018-08-06 08:10-0300\n"
+"Last-Translator: Jean Lorenz Hertel <jean.hertel@hotmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../GUI.cpp:667
+#: ../GUI.cpp:687
 #, fuzzy
 msgid "Add Application app driver widget is not in glade file!"
 msgstr "Main window object is not in glade file!"
 
-#: ../GUI.cpp:661
+#: ../GUI.cpp:681
 #, fuzzy
 msgid "Add Application app executable widget is not in glade file!"
 msgstr "Main window object is not in glade file!"
 
-#: ../GUI.cpp:655
+#: ../GUI.cpp:675
 #, fuzzy
 msgid "Add Application app name widget is not in glade file!"
 msgstr "Main window object is not in glade file!"
 
-#: ../GUI.cpp:649
+#: ../GUI.cpp:669
 #, fuzzy
 msgid "Add Application dialog is not in glade file!"
 msgstr "Main window object is not in glade file!"
 
-#: ../GUI.cpp:75
+#: ../GUI.cpp:76
 msgid "Add new"
 msgstr "Add new"
 
-#: ../GUI.cpp:584
+#: ../GUI.cpp:604
 msgid "An advanced DRI configurator tool."
 msgstr "An advanced DRI configurator tool."
 
-#: ../GUI.cpp:232
+#: ../GUI.cpp:251
 msgid "Application %1 not found "
 msgstr "Application %1 not found "
 
@@ -59,11 +59,11 @@ msgstr "Application executable"
 msgid "Application name:"
 msgstr "Application name"
 
-#: ../GUI.cpp:633
+#: ../GUI.cpp:653
 msgid "Application removed successfully."
 msgstr "Application removed successfully."
 
-#: ../GUI.cpp:714
+#: ../GUI.cpp:734
 msgid "Application successfully added."
 msgstr "Application successfully added."
 
@@ -71,24 +71,24 @@ msgstr "Application successfully added."
 msgid "Cancel"
 msgstr "Cancel"
 
-#: ../DRIQuery.cpp:27
+#: ../DRIQuery.cpp:29 ../DRIQuery.cpp:145
 msgid "Couldn't open X display"
 msgstr "Couldn't open X display"
 
-#: ../GUI.cpp:128
+#: ../GUI.cpp:146
 #, fuzzy
 msgid "Current language code is %1"
 msgstr "Current language code is %1"
 
-#: ../GUI.cpp:169
+#: ../GUI.cpp:187
 msgid "Driver %1 not found"
 msgstr "Driver %1 not found"
 
-#: ../GUI.cpp:245
+#: ../GUI.cpp:264
 msgid "Driver %1 not found "
 msgstr "Driver %1 not found "
 
-#: ../ConfigurationResolver.cpp:211
+#: ../ConfigurationResolver.cpp:182
 msgid ""
 "Driver '%1' doesn't support option '%2' on application '%3'. Option removed."
 msgstr ""
@@ -99,16 +99,16 @@ msgstr ""
 msgid "Driver:"
 msgstr "Driver:"
 
-#: ../DRIQuery.cpp:17
+#: ../DRIQuery.cpp:19
 msgid "Error getting function pointers. LibGL must be too old."
 msgstr ""
 
-#: ../GUI.cpp:465
+#: ../GUI.cpp:484
 #, fuzzy
 msgid "Force Application to use GPU"
 msgstr "Application %1 not found "
 
-#: ../GUI.cpp:104
+#: ../GUI.cpp:119
 msgid "Generating final XML for saving..."
 msgstr "Generating final XML for saving..."
 
@@ -116,69 +116,69 @@ msgstr "Generating final XML for saving..."
 msgid "Main window object is not in glade file!"
 msgstr "Main window object is not in glade file!"
 
-#: ../GUI.cpp:261
+#: ../GUI.cpp:280
 msgid "Notebook object not found in glade file!"
 msgstr "Notebook object not found in glade file!"
 
-#: ../GUI.cpp:306
+#: ../GUI.cpp:325
 msgid "Option %1 doesn't exist in application %2. Merge failed"
 msgstr "Option %1 doesn't exist in application %2. Merge failed"
 
-#: ../GUI.cpp:480
+#: ../GUI.cpp:499
 msgid "PRIME Settings"
 msgstr "PRIME Settings"
 
-#: ../GUI.cpp:80
+#: ../GUI.cpp:88
 msgid "Remove current Application"
 msgstr "Remove current Application"
 
-#: ../GUI.cpp:588
+#: ../GUI.cpp:608
 msgid "Source Code"
 msgstr "Source Code"
 
-#: ../GUI.cpp:634
+#: ../GUI.cpp:654
 msgid "The application has been removed."
 msgstr "The application has been removed."
 
-#: ../GUI.cpp:715
+#: ../GUI.cpp:735
 msgid "The application was successfully added. Reloading default app options."
 msgstr "The application was successfully added. Reloading default app options."
 
-#: ../GUI.cpp:619
+#: ../GUI.cpp:639
 msgid "The default application cannot be removed."
 msgstr "The default application cannot be removed."
 
-#: ../GUI.cpp:620
+#: ../GUI.cpp:640
 msgid "The driver needs a default configuration."
 msgstr "The driver needs a default configuration."
 
-#: ../DRIQuery.cpp:106 ../DRIQuery.cpp:115
+#: ../DRIQuery.cpp:115 ../DRIQuery.cpp:124
 msgid "Unable to extract configuration for driver %1"
 msgstr "Unable to extract configuration for driver %1"
 
-#: ../GUI.cpp:602
+#: ../GUI.cpp:622
 msgid "Unexpected response code from about dialog: %1"
 msgstr "Unexpected response code from about dialog: %1"
 
-#: ../GUI.cpp:438
+#: ../GUI.cpp:457
 msgid "Use default GPU of screen"
 msgstr "Use default GPU of screen"
 
-#: ../ConfigurationResolver.cpp:143
+#: ../ConfigurationResolver.cpp:323
 msgid ""
 "User-defined driver '%1' on screen '%2' doesn't have a driver loaded on "
 "system. Configuration removed."
 msgstr "Configuration removed."
 
-#: ../GUI.cpp:690
+#: ../GUI.cpp:710
 msgid "Validation error"
 msgstr "Validation error"
 
-#: ../GUI.cpp:110
+#: ../GUI.cpp:125
 msgid "Writing generated XML: %1"
 msgstr "Writing generated XML: %1"
 
-#: ../GUI.cpp:692
+#: ../GUI.cpp:712
 msgid "You need to specify the application name, executable and driver."
 msgstr "You need to specify the application name, executable and driver."
 

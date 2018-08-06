@@ -14,6 +14,27 @@ The main features of the tool are:
 - System-wide application options with redundant options will be
   removed automatically.
 
+## Translating
+
+To add a new language or to improve a existing one, you can edit the po files
+located under po/ dir.
+To add a new translation use the following command (for example for German):
+
+    msginit -i adriconf.pot -o de.po --locale=de
+
+To update an existing translation from the pot file you can use the folowing:
+
+    mv de.po de.po~
+    msgmerge -o de.po de.po~ adriconf.pot
+
+To update the pot file itself you can run the following:
+
+   intltool-update --pot --gettext-package=adriconf
+
+Please note that many text shown in the application are from mesa directly,
+mainly the option descriptions. Therefore if you see any missing translation
+you will need to add it to the [mesa](https://www.mesa3d.org/) project itself.
+
 ## TODOs
 
 Some things that still need to be done:
@@ -24,10 +45,6 @@ Some things that still need to be done:
 - Unit tests are always welcome. If you can contribute some tests,
   I will gladly accept them.
 - Usability improvements for the GUI are always welcome.
-- Additional language translations are always welcome too.
-  Please keep in mind that option descriptions come directly from the driver;
-  therefore, you need to translate them directly on
-  [Mesa](https://www.mesa3d.org/).
 
 ## Author
 
