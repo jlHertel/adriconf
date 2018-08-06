@@ -14,6 +14,18 @@ The main features of the tool are:
 - System-wide application options with redundant options will be
   removed automatically.
 
+## Building
+
+To build from source you can use the following commands:
+
+    git clone https://github.com/jlHertel/adriconf.git
+    cd adriconf
+    mkdir build-dir
+    cd build-dir
+    cmake ..
+    make
+    sudo make install
+
 ## Translating
 
 To add a new language or to improve a existing one, you can edit the po files
