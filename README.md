@@ -41,22 +41,11 @@ To update an existing translation from the pot file you can use the folowing:
 
 To update the pot file itself you can run the following:
 
-   intltool-update --pot --gettext-package=adriconf
+    intltool-update --pot --gettext-package=adriconf
 
 Please note that many text shown in the application are from mesa directly,
 mainly the option descriptions. Therefore if you see any missing translation
 you will need to add it to the [mesa](https://www.mesa3d.org/) project itself.
-
-## TODOs
-
-Some things that still need to be done:
-
-- Properly support systems that do not have X installed
-  (such as some Wayland systems). Currently, the GLX functions mandate
-  a Xlib display object; there must be another way to get the driver options.
-- Unit tests are always welcome. If you can contribute some tests,
-  I will gladly accept them.
-- Usability improvements for the GUI are always welcome.
 
 ## Author
 
