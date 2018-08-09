@@ -37,13 +37,13 @@ pipeline {
                     sh 'for fn in *.gmo; do TRLANG=`echo "$fn" | cut -d"." -f1`; mkdir -p ../usr/share/locale/$TRLANG/LC_MESSAGES/; cp $fn ../usr/share/locale/$TRLANG/LC_MESSAGES/adriconf.mo; done'
                 }
 
-                sh 'binarySize=$(du -s usr/ | cut -f1); replaceString="s/__BINARY_SIZE__/"$binarySize"/"; sed -i $replaceString DEBIAN/control'
-                sh 'versionStr=$(cat VERSION); sed -i "s/__VERSION__/"${versionStr}"/" DEBIAN/control'
-
                 sh 'mkdir -p usr/share/doc/adriconf/'
                 sh 'cp DEBIAN/copyright usr/share/doc/adriconf/'
                 sh 'gzip -n9 DEBIAN/changelog'
                 sh 'cp DEBIAN/changelog.gz usr/share/doc/adriconf/'
+
+                sh 'binarySize=$(du -s usr/ | cut -f1); replaceString="s/__BINARY_SIZE__/"$binarySize"/"; sed -i $replaceString DEBIAN/control'
+                sh 'versionStr=$(cat VERSION); sed -i "s/__VERSION__/"${versionStr}"/" DEBIAN/control'
 
                 sh 'fakeroot tar czf data.tar.gz usr/'
                 dir('DEBIAN') {
