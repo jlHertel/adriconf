@@ -1,0 +1,12 @@
+#ifndef ADRICONF_DRIVEROPTIONTYPE_H
+#define ADRICONF_DRIVEROPTIONTYPE_H
+
+enum class DriverOptionType {
+    UNKNOW,
+
+    BOOL,
+    FAKE_BOOL,
+    ENUM,
+    INT
+};
+#endif //ADRICONF_DRIVEROPTIONTYPE_H

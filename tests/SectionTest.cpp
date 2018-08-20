@@ -46,7 +46,7 @@ TEST_F (SectionTest, optionTest) {
 
 TEST_F (SectionTest, sortDriverOptionsTest) {
     DriverOption option0;
-    option0.setType("enum"); //2
+    option0.setType(DriverOptionType::ENUM); //2
     testApp = testApp->addOption(option0);
 
     DriverOption option1;
@@ -54,21 +54,21 @@ TEST_F (SectionTest, sortDriverOptionsTest) {
     testApp = testApp->addOption(option1);
 
     DriverOption option2;
-    option2.setType("bool"); //1
+    option2.setType(DriverOptionType::BOOL); //1
     testApp = testApp->addOption(option2);
 
     DriverOption option3;
-    option3.setType("int"); //3
+    option3.setType(DriverOptionType::INT); //3
     testApp = testApp->addOption(option3);
 
     testApp->sortOptions();
 
     std::list<DriverOption> options = testApp->getOptions();
-    EXPECT_EQ("bool", options.front().getType());
+    EXPECT_EQ(DriverOptionType::BOOL, options.front().getType());
     options.pop_front();
-    EXPECT_EQ("enum", options.front().getType());
+    EXPECT_EQ(DriverOptionType::ENUM, options.front().getType());
     options.pop_front();
-    EXPECT_EQ("int", options.front().getType());
+    EXPECT_EQ(DriverOptionType::INT, options.front().getType());
     options.pop_front();
     EXPECT_EQ("opt1", options.front().getName());
     options.pop_front();

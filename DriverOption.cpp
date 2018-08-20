@@ -11,12 +11,32 @@ const Glib::ustring &DriverOption::getDescription() const {
     return this->description;
 }
 
-const Glib::ustring &DriverOption::getType() const {
+const DriverOptionType &DriverOption::getType() const {
     return this->type;
 }
 
-bool DriverOption::isFakeBool() const {
-    return this->type == "enum" && this->validValues == "0:1" && this->enumValues.empty();
+void DriverOption::updateFakeBool() {
+    if (this->type == DriverOptionType::ENUM
+        && this->validValues == "0:1"
+        && this->enumValues.empty()) {
+        this->type = DriverOptionType::FAKE_BOOL;
+    }
+}
+
+DriverOptionType DriverOption::stringToEnum(const Glib::ustring &type) const {
+    if (type == "bool") {
+        return DriverOptionType::BOOL;
+    }
+
+    if (type == "int") {
+        return DriverOptionType::INT;
+    }
+
+    if (type == "enum") {
+        return DriverOptionType::ENUM;
+    }
+
+    return DriverOptionType::UNKNOW;
 }
 
 const Glib::ustring &DriverOption::getDefaultValue() const {
@@ -27,7 +47,8 @@ const Glib::ustring &DriverOption::getValidValues() const {
     return this->validValues;
 }
 
-std::list<std::pair<Glib::ustring, Glib::ustring>> DriverOption::getEnumValues() const {
+std::list<std::pair<Glib::ustring, Glib::ustring>>
+DriverOption::getEnumValues() const {
     return this->enumValues;
 }
 
@@ -44,8 +65,8 @@ DriverOption *DriverOption::setDescription(Glib::ustring description) {
     return this;
 }
 
-DriverOption *DriverOption::setType(Glib::ustring type) {
-    this->type = std::move(type);
+DriverOption *DriverOption::setType(DriverOptionType type) {
+    this->type = type;
 
     return this;
 }
@@ -62,7 +83,9 @@ DriverOption *DriverOption::setValidValues(Glib::ustring validValues) {
     return this;
 }
 
-DriverOption *DriverOption::addEnumValue(Glib::ustring description, Glib::ustring value) {
+DriverOption *DriverOption::addEnumValue(
+        Glib::ustring description, Glib::ustring value
+) {
     this->enumValues.emplace_back(description, value);
 
     return this;
@@ -95,23 +118,27 @@ int DriverOption::getValidValueEnd() const {
     }
 
     // The part after the new line
-    auto secondPart = this->validValues.substr(splitPos + 1, this->validValues.length() - splitPos);
+    auto secondPart = this->validValues.substr(splitPos + 1,
+                                               this->validValues.length() -
+                                               splitPos);
 
     return std::stoi(secondPart);
 }
 
 int DriverOption::getSortValue() const {
-    if (this->type == "bool") {
-        return 1;
-    }
+    switch (this->type) {
+        case DriverOptionType::BOOL:
+        case DriverOptionType::FAKE_BOOL:
+            return 1;
 
-    if (this->type == "enum") {
-        return 2;
-    }
+        case DriverOptionType::ENUM:
+            return 2;
 
-    if (this->type == "int") {
-        return 3;
-    }
+        case DriverOptionType::INT:
+            return 3;
 
-    return 4;
+        default:
+            return 4;
+    }
 }
+

@@ -334,7 +334,7 @@ void GUI::drawApplicationOptions() {
             optionBox->set_orientation(Gtk::Orientation::ORIENTATION_HORIZONTAL);
             optionBox->set_margin_bottom(10);
 
-            if (option.getType() == "bool") {
+            if (option.getType() == DriverOptionType::BOOL) {
                 Gtk::Switch *optionSwitch = Gtk::manage(new Gtk::Switch);
                 optionSwitch->set_visible(true);
 
@@ -349,7 +349,7 @@ void GUI::drawApplicationOptions() {
                 optionBox->pack_end(*optionSwitch, false, false);
             }
 
-            if (option.isFakeBool()) {
+            if (option.getType() == DriverOptionType::FAKE_BOOL) {
                 Gtk::Switch *optionSwitch = Gtk::manage(new Gtk::Switch);
                 optionSwitch->set_visible(true);
 
@@ -364,7 +364,7 @@ void GUI::drawApplicationOptions() {
                 optionBox->pack_end(*optionSwitch, false, false);
             }
 
-            if (option.getType() == "enum" && !option.isFakeBool()) {
+            if (option.getType() == DriverOptionType::ENUM) {
                 Gtk::ComboBox *optionCombo = Gtk::manage(new Gtk::ComboBox);
                 optionCombo->set_visible(true);
 
@@ -395,7 +395,7 @@ void GUI::drawApplicationOptions() {
                 optionBox->pack_end(*optionCombo, false, false);
             }
 
-            if (option.getType() == "int") {
+            if (option.getType() == DriverOptionType::INT) {
                 Gtk::SpinButton *optionEntry = Gtk::manage(new Gtk::SpinButton);
                 optionEntry->set_visible(true);
 

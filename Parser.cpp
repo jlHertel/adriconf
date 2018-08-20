@@ -64,7 +64,8 @@ DriverOption Parser::parseSectionOptions(xmlpp::Node *option, const Glib::ustrin
     auto optionElement = dynamic_cast<xmlpp::Element *>(option);
 
     parsedOption.setName(optionElement->get_attribute("name")->get_value());
-    parsedOption.setType(optionElement->get_attribute("type")->get_value());
+    Glib::ustring type = optionElement->get_attribute("type")->get_value();
+    parsedOption.setType(parsedOption.stringToEnum(type));
 
     auto defaultValue = optionElement->get_attribute("default");
     if (defaultValue != nullptr) {
@@ -101,7 +102,7 @@ DriverOption Parser::parseSectionOptions(xmlpp::Node *option, const Glib::ustrin
 
     parsedOption.setDescription(correctDescription);
 
-    if (parsedOption.getType() == "enum") {
+    if (parsedOption.getType() == DriverOptionType::ENUM) {
         if (descriptionHolder != nullptr) {
             auto enumOptions = descriptionHolder->get_children("enum");
             for (auto enumOption : enumOptions) {
@@ -113,6 +114,8 @@ DriverOption Parser::parseSectionOptions(xmlpp::Node *option, const Glib::ustrin
             }
         }
     }
+    
+    parsedOption.updateFakeBool();
 
     return parsedOption;
 }
