@@ -1,4 +1,5 @@
 .idea/
+.flatpak-builder/
 cmake-build-debug/
 cmake-build-release/
 resources.c
