@@ -106,3 +106,5 @@ if(OpenGL_GLX_FOUND)
 endif()
 target_link_libraries(runUnitTests ${DRM_LIBRARIES})
 target_link_libraries(runUnitTests ${PCILIB_LIBRARIES})
+
+install(TARGETS adriconf DESTINATION bin)
