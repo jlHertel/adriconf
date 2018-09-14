@@ -18,11 +18,11 @@
    <screenshots>
       <screenshot type="default">
          <caption>Performance Window</caption>
-         <image type="source">https://github.com/jlHertel/adriconf/blob/master/flatpak/Screenshot0.png?raw=true</image>
+         <image type="source">https://github.com/jlHertel/adriconf/blob/master/flatpak/br.com.jeanhertel.adriconf.screenshot-0.png?raw=true</image>
       </screenshot>
       <screenshot type="default">
          <caption>Debugging Window</caption>
-         <image type="source">https://github.com/jlHertel/adriconf/blob/master/flatpak/Screenshot1.png?raw=true</image>
+         <image type="source">https://github.com/jlHertel/adriconf/blob/master/flatpak/br.com.jeanhertel.adriconf.screenshot-1.png?raw=true</image>
       </screenshot>
    </screenshots>
    <releases>
