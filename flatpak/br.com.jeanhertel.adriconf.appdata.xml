@@ -10,6 +10,10 @@
       <p>adriconf (Advanced DRI CONFigurator) is a GUI tool used to configure open source graphics drivers. It works by setting options and writing them to the standard drirc file used by the Mesa drivers.</p>
       <p>A GUI Tool used to configure OpenGL drivers. You can use it to optimize game settings or even workaround issues with them.</p>
    </description>
+   <description xml:lang="pt_BR">
+      <p>adriconf (Advanced DRI CONFigurator) é uma ferramenta visual utilizada para configurar os drivers gráficos open source. Ele funciona definindo e escrevendo opções para o arquivo padrão drirc utilizado pelos drivers Mesa.</p>
+      <p>Uma ferramenta visual utilizada para configurar drivers OpenGL. Você pode utilizá-lo para otimizar as configurações de jogos ou até mesmo corrigir problemas conhecidos.</p>
+   </description>
    <launchable type="desktop-id">br.com.jeanhertel.adriconf.desktop</launchable>
    <screenshots>
       <screenshot type="default">
