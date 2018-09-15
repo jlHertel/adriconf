@@ -52,5 +52,9 @@ Device_ptr ConfigurationLoader::loadSystemWideConfiguration() {
 
 std::list<Device_ptr> ConfigurationLoader::loadUserDefinedConfiguration() {
     Glib::ustring userDefinedXML(this->readUserDefinedXML());
+    if (userDefinedXML.empty()) {
+        std::list<Device_ptr> deviceList;
+        return deviceList;
+    }
     return Parser::parseDevices(userDefinedXML);
 }
