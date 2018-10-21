@@ -26,6 +26,8 @@ public:
     std::list<Device_ptr> loadUserDefinedConfiguration();
 
     std::map<Glib::ustring, GPUInfo_ptr> loadAvailableGPUs(const Glib::ustring &locale);
+
+    Glib::ustring getOldSystemWideConfigurationPath();
 };
 
 #endif
