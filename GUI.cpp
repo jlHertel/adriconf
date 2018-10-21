@@ -138,7 +138,6 @@ void GUI::setupLocale() {
     std::locale l = gen("");
     std::locale::global(l);
     std::cout.imbue(l);
-    bindtextdomain("adriconf", "/usr/share/locale");
     textdomain("adriconf");
 
     Glib::ustring langCode(std::use_facet<boost::locale::info>(l).language());
