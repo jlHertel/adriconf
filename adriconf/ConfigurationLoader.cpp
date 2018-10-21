@@ -5,15 +5,15 @@
 Glib::ustring ConfigurationLoader::readSystemWideXML() {
     Glib::ustring container;
     std::ostringstream buffer;
-    std::ifstream input("/etc/drirc");
-    
+    std::ifstream input(this->getOldSystemWideConfigurationPath());
+
     if (!input.good()) {
         return std::move(container);
     }
-    
+
     buffer << input.rdbuf();
     container = buffer.str();
-    
+
     return std::move(container);
 }
 
@@ -49,7 +49,7 @@ Device_ptr ConfigurationLoader::loadSystemWideConfiguration() {
         auto fakeDevice = std::make_shared<Device>();
         return fakeDevice;
     }
-    
+
     std::list<Device_ptr> systemWideDevices = Parser::parseDevices(systemWideXML);
 
     /* In case no configuration is available system-wide we generate an empty one */
@@ -68,4 +68,15 @@ std::list<Device_ptr> ConfigurationLoader::loadUserDefinedConfiguration() {
         return deviceList;
     }
     return Parser::parseDevices(userDefinedXML);
+}
+
+Glib::ustring ConfigurationLoader::getOldSystemWideConfigurationPath() {
+    Glib::ustring path("/etc/drirc");
+    std::ifstream flatpakInfo("/.flatpak-info");
+
+    if(flatpakInfo.good()) {
+        path = "/var/run/host/etc/drirc";
+    }
+
+    return path;
 }
