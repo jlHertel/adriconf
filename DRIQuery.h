@@ -19,13 +19,10 @@ typedef const char *glXGetDriverConfig_t(const char *driverName);
 
 typedef const char *glXQueryExtensionsString_t(Display *dpy, int screen);
 
-typedef Bool *glXQueryRenderer_t(Display *dpy, int screen, int renderer, int attribute, unsigned int *value);
-
 class DRIQuery {
 private:
     glXGetScreenDriver_t *getScreenDriver;
     glXGetDriverConfig_t *getDriverConfig;
-    glXQueryRenderer_t *getRendererInfo;
     glXQueryExtensionsString_t *getGlxExtensionsString;
 
 public:
