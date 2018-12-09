@@ -172,14 +172,18 @@ msgstr ""
 msgid "The application was successfully added. Reloading default app options."
 msgstr ""
 
-#: ../DRIQuery.cpp:19
+#: ../DRIQuery.cpp:18
 msgid "Error getting function pointers. LibGL must be too old."
 msgstr ""
 
-#: ../DRIQuery.cpp:29 ../DRIQuery.cpp:145
+#: ../DRIQuery.cpp:28 ../DRIQuery.cpp:137
 msgid "Couldn't open X display"
 msgstr ""
 
-#: ../DRIQuery.cpp:115 ../DRIQuery.cpp:124
+#: ../DRIQuery.cpp:107 ../DRIQuery.cpp:116
 msgid "Unable to extract configuration for driver %1"
+msgstr ""
+
+#: ../DRIQuery.cpp:155
+msgid "Closed source driver!!"
 msgstr ""

@@ -71,7 +71,11 @@ msgstr "Application successfully added."
 msgid "Cancel"
 msgstr "Cancel"
 
-#: ../DRIQuery.cpp:29 ../DRIQuery.cpp:145
+#: ../DRIQuery.cpp:155
+msgid "Closed source driver!!"
+msgstr "Closed source driver!!"
+
+#: ../DRIQuery.cpp:28 ../DRIQuery.cpp:137
 msgid "Couldn't open X display"
 msgstr "Couldn't open X display"
 
@@ -99,14 +103,14 @@ msgstr ""
 msgid "Driver:"
 msgstr "Driver:"
 
-#: ../DRIQuery.cpp:19
+#: ../DRIQuery.cpp:18
 msgid "Error getting function pointers. LibGL must be too old."
-msgstr ""
+msgstr "Error getting function pointers. LibGL must be too old."
 
 #: ../GUI.cpp:484
 #, fuzzy
 msgid "Force Application to use GPU"
-msgstr "Application %1 not found "
+msgstr "Force Application to use GPU"
 
 #: ../GUI.cpp:119
 msgid "Generating final XML for saving..."
@@ -152,7 +156,7 @@ msgstr "The default application cannot be removed."
 msgid "The driver needs a default configuration."
 msgstr "The driver needs a default configuration."
 
-#: ../DRIQuery.cpp:115 ../DRIQuery.cpp:124
+#: ../DRIQuery.cpp:107 ../DRIQuery.cpp:116
 msgid "Unable to extract configuration for driver %1"
 msgstr "Unable to extract configuration for driver %1"
 

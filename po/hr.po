@@ -71,7 +71,11 @@ msgstr "Aplikacija je dodana uspješno."
 msgid "Cancel"
 msgstr "Odustani"
 
-#: ../DRIQuery.cpp:29 ../DRIQuery.cpp:145
+#: ../DRIQuery.cpp:155
+msgid "Closed source driver!!"
+msgstr ""
+
+#: ../DRIQuery.cpp:28 ../DRIQuery.cpp:137
 msgid "Couldn't open X display"
 msgstr ""
 
@@ -99,7 +103,7 @@ msgstr ""
 msgid "Driver:"
 msgstr "Upravljački program"
 
-#: ../DRIQuery.cpp:19
+#: ../DRIQuery.cpp:18
 msgid "Error getting function pointers. LibGL must be too old."
 msgstr ""
 
@@ -154,7 +158,7 @@ msgstr "Zadana aplikacija se ne može ukloniti."
 msgid "The driver needs a default configuration."
 msgstr "Upravljački program zahtijeva zadano podešavanje."
 
-#: ../DRIQuery.cpp:115 ../DRIQuery.cpp:124
+#: ../DRIQuery.cpp:107 ../DRIQuery.cpp:116
 msgid "Unable to extract configuration for driver %1"
 msgstr ""
 

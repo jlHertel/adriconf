@@ -71,7 +71,11 @@ msgstr "Aplicação adicionada com sucesso."
 msgid "Cancel"
 msgstr "Cancelar"
 
-#: ../DRIQuery.cpp:29 ../DRIQuery.cpp:145
+#: ../DRIQuery.cpp:155
+msgid "Closed source driver!!"
+msgstr ""
+
+#: ../DRIQuery.cpp:28 ../DRIQuery.cpp:137
 msgid "Couldn't open X display"
 msgstr "Falhou ao abrir uma conexão com o servidor X"
 
@@ -99,7 +103,7 @@ msgstr ""
 msgid "Driver:"
 msgstr "Driver:"
 
-#: ../DRIQuery.cpp:19
+#: ../DRIQuery.cpp:18
 msgid "Error getting function pointers. LibGL must be too old."
 msgstr "Erro ao obter ponteiros de funções. LibGL deve ser muito velha."
 
@@ -154,7 +158,7 @@ msgstr "A aplicação padrão não pode ser removida."
 msgid "The driver needs a default configuration."
 msgstr "O driver precisa de uma aplicação padrão."
 
-#: ../DRIQuery.cpp:115 ../DRIQuery.cpp:124
+#: ../DRIQuery.cpp:107 ../DRIQuery.cpp:116
 msgid "Unable to extract configuration for driver %1"
 msgstr "Incapaz de extrair uma configuração para o driver %1"
 
