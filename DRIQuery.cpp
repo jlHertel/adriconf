@@ -12,10 +12,9 @@
 DRIQuery::DRIQuery() {
     this->getScreenDriver = (glXGetScreenDriver_t *) glXGetProcAddress((const GLubyte *) "glXGetScreenDriver");
     this->getDriverConfig = (glXGetDriverConfig_t *) glXGetProcAddress((const GLubyte *) "glXGetDriverConfig");
-    this->getRendererInfo = (glXQueryRenderer_t *) glXGetProcAddress((const GLubyte *) "glXQueryRendererIntegerMESA");
     this->getGlxExtensionsString = (glXQueryExtensionsString_t *) glXGetProcAddress((const GLubyte *) "glXQueryExtensionsString");
 
-    if (!this->getScreenDriver || !this->getDriverConfig || !this->getRendererInfo) {
+    if (!this->getScreenDriver || !this->getDriverConfig || !this->getGlxExtensionsString) {
         std::cerr << _("Error getting function pointers. LibGL must be too old.") << std::endl;
     }
 }
@@ -38,13 +37,6 @@ std::list<DriverConfiguration> DRIQuery::queryDriverConfigurationOptions(const G
     for (int i = 0; i < screenCount; i++) {
         DriverConfiguration config;
         config.setScreen(i);
-
-        unsigned int pciID = 0;
-        (*(this->getRendererInfo))(display, i, 0, GLX_RENDERER_VENDOR_ID_MESA, &pciID);
-        config.setVendorId(static_cast<uint16_t>(pciID));
-
-        (*(this->getRendererInfo))(display, i, 0, GLX_RENDERER_DEVICE_ID_MESA, &pciID);
-        config.setDeviceId(static_cast<uint16_t>(pciID));
 
         auto driverName = (*(this->getScreenDriver))(display, i);
         config.setDriverName(driverName);
@@ -160,7 +152,7 @@ bool DRIQuery::canHandle() {
         if (possibleExts.find("GLX_MESA_query_renderer") == std::string::npos ||
                 this->getScreenDriver == nullptr ||
                 this->getDriverConfig == nullptr) {
-            std::cerr << "Closed source driver!!" << std::endl;
+            std::cerr << _("Closed source driver!!") << std::endl;
             return false;
         }
     }
