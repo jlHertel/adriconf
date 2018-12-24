@@ -39,7 +39,13 @@ include_directories(${Boost_INCLUDE_DIRS})
 link_directories(${Boost_LIBRARY_DIRS})
 
 # LIBXML
-pkg_check_modules(LibXML++ REQUIRED libxml++-2.6)
+pkg_check_modules(LibXML++ libxml++-3.0)
+if(NOT LibXML++_FOUND)
+    pkg_check_modules(LibXML++2 REQUIRED libxml++-2.6)
+    set(LibXML++_INCLUDE_DIRS ${LibXML++2_INCLUDE_DIRS})
+    set(LibXML++_LIBRARY_DIRS ${LibXML++2_LIBRARY_DIRS})
+    set(LibXML++_LIBRARIES ${LibXML++2_LIBRARIES})
+endif()
 include_directories(${LibXML++_INCLUDE_DIRS})
 link_directories(${LibXML++_LIBRARY_DIRS})
 
