@@ -7,22 +7,37 @@
 int main(int argc, char *argv[]) {
     /* Start the GUI work */
     auto app = Gtk::Application::create(argc, argv, "br.com.jeanhertel.adriconf");
-    try {
-        DRIQuery check;
+
+    char *protocol = std::getenv("XDG_SESSION_TYPE");
+
+    DRIQuery check;
+    if (!check.isSystemSupported()) {
+        return 1;
+    }
+    if (std::string(protocol) == "wayland") {
+        std::cout << _("adriconf running on Wayland\n");
+    } else if (std::string(protocol) == "x11"){
+        std::cout << _("adriconf running on X11\n");
 
         //Error window pops up even when a screen has a driver which we can't configure
         if (!check.canHandle()) {
-            std::cerr << "Not all screens have open source drivers" << std::endl;
+            std::cerr << _("Not all screens have open source drivers") << std::endl;
+
             //pop up error window here
             Gtk::MessageDialog *errorDialog = new Gtk::MessageDialog("Closed source driver(s) detected!",
-                                                                false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_CLOSE);
+                                                                     false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_CLOSE);
             errorDialog->set_secondary_text("Currently adriconf cannot handle closed source drivers.");
-	    if (errorDialog->run()) {
-		errorDialog->close();
-            	return 0;
-	    }
+            if (errorDialog->run()) {
+                errorDialog->close();
+                return 0;
+            }
         }
+    } else {
+        std::cout << _("Unknow display server protocol being used\n");
+        return 1;
+    }
 
+    try {
         GUI gui;
 
         /* No need to worry about the window pointer as the gui object owns it */

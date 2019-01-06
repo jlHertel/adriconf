@@ -172,6 +172,10 @@ msgstr ""
 msgid "The application was successfully added. Reloading default app options."
 msgstr ""
 
+#: ../main.cpp:24
+msgid "Not all screens have open source drivers"
+msgstr ""
+
 #: ../DRIQuery.cpp:18
 msgid "Error getting function pointers. LibGL must be too old."
 msgstr ""

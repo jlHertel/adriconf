@@ -10,18 +10,68 @@
 
 
 DRIQuery::DRIQuery() {
-    this->getScreenDriver = (glXGetScreenDriver_t *) glXGetProcAddress((const GLubyte *) "glXGetScreenDriver");
-    this->getDriverConfig = (glXGetDriverConfig_t *) glXGetProcAddress((const GLubyte *) "glXGetDriverConfig");
-    this->getGlxExtensionsString = (glXQueryExtensionsString_t *) glXGetProcAddress((const GLubyte *) "glXQueryExtensionsString");
 
-    if (!this->getScreenDriver || !this->getDriverConfig || !this->getGlxExtensionsString) {
-        std::cerr << _("Error getting function pointers. LibGL must be too old.") << std::endl;
+}
+
+
+bool DRIQuery::isSystemSupported() {
+    if (std::string(std::getenv("XDG_SESSION_TYPE")) == "wayland") {
+#ifdef ENABLE_XWAYLAND
+        HelpersWayland hw;
+        return hw.hasProperLibEGL();
+#endif
+    } else if (std::string(std::getenv("XDG_SESSION_TYPE")) == "x11") {
+        this->getScreenDriver = (glXGetScreenDriver_t *) glXGetProcAddress((const GLubyte *) "glXGetScreenDriver");
+        this->getDriverConfig = (glXGetDriverConfig_t *) glXGetProcAddress((const GLubyte *) "glXGetDriverConfig");
+        this->getGlxExtensionsString = (glXQueryExtensionsString_t *) glXGetProcAddress((const GLubyte *) "glXQueryExtensionsString");
+
+        if (!this->getScreenDriver || !this->getDriverConfig || !this->getGlxExtensionsString) {
+            std::cerr << _("Error getting function pointers. LibGL must be too old.") << std::endl;
+            return false;
+        }
+
+        return true;
     }
+
+    return false;
+}
+
+const char *DRIQuery::queryDriverName(int s) {
+    Display *display;
+    const char *ret;
+
+    if (!(display = XOpenDisplay(nullptr))) {
+        std::cerr << _("Couldn't open X display") << std::endl;
+        return "";
+    }
+
+    this->getScreenDriver = (glXGetScreenDriver_t *) glXGetProcAddress((const GLubyte *) "glXGetScreenDriver");
+    ret = (*(this->getScreenDriver))(display, s);
+
+    XCloseDisplay(display);
+
+    return ret;
+}
+
+const char *DRIQuery::queryDriverConfig(const char *dn) {
+    Display *display;
+    const char *ret;
+
+    if (!(display = XOpenDisplay(nullptr))) {
+        std::cerr << _("Couldn't open X display") << std::endl;
+        return "";
+    }
+
+    this->getDriverConfig = (glXGetDriverConfig_t *) glXGetProcAddress((const GLubyte *) "glXGetDriverConfig");
+    ret = (*(this->getDriverConfig))(dn);
+
+    XCloseDisplay(display);
+
+    return ret;
 }
 
 std::list<DriverConfiguration> DRIQuery::queryDriverConfigurationOptions(const Glib::ustring &locale) {
     std::list<DriverConfiguration> configurations;
-
     Display *display;
 
     if (!(display = XOpenDisplay(nullptr))) {
@@ -29,25 +79,44 @@ std::list<DriverConfiguration> DRIQuery::queryDriverConfigurationOptions(const G
         return configurations;
     }
 
-    /* Call glXGetClientString to load vendor libs on glvnd enabled systems */
-    glXGetClientString(display, GLX_EXTENSIONS);
-
     int screenCount = ScreenCount (display);
 
     for (int i = 0; i < screenCount; i++) {
         DriverConfiguration config;
         config.setScreen(i);
 
-        auto driverName = (*(this->getScreenDriver))(display, i);
-        config.setDriverName(driverName);
+        if (std::string(std::getenv("XDG_SESSION_TYPE")) == "x11") {
+            /* Call glXGetClientString to load vendor libs on glvnd enabled systems */
+            glXGetClientString(display, GLX_EXTENSIONS);
 
-        auto driverOptions = (*(this->getDriverConfig))(driverName);
-        Glib::ustring options(driverOptions);
+            auto driverName = this->queryDriverName(i);
+            auto driverOptions = this->queryDriverConfig(driverName);
 
-        auto parsedSections = Parser::parseAvailableConfiguration(options, locale);
-        config.setSections(parsedSections);
+            config.setDriverName(driverName);
+            Glib::ustring options(driverOptions);
 
-        configurations.emplace_back(config);
+            auto parsedSections = Parser::parseAvailableConfiguration(options, locale);
+            config.setSections(parsedSections);
+
+            configurations.emplace_back(config);
+        } else if (std::string(std::getenv("XDG_SESSION_TYPE")) == "wayland") {
+#ifdef ENABLE_XWAYLAND
+            HelpersWayland hw;
+            auto driverName = hw.queryDriverName(i);
+            auto driverOptions = hw.queryDriverConfig(driverName);
+
+
+            config.setDriverName(driverName);
+            Glib::ustring options(driverOptions);
+
+            auto parsedSections = Parser::parseAvailableConfiguration(options, locale);
+            config.setSections(parsedSections);
+
+            configurations.emplace_back(config);
+#endif //ENABLE_XWAYLAND
+        }
+
+
     }
 
     XCloseDisplay(display);
@@ -98,14 +167,23 @@ std::map<Glib::ustring, GPUInfo_ptr> DRIQuery::enumerateDRIDevices(const Glib::u
         gpu->setVendorName(pciQuery.queryVendorName(gpu->getVendorId()));
         gpu->setDeviceName(pciQuery.queryDeviceName(gpu->getVendorId(), gpu->getDeviceId()));
 
-        // Load the driver supported options
-        const char *driverOptions = (*(this->getDriverConfig))(gpu->getDriverName().c_str());
+        const char *driverOptions;
+
+        if (std::string(std::getenv("XDG_SESSION_TYPE")) == "x11") {
+            // Load the driver supported options
+            driverOptions = this->queryDriverConfig((const char *) gpu->getDriverName().c_str());
+        } else if (std::string(std::getenv("XDG_SESSION_TYPE")) == "wayland") {
+#ifdef ENABLE_XWAYLAND
+            HelpersWayland hw;
+            driverOptions = hw.queryDriverConfig((const char *) gpu->getDriverName().c_str());
+#endif //ENABLE_XWAYLAND
+        }
 
         // If for some reason mesa is unable to query the options we simply skip this gpu
         if (driverOptions == nullptr) {
             std::cerr << Glib::ustring::compose(
-                    _("Unable to extract configuration for driver %1"), gpu->getDriverName()
-            ) << std::endl;
+                             _("Unable to extract configuration for driver %1"), gpu->getDriverName()
+                             ) << std::endl;
 
             continue;
         }

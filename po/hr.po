@@ -120,6 +120,10 @@ msgstr "Stvaranje konačnog XML-a za spremanje..."
 msgid "Main window object is not in glade file!"
 msgstr "Glavnog objekta prozora nema u glade datoteci!"
 
+#: ../main.cpp:24
+msgid "Not all screens have open source drivers"
+msgstr ""
+
 #: ../GUI.cpp:280
 msgid "Notebook object not found in glade file!"
 msgstr "Objekta bilješke nema u glade datoteci!"
