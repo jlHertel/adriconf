@@ -10,6 +10,7 @@ set(SOURCE_FILES Device.cpp Device.h
         Application.cpp Application.h
         ConfigurationResolver.cpp ConfigurationResolver.h
         DRIQuery.cpp DRIQuery.h
+        HelpersWayland.cpp HelpersWayland.h
         DriverConfiguration.cpp DriverConfiguration.h
         Writer.cpp Writer.h GUI.cpp GUI.h ConfigurationLoader.cpp ConfigurationLoader.h ApplicationOption.cpp ApplicationOption.h
         resources.c GPUInfo.cpp GPUInfo.h PCIDatabaseQuery.cpp PCIDatabaseQuery.h ComboBoxColumn.h DriverOptionType.h)
@@ -70,6 +71,15 @@ find_package(Gettext REQUIRED)
 include_directories(${INTL_INCLUDE_DIRS})
 link_directories(${INTL_LIBRARY_DIRS})
 
+#EGL
+#Use these libs if running on Wayland
+if(ENABLE_XWAYLAND)
+    message(STATUS "XDG_SESSION_TYPE = " $ENV{XDG_SESSION_TYPE})
+    pkg_check_modules(EGL REQUIRED egl)
+    include_directories(${EGL_INCLUDE_DIRS})
+    link_directories(${EGL_LIBRARY_DIRS})
+endif()
+
 #INTL INSTALL TRANSLATIONS
 GETTEXT_CREATE_TRANSLATIONS(po/adriconf.pot ALL po/en.po po/hr.po po/pt_BR.po)
 
@@ -86,6 +96,10 @@ if(OpenGL_GLX_FOUND)
 endif()
 target_link_libraries(adriconf ${DRM_LIBRARIES})
 target_link_libraries(adriconf ${PCILIB_LIBRARIES})
+if (ENABLE_XWAYLAND)
+    target_link_libraries(adriconf ${EGL_LIBRARIES})
+    target_compile_definitions(adriconf PRIVATE ENABLE_XWAYLAND)
+endif()
 
 add_custom_command(OUTPUT ${CMAKE_SOURCE_DIR}/resources.c
     COMMAND glib-compile-resources adriconf.gresource.xml --target=resources.c --generate-source

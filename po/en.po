@@ -120,6 +120,10 @@ msgstr "Generating final XML for saving..."
 msgid "Main window object is not in glade file!"
 msgstr "Main window object is not in glade file!"
 
+#: ../main.cpp:24
+msgid "Not all screens have open source drivers"
+msgstr ""
+
 #: ../GUI.cpp:280
 msgid "Notebook object not found in glade file!"
 msgstr "Notebook object not found in glade file!"
