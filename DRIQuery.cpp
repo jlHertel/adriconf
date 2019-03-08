@@ -90,10 +90,26 @@ std::list<DriverConfiguration> DRIQuery::queryDriverConfigurationOptions(const G
             glXGetClientString(display, GLX_EXTENSIONS);
 
             auto driverName = this->queryDriverName(i);
-            auto driverOptions = this->queryDriverConfig(driverName);
-
             config.setDriverName(driverName);
+
+            auto driverOptions = this->queryDriverConfig(driverName);
+            // If for some reason mesa is unable to query the options we simply skip this gpu
+            if (driverOptions == nullptr) {
+                std::cerr << Glib::ustring::compose(
+                                 _("Unable to extract configuration for driver %1"), config.getDriverName()
+                                 ) << std::endl;
+
+                continue;
+            }
+
             Glib::ustring options(driverOptions);
+            if (options.empty()) {
+                std::cerr << Glib::ustring::compose(
+                        _("Unable to extract configuration for driver %1"), config.getDriverName()
+                ) << std::endl;
+
+                continue;
+            }
 
             auto parsedSections = Parser::parseAvailableConfiguration(options, locale);
             config.setSections(parsedSections);
@@ -107,7 +123,23 @@ std::list<DriverConfiguration> DRIQuery::queryDriverConfigurationOptions(const G
 
 
             config.setDriverName(driverName);
+            // If for some reason mesa is unable to query the options we simply skip this gpu
+            if (driverOptions == nullptr) {
+                std::cerr << Glib::ustring::compose(
+                                 _("Unable to extract configuration for driver %1"), config.getDriverName()
+                                 ) << std::endl;
+
+                continue;
+            }
+
             Glib::ustring options(driverOptions);
+            if (options.empty()) {
+                std::cerr << Glib::ustring::compose(
+                        _("Unable to extract configuration for driver %1"), config.getDriverName()
+                ) << std::endl;
+
+                continue;
+            }
 
             auto parsedSections = Parser::parseAvailableConfiguration(options, locale);
             config.setSections(parsedSections);
