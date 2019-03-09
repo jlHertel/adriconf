@@ -4,6 +4,7 @@
 #include "ConfigurationResolver.h"
 #include "Writer.h"
 #include <fstream>
+#include <exception>
 
 GUI::GUI() : currentApp(nullptr), currentDriver(nullptr) {
     this->setupLocale();
@@ -13,6 +14,10 @@ GUI::GUI() : currentApp(nullptr), currentDriver(nullptr) {
     this->driverConfiguration = configurationLoader.loadDriverSpecificConfiguration(this->locale);
     for (auto &driver : this->driverConfiguration) {
         driver.sortSectionOptions();
+    }
+    
+    if (this->driverConfiguration.empty()) {
+        throw std::runtime_error("No driver configuration could be loaded");
     }
 
     this->systemWideConfiguration = configurationLoader.loadSystemWideConfiguration();
