@@ -90,6 +90,12 @@ std::list<DriverConfiguration> DRIQuery::queryDriverConfigurationOptions(const G
             glXGetClientString(display, GLX_EXTENSIONS);
 
             auto driverName = this->queryDriverName(i);
+            if (driverName == nullptr) {
+                std::cerr << Glib::ustring::compose(
+                    _("Unable to extract driver name for screen %1"), i
+                ) << std::endl;
+                continue;
+            }
             config.setDriverName(driverName);
 
             auto driverOptions = this->queryDriverConfig(driverName);
@@ -120,7 +126,6 @@ std::list<DriverConfiguration> DRIQuery::queryDriverConfigurationOptions(const G
             HelpersWayland hw;
             auto driverName = hw.queryDriverName(i);
             auto driverOptions = hw.queryDriverConfig(driverName);
-
 
             config.setDriverName(driverName);
             // If for some reason mesa is unable to query the options we simply skip this gpu

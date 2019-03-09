@@ -3,11 +3,17 @@
 #include <fstream>
 
 Glib::ustring ConfigurationLoader::readSystemWideXML() {
+    Glib::ustring container;
     std::ostringstream buffer;
     std::ifstream input("/etc/drirc");
+    
+    if (!input.good()) {
+        return std::move(container);
+    }
+    
     buffer << input.rdbuf();
-    Glib::ustring container(buffer.str());
-
+    container = buffer.str();
+    
     return std::move(container);
 }
 
@@ -39,6 +45,11 @@ std::map<Glib::ustring, GPUInfo_ptr> ConfigurationLoader::loadAvailableGPUs(cons
 
 Device_ptr ConfigurationLoader::loadSystemWideConfiguration() {
     Glib::ustring systemWideXML = this->readSystemWideXML();
+    if (systemWideXML.empty()) {
+        auto fakeDevice = std::make_shared<Device>();
+        return fakeDevice;
+    }
+    
     std::list<Device_ptr> systemWideDevices = Parser::parseDevices(systemWideXML);
 
     /* In case no configuration is available system-wide we generate an empty one */
