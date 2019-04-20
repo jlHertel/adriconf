@@ -101,6 +101,8 @@ if (ENABLE_XWAYLAND)
     target_compile_definitions(adriconf PRIVATE ENABLE_XWAYLAND)
 endif()
 
+target_compile_options(adriconf PRIVATE -Wall -Wextra -pedantic)
+
 add_custom_command(OUTPUT ${CMAKE_SOURCE_DIR}/resources.c
     COMMAND glib-compile-resources adriconf.gresource.xml --target=resources.c --generate-source
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
@@ -145,5 +147,7 @@ if (ENABLE_XWAYLAND)
     target_include_directories(runUnitTests PUBLIC ${EGL_INCLUDE_DIRS})
     target_compile_definitions(runUnitTests PRIVATE ENABLE_XWAYLAND)
 endif()
+
+target_compile_options(runUnitTests PRIVATE -Wall -Wextra -pedantic)
 
 install(TARGETS adriconf DESTINATION bin)
