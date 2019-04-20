@@ -3,6 +3,8 @@ project(adriconf)
 
 set(CMAKE_CXX_STANDARD 14)
 
+option(ENABLE_XWAYLAND "Enable XWayland support" ON)
+
 set(SOURCE_FILES Device.cpp Device.h
         DriverOption.cpp DriverOption.h
         Section.cpp Section.h
@@ -61,7 +63,6 @@ link_directories(${INTL_LIBRARY_DIRS})
 #EGL
 #Use these libs if running on Wayland
 if(ENABLE_XWAYLAND)
-    message(STATUS "XDG_SESSION_TYPE = " $ENV{XDG_SESSION_TYPE})
     pkg_check_modules(EGL REQUIRED egl)
 endif()
 
