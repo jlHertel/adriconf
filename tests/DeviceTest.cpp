@@ -1,4 +1,4 @@
-#include "../Device.h"
+#include "../adriconf/Device.h"
 #include "gtest/gtest.h"
 
 class DeviceTest : public ::testing::Test {

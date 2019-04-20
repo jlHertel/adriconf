@@ -1,4 +1,4 @@
-#include "../ConfigurationResolver.h"
+#include "../adriconf/ConfigurationResolver.h"
 #include "gtest/gtest.h"
 
 class UpdatePrimeApplicationsTest : public ::testing::Test {

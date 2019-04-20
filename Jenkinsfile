@@ -16,7 +16,7 @@ pipeline {
         stage('Test') {
             steps {
                 echo 'Running test stage'
-                dir('build-dir') {
+                dir('build-dir/tests') {
                     sh './runUnitTests --gtest_output=xml:gtestresults.xml'
                     sh 'awk \'{ if ($1 == "<testcase" && match($0, "notrun")) print substr($0,0,length($0)-2) "><skipped/></testcase>"; else print $0;}\' gtestresults.xml > gtestresults-skipped.xml'
                     sh 'mv gtestresults.xml gtestresults.off'
@@ -26,8 +26,8 @@ pipeline {
     }
     post {
         always {
-            archiveArtifacts 'build-dir/adriconf,build-dir/runUnitTests'
-            junit 'build-dir/gtestresults-skipped.xml'
+            archiveArtifacts 'build-dir/adriconf/adriconf,build-dir/tests/runUnitTests'
+            junit 'build-dir/tests/gtestresults-skipped.xml'
             deleteDir()
         }
     }
