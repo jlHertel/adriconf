@@ -21,7 +21,7 @@ namespace ConfigurationResolver {
      * @return A lista of new devices ready to be written to disk
      */
     std::list<Device_ptr> resolveOptionsForSave(
-            const Device_ptr &,
+            const std::list<Device_ptr> &,
             const std::list<DriverConfiguration> &,
             const std::list<Device_ptr> &,
             std::map<Glib::ustring, GPUInfo_ptr> &
@@ -49,7 +49,7 @@ namespace ConfigurationResolver {
      * @param availableGPUs
      */
     void mergeOptionsForDisplay(
-            const Device_ptr &,
+            const std::list<Device_ptr> &,
             const std::list<DriverConfiguration> &,
             std::list<Device_ptr> &,
             std::map<Glib::ustring, GPUInfo_ptr> &

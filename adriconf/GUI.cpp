@@ -233,7 +233,7 @@ void GUI::drawApplicationSelectionMenu() {
     }
 }
 
-void GUI::onApplicationSelected(const Glib::ustring driverName, const Glib::ustring applicationName) {
+void GUI::onApplicationSelected(const Glib::ustring &driverName, const Glib::ustring &applicationName) {
     if (driverName == this->currentDriver->getDriverName() && applicationName == this->currentApp->getExecutable()) {
         return;
     }
