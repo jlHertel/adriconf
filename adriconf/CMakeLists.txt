@@ -12,6 +12,7 @@ target_link_libraries(adriconf ${GTKMM_LIBRARIES})
 target_include_directories(adriconf PUBLIC ${GTKMM_INCLUDE_DIRS})
 
 target_link_libraries(adriconf ${Boost_LOCALE_LIBRARIES})
+target_link_libraries(adriconf ${Boost_FILESYSTEM_LIBRARIES})
 target_include_directories(adriconf PUBLIC ${Boost_INCLUDE_DIRS})
 
 target_link_libraries(adriconf ${LibXML++_LIBRARIES})
