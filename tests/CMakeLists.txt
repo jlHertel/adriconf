@@ -28,6 +28,7 @@ target_include_directories(runUnitTests PUBLIC ${GTKMM_INCLUDE_DIRS})
 
 target_link_libraries(runUnitTests ${Boost_LOCALE_LIBRARIES})
 target_link_libraries(runUnitTests ${Boost_FILESYSTEM_LIBRARIES})
+target_link_libraries(runUnitTests ${Boost_SYSTEM_LIBRARIES})
 target_include_directories(runUnitTests PUBLIC ${Boost_INCLUDE_DIRS})
 
 target_link_libraries(runUnitTests ${LibXML++_LIBRARIES})
