@@ -18,7 +18,7 @@ private:
     ComboBoxColumn comboColumns;
 
     /* State-related */
-    Device_ptr systemWideConfiguration;
+    std::list<Device_ptr> systemWideConfiguration;
     std::list<DriverConfiguration> driverConfiguration;
     std::list<Device_ptr> userDefinedConfiguration;
     std::map<Glib::ustring, GPUInfo_ptr> availableGPUs;
@@ -52,7 +52,7 @@ public:
 
     void onSavePressed();
 
-    void onApplicationSelected(Glib::ustring, Glib::ustring);
+    void onApplicationSelected(const Glib::ustring&, const Glib::ustring&);
 
     void onCheckboxChanged(Glib::ustring);
 

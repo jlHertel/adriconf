@@ -3,7 +3,7 @@
 #include <glibmm/i18n.h>
 
 std::list<Device_ptr> ConfigurationResolver::resolveOptionsForSave(
-        const Device_ptr &systemWideDevice,
+        const std::list<Device_ptr> &systemWideDevices,
         const std::list<DriverConfiguration> &driverAvailableOptions,
         const std::list<Device_ptr> &userDefinedDevices,
         std::map<Glib::ustring, GPUInfo_ptr> &availableGPUs
@@ -11,8 +11,31 @@ std::list<Device_ptr> ConfigurationResolver::resolveOptionsForSave(
     /* Create the final driverList */
     std::list<Device_ptr> mergedDevices;
 
+    Device_ptr defaultSystemWideDevice;
+
+    for (const auto &systemDeviceSearch : systemWideDevices) {
+        if (systemDeviceSearch->getDriver().empty()) {
+            defaultSystemWideDevice = systemDeviceSearch;
+            break;
+        }
+    }
+
     /* Precedence: userDefined > System Wide > Driver Default */
     for (const auto &userDefinedDevice : userDefinedDevices) {
+        /* Search if there is any device like this system-wide */
+        Device_ptr systemWideDevice = nullptr;
+        for (const auto &systemDeviceSearch : systemWideDevices) {
+            if (systemDeviceSearch->getDriver() == userDefinedDevice->getDriver()) {
+                systemWideDevice = systemDeviceSearch;
+                break;
+            }
+        }
+
+        if (systemWideDevice == nullptr) {
+            systemWideDevice = defaultSystemWideDevice;
+        }
+
+
         Device_ptr mergedDevice = std::make_shared<Device>();
 
         mergedDevice->setDriver(userDefinedDevice->getDriver());
@@ -196,11 +219,20 @@ void ConfigurationResolver::filterDriverUnsupportedOptions(
 }
 
 void ConfigurationResolver::mergeOptionsForDisplay(
-        const Device_ptr &systemWideDevice,
+        const std::list<Device_ptr> &systemWideDevices,
         const std::list<DriverConfiguration> &driverAvailableOptions,
         std::list<Device_ptr> &userDefinedOptions,
         std::map<Glib::ustring, GPUInfo_ptr> &availableGPUs
 ) {
+    Device_ptr defaultSystemWideDevice;
+
+    for (const auto &systemDeviceSearch : systemWideDevices) {
+        if (systemDeviceSearch->getDriver().empty()) {
+            defaultSystemWideDevice = systemDeviceSearch;
+            break;
+        }
+    }
+
     for (const auto &driverConf : driverAvailableOptions) {
         /* Check if user-config has any config for this screen/driver */
         auto userSearchDefinedDevice = std::find_if(userDefinedOptions.begin(), userDefinedOptions.end(),
@@ -220,6 +252,20 @@ void ConfigurationResolver::mergeOptionsForDisplay(
         } else {
             userDefinedDevice = *userSearchDefinedDevice;
         }
+
+        /* Search if there is any device like this system-wide */
+        Device_ptr systemWideDevice = nullptr;
+        for (const auto &systemDeviceSearch : systemWideDevices) {
+            if (systemDeviceSearch->getDriver() == userDefinedDevice->getDriver()) {
+                systemWideDevice = systemDeviceSearch;
+                break;
+            }
+        }
+
+        if (systemWideDevice == nullptr) {
+            systemWideDevice = defaultSystemWideDevice;
+        }
+
 
         std::map<Glib::ustring, Glib::ustring> realDriverOptions = driverConf.getOptionsMap();
         std::map<Glib::ustring, Glib::ustring> driverOptions;

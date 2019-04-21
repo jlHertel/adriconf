@@ -43,22 +43,21 @@ std::map<Glib::ustring, GPUInfo_ptr> ConfigurationLoader::loadAvailableGPUs(cons
     return this->driQuery.enumerateDRIDevices(locale);
 }
 
-Device_ptr ConfigurationLoader::loadSystemWideConfiguration() {
-    Glib::ustring systemWideXML = this->readSystemWideXML();
-    if (systemWideXML.empty()) {
-        auto fakeDevice = std::make_shared<Device>();
-        return fakeDevice;
-    }
+std::list<Device_ptr> ConfigurationLoader::loadSystemWideConfiguration() {
+    std::list<Device_ptr> systemWideDevices;
 
-    std::list<Device_ptr> systemWideDevices = Parser::parseDevices(systemWideXML);
+    Glib::ustring systemWideXML = this->readSystemWideXML();
+    if (!systemWideXML.empty()) {
+        systemWideDevices = Parser::parseDevices(systemWideXML);
+    }
 
     /* In case no configuration is available system-wide we generate an empty one */
     if (systemWideDevices.empty()) {
-        auto fakeDevice = std::make_shared<Device>();
+        Device_ptr fakeDevice = std::make_shared<Device>();
         systemWideDevices.emplace_back(fakeDevice);
     }
 
-    return systemWideDevices.front();
+    return systemWideDevices;
 }
 
 std::list<Device_ptr> ConfigurationLoader::loadUserDefinedConfiguration() {
