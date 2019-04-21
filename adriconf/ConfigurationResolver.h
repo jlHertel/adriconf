@@ -66,7 +66,7 @@ namespace ConfigurationResolver {
 
     void removeInvalidDrivers(const std::list<DriverConfiguration> &availableDrivers,
                               std::list<Device_ptr> &userDefinedDevices);
-};
+}
 
 
 #endif

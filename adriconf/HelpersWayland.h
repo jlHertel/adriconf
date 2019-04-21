@@ -21,7 +21,6 @@ private:
 
     void setup_x(const char *display_name,
             Display** out_display,
-            int screenXlib,
             Window* out_window);
     void setup_egl(
             EGLint api,
@@ -35,8 +34,8 @@ private:
 public:
     HelpersWayland() {}
     bool hasProperLibEGL();
-    const char *queryDriverName(int screen);
-    const char *queryDriverConfig(const char *dn);
+    const char *queryDriverName();
+    const char *queryDriverConfig();
 };
 
 #endif //ENABLE_XWAYLAND

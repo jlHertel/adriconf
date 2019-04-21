@@ -16,6 +16,6 @@ namespace Parser {
     std::list<Device_ptr> parseDevices(Glib::ustring &xml);
 
     Application_ptr parseApplication(xmlpp::Node *application);
-};
+}
 
 #endif
