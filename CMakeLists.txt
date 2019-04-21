@@ -14,7 +14,7 @@ find_package(OpenGL REQUIRED)
 pkg_check_modules(GTKMM REQUIRED gtkmm-3.0)
 
 # BOOST
-find_package(Boost 1.60 REQUIRED COMPONENTS locale filesystem)
+find_package(Boost 1.60 REQUIRED COMPONENTS locale filesystem system)
 
 # LIBXML
 pkg_check_modules(LibXML++ libxml++-3.0)
