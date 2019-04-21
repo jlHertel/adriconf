@@ -4,6 +4,7 @@
 #include <glibmm/ustring.h>
 #include <memory>
 #include <map>
+#include <boost/filesystem.hpp>
 
 #include "DriverConfiguration.h"
 #include "Device.h"
@@ -28,6 +29,8 @@ public:
     std::map<Glib::ustring, GPUInfo_ptr> loadAvailableGPUs(const Glib::ustring &locale);
 
     Glib::ustring getOldSystemWideConfigurationPath();
+
+    boost::filesystem::path getSystemWideConfigurationPath();
 };
 
 #endif

@@ -402,3 +402,51 @@ void ConfigurationResolver::addMissingApplications(const Device_ptr &sourceDevic
         }
     }
 }
+
+void
+ConfigurationResolver::mergeConfigurationOnTopOf(std::list<Device_ptr> &source, const std::list<Device_ptr> &addOnTop) {
+    for (const auto &deviceToBeAdded : addOnTop) {
+        auto existingDevice = std::find_if(source.begin(), source.end(),
+                                           [&deviceToBeAdded](const Device_ptr &searchingDevice) {
+                                               return deviceToBeAdded->getDriver() == searchingDevice->getDriver()
+                                                      && deviceToBeAdded->getScreen() == searchingDevice->getScreen();
+                                           }
+        );
+
+        if (existingDevice == source.end()) {
+            source.emplace_back(deviceToBeAdded);
+            continue;
+        }
+
+        for (const Application_ptr &appToBeAdded : deviceToBeAdded->getApplications()) {
+            auto existingApp = std::find_if((*existingDevice)->getApplications().begin(),
+                                            (*existingDevice)->getApplications().end(),
+                                            [&appToBeAdded](const Application_ptr &app) {
+                                                return app->getExecutable() == appToBeAdded->getExecutable();
+                                            }
+            );
+
+            if (existingApp == (*existingDevice)->getApplications().end()) {
+                (*existingDevice)->addApplication(appToBeAdded);
+                continue;
+            }
+
+            for (const ApplicationOption_ptr &optionToBeAdded : appToBeAdded->getOptions()) {
+                auto existingOption = std::find_if((*existingApp)->getOptions().begin(),
+                                                   (*existingApp)->getOptions().end(),
+                                                   [&optionToBeAdded](const ApplicationOption_ptr &option) {
+                                                       return optionToBeAdded->getName() == option->getName();
+                                                   }
+                );
+
+                if (existingOption == (*existingApp)->getOptions().end()) {
+                    (*existingApp)->addOption(optionToBeAdded);
+                } else {
+                    (*existingOption)->setValue(optionToBeAdded->getValue());
+                }
+            }
+
+        }
+
+    }
+}

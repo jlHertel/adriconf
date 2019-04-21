@@ -66,6 +66,8 @@ namespace ConfigurationResolver {
 
     void removeInvalidDrivers(const std::list<DriverConfiguration> &availableDrivers,
                               std::list<Device_ptr> &userDefinedDevices);
+
+    void mergeConfigurationOnTopOf(std::list<Device_ptr> &source, const std::list<Device_ptr> &addOnTop);
 }
 
 
