@@ -5,7 +5,7 @@
 
 extern "C" {
 #include <pci/pci.h>
-};
+}
 
 class PCIDatabaseQuery {
 private:

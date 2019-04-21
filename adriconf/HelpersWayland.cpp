@@ -20,7 +20,6 @@ bool HelpersWayland::hasProperLibEGL() {
 
 void HelpersWayland::setup_x(const char *display_name,
         Display** out_display,
-        int screenXlib,
         Window* out_window) {
 
 
@@ -104,16 +103,14 @@ void HelpersWayland::setup_egl(
     *out_window_surface = surface;
 }
 
-const char *HelpersWayland::queryDriverName(int screen) {
+const char *HelpersWayland::queryDriverName() {
     const char *x_display_name = NULL;
     Display *x_display;
-    int x_screen = screen;
     Window x_window;
 
     const char *ret;
     setup_x(x_display_name,
             &x_display,
-            x_screen,
             &x_window);
 
     EGLDisplay egl_display;
@@ -136,14 +133,12 @@ const char *HelpersWayland::queryDriverName(int screen) {
     return ret;
 }
 
-const char *HelpersWayland::queryDriverConfig(const char *dn) {
+const char *HelpersWayland::queryDriverConfig() {
     const char *x_display_name = NULL;
     Display *x_display;
-    int x_screen = 0;
     Window x_window;
     setup_x(x_display_name,
             &x_display,
-            x_screen,
             &x_window);
 
     EGLDisplay egl_display;

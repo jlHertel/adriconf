@@ -124,8 +124,8 @@ std::list<DriverConfiguration> DRIQuery::queryDriverConfigurationOptions(const G
         } else if (std::string(std::getenv("XDG_SESSION_TYPE")) == "wayland") {
 #ifdef ENABLE_XWAYLAND
             HelpersWayland hw;
-            auto driverName = hw.queryDriverName(i);
-            auto driverOptions = hw.queryDriverConfig(driverName);
+            auto driverName = hw.queryDriverName();
+            auto driverOptions = hw.queryDriverConfig();
 
             config.setDriverName(driverName);
             // If for some reason mesa is unable to query the options we simply skip this gpu
@@ -212,7 +212,7 @@ std::map<Glib::ustring, GPUInfo_ptr> DRIQuery::enumerateDRIDevices(const Glib::u
         } else if (std::string(std::getenv("XDG_SESSION_TYPE")) == "wayland") {
 #ifdef ENABLE_XWAYLAND
             HelpersWayland hw;
-            driverOptions = hw.queryDriverConfig((const char *) gpu->getDriverName().c_str());
+            driverOptions = hw.queryDriverConfig();
 #endif //ENABLE_XWAYLAND
         }
 

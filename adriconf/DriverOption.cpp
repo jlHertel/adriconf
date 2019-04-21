@@ -113,7 +113,7 @@ int DriverOption::getValidValueEnd() const {
     }
 
     auto splitPos = this->validValues.find_first_of(':');
-    if (splitPos >= this->validValues.length() - 1 || splitPos < 0) {
+    if (splitPos == std::string::npos || splitPos >= this->validValues.length() - 1) {
         return 10000;
     }
 
