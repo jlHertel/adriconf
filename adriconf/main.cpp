@@ -37,17 +37,18 @@ int main(int argc, char *argv[]) {
         /* Start the GUI work */
         auto app = Gtk::Application::create(argc, argv, "br.com.jeanhertel.adriconf");
 
-        char *protocol = std::getenv("XDG_SESSION_TYPE");
+        char *waylandDisplay = std::getenv("WAYLAND_DISPLAY");
+        bool isWayland = waylandDisplay != nullptr;
 
         logger->debug(_("Checking if the system is supported"));
         Parser parser(logger);
-        DRIQuery check(logger, &parser);
+        DRIQuery check(logger, &parser, isWayland);
         if (!check.isSystemSupported()) {
             return 1;
         }
-        if (std::string(protocol) == "wayland") {
+        if (isWayland) {
             logger->info(_("adriconf running on Wayland"));
-        } else if (std::string(protocol) == "x11") {
+        } else {
             logger->info(_("adriconf running on X11"));
 
             //Error window pops up even when a screen has a driver which we can't configure
@@ -63,13 +64,10 @@ int main(int argc, char *argv[]) {
                     return 0;
                 }
             }
-        } else {
-            logger->error(_("Unknow display server protocol being used"));
-            return 1;
         }
 
-
-        GUI gui(logger);
+        ConfigurationLoader loader(check, logger, &parser);
+        GUI gui(logger, &loader);
 
         /* No need to worry about the window pointer as the gui object owns it */
         Gtk::Window *pWindow = gui.getWindowPointer();
