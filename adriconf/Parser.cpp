@@ -1,7 +1,9 @@
 #include "Parser.h"
+#include <glibmm/i18n.h>
 
 std::list<Section>
 Parser::parseAvailableConfiguration(const Glib::ustring &xml, const Glib::ustring &currentLocale) {
+    this->logger->debug(Glib::ustring::compose(_("Parsing XML %1"), xml));
     std::list<Section> availableSections;
     try {
         xmlpp::DomParser parser;
@@ -51,8 +53,8 @@ Parser::parseAvailableConfiguration(const Glib::ustring &xml, const Glib::ustrin
         }
 
     } catch (const std::exception &ex) {
-        std::cerr << "LibXML exception caught: " << ex.what() << std::endl;
-        std::cerr << "XML Parsed: " << xml << std::endl;
+        this->logger->error(Glib::ustring::compose("LibXML exception caught: %1", ex.what()));
+        this->logger->error(Glib::ustring::compose("XML Parsed: %1", xml));
     }
 
     return availableSections;
@@ -114,7 +116,7 @@ DriverOption Parser::parseSectionOptions(xmlpp::Node *option, const Glib::ustrin
             }
         }
     }
-    
+
     parsedOption.updateFakeBool();
 
     return parsedOption;
@@ -123,6 +125,7 @@ DriverOption Parser::parseSectionOptions(xmlpp::Node *option, const Glib::ustrin
 std::list<Device_ptr> Parser::parseDevices(Glib::ustring &xml) {
     std::list<Device_ptr> deviceList;
 
+    this->logger->debug(Glib::ustring::compose(_("Parsing device for XML: %1"), xml));
     try {
         xmlpp::DomParser parser;
         parser.set_throw_messages(true);
@@ -159,7 +162,7 @@ std::list<Device_ptr> Parser::parseDevices(Glib::ustring &xml) {
             }
         }
     } catch (const std::exception &ex) {
-        std::cerr << "Exception caught: " << ex.what() << std::endl;
+        this->logger->error(Glib::ustring::compose(_("Exception caught during device XML parsing: %1"), ex.what()));
     }
 
     return deviceList;

@@ -40,7 +40,8 @@ int main(int argc, char *argv[]) {
         char *protocol = std::getenv("XDG_SESSION_TYPE");
 
         logger->debug(_("Checking if the system is supported"));
-        DRIQuery check(logger);
+        Parser parser(logger);
+        DRIQuery check(logger, &parser);
         if (!check.isSystemSupported()) {
             return 1;
         }

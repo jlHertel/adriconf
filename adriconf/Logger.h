@@ -13,10 +13,10 @@ public:
 
     Logger();
 
-    virtual void debug(Glib::ustring msg);
-    virtual void info(Glib::ustring msg);
-    virtual void warning(Glib::ustring msg);
-    virtual void error(Glib::ustring msg);
+    void debug(Glib::ustring msg) override;
+    void info(Glib::ustring msg) override;
+    void warning(Glib::ustring msg) override;
+    void error(Glib::ustring msg) override;
 
     void setLevel(LoggerLevel level);
 };

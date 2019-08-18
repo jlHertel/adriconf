@@ -19,6 +19,7 @@ private:
 
     DRIQuery driQuery;
     LoggerInterface *logger;
+    ParserInterface *parser;
 
 public:
     std::list<DriverConfiguration> loadDriverSpecificConfiguration(const Glib::ustring &locale);
@@ -33,7 +34,7 @@ public:
 
     boost::filesystem::path getSystemWideConfigurationPath();
 
-    ConfigurationLoader(const DRIQuery &driQuery, LoggerInterface *logger);
+    ConfigurationLoader(const DRIQuery &driQuery, LoggerInterface *logger, ParserInterface *parser);
 };
 
 #endif

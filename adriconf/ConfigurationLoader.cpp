@@ -84,14 +84,14 @@ std::list<Device_ptr> ConfigurationLoader::loadSystemWideConfiguration() {
 
         buffer << input.rdbuf();
         container = buffer.str();
-        std::list<Device_ptr> justLoadedDevices = Parser::parseDevices(container);
+        std::list<Device_ptr> justLoadedDevices = this->parser->parseDevices(container);
 
         ConfigurationResolver::mergeConfigurationOnTopOf(systemWideDevices, justLoadedDevices);
     }
 
     Glib::ustring systemWideXML = this->readSystemWideXML();
     if (!systemWideXML.empty()) {
-        std::list<Device_ptr> justLoadedDevices = Parser::parseDevices(systemWideXML);
+        std::list<Device_ptr> justLoadedDevices = this->parser->parseDevices(systemWideXML);
         ConfigurationResolver::mergeConfigurationOnTopOf(systemWideDevices, justLoadedDevices);
     }
 
@@ -111,7 +111,7 @@ std::list<Device_ptr> ConfigurationLoader::loadUserDefinedConfiguration() {
         std::list<Device_ptr> deviceList;
         return deviceList;
     }
-    return Parser::parseDevices(userDefinedXML);
+    return this->parser->parseDevices(userDefinedXML);
 }
 
 Glib::ustring ConfigurationLoader::getOldSystemWideConfigurationPath() {
@@ -135,5 +135,7 @@ boost::filesystem::path ConfigurationLoader::getSystemWideConfigurationPath() {
     return boost::filesystem::path("/usr/share/drirc.d/");
 }
 
-ConfigurationLoader::ConfigurationLoader(const DRIQuery &driQuery, LoggerInterface *logger) : driQuery(driQuery),
-                                                                                              logger(logger) {}
+ConfigurationLoader::ConfigurationLoader(const DRIQuery &driQuery, LoggerInterface *logger, ParserInterface *parser)
+        : driQuery(driQuery),
+          logger(logger),
+          parser(parser) {}
