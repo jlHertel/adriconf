@@ -6,16 +6,17 @@
 #include <fstream>
 #include <exception>
 
-GUI::GUI() : currentApp(nullptr), currentDriver(nullptr) {
+GUI::GUI(LoggerInterface *logger) : logger(logger), currentApp(nullptr), currentDriver(nullptr) {
     this->setupLocale();
 
     /* Load the configurations */
-    ConfigurationLoader configurationLoader;
+    DRIQuery driQuery(logger);
+    ConfigurationLoader configurationLoader(driQuery, logger);
     this->driverConfiguration = configurationLoader.loadDriverSpecificConfiguration(this->locale);
     for (auto &driver : this->driverConfiguration) {
         driver.sortSectionOptions();
     }
-    
+
     if (this->driverConfiguration.empty()) {
         throw std::runtime_error("No driver configuration could be loaded");
     }
@@ -43,7 +44,8 @@ GUI::GUI() : currentApp(nullptr), currentDriver(nullptr) {
     ConfigurationResolver::filterDriverUnsupportedOptions(
             this->driverConfiguration,
             this->userDefinedConfiguration,
-            this->availableGPUs
+            this->availableGPUs,
+            this->logger
     );
 
     /* Load the GUI file */
@@ -53,7 +55,7 @@ GUI::GUI() : currentApp(nullptr), currentDriver(nullptr) {
     /* Extract the main object */
     this->gladeBuilder->get_widget("mainwindow", this->pWindow);
     if (!pWindow) {
-        std::cerr << _("Main window object is not in glade file!") << std::endl;
+        this->logger->error(_("Main window object is not in glade file!"));
         return;
     }
 
@@ -74,7 +76,7 @@ GUI::GUI() : currentApp(nullptr), currentDriver(nullptr) {
         pSaveAction->signal_activate().connect(sigc::mem_fun(this, &GUI::onSavePressed));
     }
 
-    Glib::RefPtr <Gtk::AccelGroup> accelGroup = this->pWindow->get_accel_group();
+    Glib::RefPtr<Gtk::AccelGroup> accelGroup = this->pWindow->get_accel_group();
     /* Create the menu itens */
     this->pMenuAddApplication = Gtk::manage(new Gtk::MenuItem);
     this->pMenuAddApplication->set_visible(true);
@@ -121,13 +123,13 @@ void GUI::onQuitPressed() {
 }
 
 void GUI::onSavePressed() {
-    std::cout << _("Generating final XML for saving...") << std::endl;
+    this->logger->debug(_("Generating final XML for saving..."));
     auto resolvedOptions = ConfigurationResolver::resolveOptionsForSave(
             this->systemWideConfiguration, this->driverConfiguration, this->userDefinedConfiguration,
             this->availableGPUs
     );
     auto rawXML = Writer::generateRawXml(resolvedOptions);
-    std::cout << Glib::ustring::compose(_("Writing generated XML: %1"), rawXML) << std::endl;
+    this->logger->debug(Glib::ustring::compose(_("Writing generated XML: %1"), rawXML));
     std::string userHome(std::getenv("HOME"));
     std::ofstream outFile(userHome + "/.drirc");
     outFile << rawXML;
@@ -147,7 +149,7 @@ void GUI::setupLocale() {
 
     Glib::ustring langCode(std::use_facet<boost::locale::info>(l).language());
 
-    std::cout << Glib::ustring::compose(_("Current language code is %1"), langCode) << std::endl;
+    this->logger->debug(Glib::ustring::compose(_("Current language code is %1"), langCode));
 
     this->locale = langCode;
 }
@@ -188,7 +190,7 @@ void GUI::drawApplicationSelectionMenu() {
                                                     return d.getDriverName() == driver->getDriver();
                                                 });
                 if (foundDriver == this->driverConfiguration.end()) {
-                    std::cerr << Glib::ustring::compose(_("Driver %1 not found"), driver) << std::endl;
+                    this->logger->error(Glib::ustring::compose(_("Driver %1 not found"), driver));
                 }
                 this->currentDriver = &(*foundDriver);
             }
@@ -252,8 +254,7 @@ void GUI::onApplicationSelected(const Glib::ustring &driverName, const Glib::ust
     );
 
     if (selectedApp == (*userSelectedDriver)->getApplications().end()) {
-        std::cerr << Glib::ustring::compose(_("Application %1 not found "), applicationName)
-                  << std::endl;
+        this->logger->error(Glib::ustring::compose(_("Application %1 not found "), applicationName));
         return;
     }
 
@@ -265,7 +266,7 @@ void GUI::onApplicationSelected(const Glib::ustring &driverName, const Glib::ust
                                        });
 
     if (driverSelected == this->driverConfiguration.end()) {
-        std::cerr << Glib::ustring::compose(_("Driver %1 not found "), driverName) << std::endl;
+        this->logger->error(Glib::ustring::compose(_("Driver %1 not found "), driverName));
         return;
     }
 
@@ -281,7 +282,7 @@ void GUI::drawApplicationOptions() {
     Gtk::Notebook *pNotebook;
     this->gladeBuilder->get_widget("notebook", pNotebook);
     if (!pNotebook) {
-        std::cerr << _("Notebook object not found in glade file!") << std::endl;
+        this->logger->error(_("Notebook object not found in glade file!"));
         return;
     }
 
@@ -325,11 +326,11 @@ void GUI::drawApplicationOptions() {
                                             });
 
             if (optionValue == selectedAppOptions.end()) {
-                std::cerr << Glib::ustring::compose(
+                this->logger->error(Glib::ustring::compose(
                         _("Option %1 doesn't exist in application %2. Merge failed"),
                         option.getName(),
                         this->currentApp->getName()
-                ) << std::endl;
+                ));
                 return;
             }
 
@@ -372,7 +373,7 @@ void GUI::drawApplicationOptions() {
                 Gtk::ComboBox *optionCombo = Gtk::manage(new Gtk::ComboBox);
                 optionCombo->set_visible(true);
 
-                Glib::RefPtr <Gtk::ListStore> listStore = Gtk::ListStore::create(this->comboColumns);
+                Glib::RefPtr<Gtk::ListStore> listStore = Gtk::ListStore::create(this->comboColumns);
                 optionCombo->set_model(listStore);
 
 
@@ -454,7 +455,7 @@ void GUI::drawApplicationOptions() {
         Gtk::ComboBox *gpuCombo = Gtk::manage(new Gtk::ComboBox);
         gpuCombo->set_visible(true);
 
-        Glib::RefPtr <Gtk::ListStore> listStore = Gtk::ListStore::create(this->comboColumns);
+        Glib::RefPtr<Gtk::ListStore> listStore = Gtk::ListStore::create(this->comboColumns);
         gpuCombo->set_model(listStore);
 
         Gtk::TreeModel::Row firstRow = *(listStore->append());
@@ -596,7 +597,7 @@ void GUI::onNumberEntryChanged(Glib::ustring optionName) {
 
     auto enteredValue = this->currentSpinButtons[optionName]->get_value();
     Glib::ustring
-    enteredValueStr(std::to_string((int) enteredValue));
+            enteredValueStr(std::to_string((int) enteredValue));
     (*currentOption)->setValue(enteredValueStr);
 }
 
@@ -623,8 +624,9 @@ void GUI::setupAboutDialog() {
                 this->aboutDialog.hide();
                 break;
             default:
-                std::cout << Glib::ustring::compose(_("Unexpected response code from about dialog: %1"), responseCode)
-                          << std::endl;
+                this->logger->debug(
+                        Glib::ustring::compose(_("Unexpected response code from about dialog: %1"), responseCode)
+                );
                 break;
         }
     });
@@ -670,25 +672,25 @@ void GUI::onAddApplicationPressed() {
 
     this->gladeBuilder->get_widget("newAppDialog", pDialog);
     if (!pDialog) {
-        std::cerr << _("Add Application dialog is not in glade file!") << std::endl;
+        this->logger->error(_("Add Application dialog is not in glade file!"));
         return;
     }
 
     this->gladeBuilder->get_widget("newAppName", pAppName);
     if (!pAppName) {
-        std::cerr << _("Add Application app name widget is not in glade file!") << std::endl;
+        this->logger->error(_("Add Application app name widget is not in glade file!"));
         return;
     }
 
     this->gladeBuilder->get_widget("newAppExecutable", pAppExecutable);
     if (!pAppExecutable) {
-        std::cerr << _("Add Application app executable widget is not in glade file!") << std::endl;
+        this->logger->error(_("Add Application app executable widget is not in glade file!"));
         return;
     }
 
     this->gladeBuilder->get_widget("newAppDriver", pAppDriver);
     if (!pAppDriver) {
-        std::cerr << _("Add Application app driver widget is not in glade file!") << std::endl;
+        this->logger->error(_("Add Application app driver widget is not in glade file!"));
         return;
     }
 

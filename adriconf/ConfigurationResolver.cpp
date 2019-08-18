@@ -1,5 +1,6 @@
 #include "ConfigurationResolver.h"
 #include "Parser.h"
+#include "LoggerInterface.h"
 #include <glibmm/i18n.h>
 
 std::list<Device_ptr> ConfigurationResolver::resolveOptionsForSave(
@@ -144,10 +145,11 @@ std::list<Device_ptr> ConfigurationResolver::resolveOptionsForSave(
 void ConfigurationResolver::filterDriverUnsupportedOptions(
         const std::list<DriverConfiguration> &driverAvailableOptions,
         std::list<Device_ptr> &userDefinedDevices,
-        std::map<Glib::ustring, GPUInfo_ptr> &availableGPUs
+        std::map<Glib::ustring, GPUInfo_ptr> &availableGPUs,
+        LoggerInterface *logger
 ) {
     // Remove user-defined configurations that don't exists at driver level
-    ConfigurationResolver::removeInvalidDrivers(driverAvailableOptions, userDefinedDevices);
+    ConfigurationResolver::removeInvalidDrivers(driverAvailableOptions, userDefinedDevices, logger);
 
     for (auto &userDefinedDevice : userDefinedDevices) {
         auto driverConfig = std::find_if(driverAvailableOptions.begin(), driverAvailableOptions.end(),
@@ -201,12 +203,12 @@ void ConfigurationResolver::filterDriverUnsupportedOptions(
                 }
 
                 if (driverRealOptions.count((*itr)->getName()) == 0) {
-                    std::cerr << Glib::ustring::compose(
+                    logger->warning(Glib::ustring::compose(
                             _("Driver '%1' doesn't support option '%2' on application '%3'. Option removed."),
                             correctDriverName,
                             (*itr)->getName(),
                             userDefinedApp->getName()
-                    ) << std::endl;
+                    ));
                     itr = options.erase(itr);
                 } else {
                     ++itr;
@@ -348,7 +350,8 @@ void ConfigurationResolver::addMissingDriverOptions(Application_ptr app,
 
 void ConfigurationResolver::removeInvalidDrivers(
         const std::list<DriverConfiguration> &availableDrivers,
-        std::list<Device_ptr> &userDefinedDevices
+        std::list<Device_ptr> &userDefinedDevices,
+        LoggerInterface *logger
 ) {
     auto deviceIterator = userDefinedDevices.begin();
     while (deviceIterator != userDefinedDevices.end()) {
@@ -365,11 +368,11 @@ void ConfigurationResolver::removeInvalidDrivers(
                                            });
 
         if (driverSupports == availableDrivers.end()) {
-            std::cerr << Glib::ustring::compose(
+            logger->warning(Glib::ustring::compose(
                     _("User-defined driver '%1' on screen '%2' doesn't have a driver loaded on system. Configuration removed."),
                     currentUserDefinedDriver,
                     currentUserDefinedScreen
-            ) << std::endl;
+            ));
 
             deviceIterator = userDefinedDevices.erase(deviceIterator);
         } else {

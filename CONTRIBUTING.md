@@ -26,6 +26,21 @@ The following questions might help us better understand the issue:
 - What are the received results?
 - What are the steps to reproduce the issue?
 
+## Enabling debug mode
+
+Since version 1.5 we support different log levels, which gives a lot more output and
+helps in finding issues.
+The log levels are the following:
+
+- ERROR: Only display errors
+- WARNING: Display errors and warnings
+- INFO: Will display general messages, as well as WARNING and ERROR. Is the 
+default mode.
+- DEBUG: Is the most verbose mode. Will output all possible messages.
+
+To enable it you can run the application with the environment variable
+`VERBOSITY` to the desired level. Example: `VERBOSITY=DEBUG ./adriconf`
+
 ## Submitting Patches
 
 To submit a patch, we kindly ask you to use the Pull Request functionality.

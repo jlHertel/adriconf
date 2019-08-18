@@ -9,6 +9,7 @@
 #include "Device.h"
 #include "DriverConfiguration.h"
 #include "GPUInfo.h"
+#include "LoggerInterface.h"
 
 namespace ConfigurationResolver {
     /**
@@ -37,7 +38,8 @@ namespace ConfigurationResolver {
     void filterDriverUnsupportedOptions(
             const std::list<DriverConfiguration> &,
             std::list<Device_ptr> &,
-            std::map<Glib::ustring, GPUInfo_ptr> &
+            std::map<Glib::ustring, GPUInfo_ptr> &,
+            LoggerInterface *logger
     );
 
     /**
@@ -65,7 +67,8 @@ namespace ConfigurationResolver {
     void addMissingApplications(const Device_ptr &sourceDevice, Device_ptr &targetDevice);
 
     void removeInvalidDrivers(const std::list<DriverConfiguration> &availableDrivers,
-                              std::list<Device_ptr> &userDefinedDevices);
+                              std::list<Device_ptr> &userDefinedDevices,
+                              LoggerInterface *logger);
 
     void mergeConfigurationOnTopOf(std::list<Device_ptr> &source, const std::list<Device_ptr> &addOnTop);
 }

@@ -9,7 +9,7 @@
 #include "PCIDatabaseQuery.h"
 
 
-DRIQuery::DRIQuery() {
+DRIQuery::DRIQuery(LoggerInterface *logger) : logger(logger) {
 
 }
 
@@ -23,10 +23,11 @@ bool DRIQuery::isSystemSupported() {
     } else if (std::string(std::getenv("XDG_SESSION_TYPE")) == "x11") {
         this->getScreenDriver = (glXGetScreenDriver_t *) glXGetProcAddress((const GLubyte *) "glXGetScreenDriver");
         this->getDriverConfig = (glXGetDriverConfig_t *) glXGetProcAddress((const GLubyte *) "glXGetDriverConfig");
-        this->getGlxExtensionsString = (glXQueryExtensionsString_t *) glXGetProcAddress((const GLubyte *) "glXQueryExtensionsString");
+        this->getGlxExtensionsString = (glXQueryExtensionsString_t *) glXGetProcAddress(
+                (const GLubyte *) "glXQueryExtensionsString");
 
         if (!this->getScreenDriver || !this->getDriverConfig || !this->getGlxExtensionsString) {
-            std::cerr << _("Error getting function pointers. LibGL must be too old.") << std::endl;
+            this->logger->error(_("Error getting function pointers. LibGL must be too old."));
             return false;
         }
 
@@ -41,7 +42,7 @@ const char *DRIQuery::queryDriverName(int s) {
     const char *ret;
 
     if (!(display = XOpenDisplay(nullptr))) {
-        std::cerr << _("Couldn't open X display") << std::endl;
+        this->logger->error(_("Couldn't open X display"));
         return "";
     }
 
@@ -58,7 +59,7 @@ const char *DRIQuery::queryDriverConfig(const char *dn) {
     const char *ret;
 
     if (!(display = XOpenDisplay(nullptr))) {
-        std::cerr << _("Couldn't open X display") << std::endl;
+        this->logger->error(_("Couldn't open X display"));
         return "";
     }
 
@@ -75,7 +76,7 @@ std::list<DriverConfiguration> DRIQuery::queryDriverConfigurationOptions(const G
     Display *display;
 
     if (!(display = XOpenDisplay(nullptr))) {
-        std::cerr << _("Couldn't open X display") << std::endl;
+        this->logger->error(_("Couldn't open X display"));
         return configurations;
     }
 
@@ -91,9 +92,9 @@ std::list<DriverConfiguration> DRIQuery::queryDriverConfigurationOptions(const G
 
             auto driverName = this->queryDriverName(i);
             if (driverName == nullptr) {
-                std::cerr << Glib::ustring::compose(
-                    _("Unable to extract driver name for screen %1"), i
-                ) << std::endl;
+                this->logger->error(Glib::ustring::compose(
+                        _("Unable to extract driver name for screen %1"), i
+                ));
                 continue;
             }
             config.setDriverName(driverName);
@@ -101,18 +102,18 @@ std::list<DriverConfiguration> DRIQuery::queryDriverConfigurationOptions(const G
             auto driverOptions = this->queryDriverConfig(driverName);
             // If for some reason mesa is unable to query the options we simply skip this gpu
             if (driverOptions == nullptr) {
-                std::cerr << Glib::ustring::compose(
-                                 _("Unable to extract configuration for driver %1"), config.getDriverName()
-                                 ) << std::endl;
+                this->logger->error(Glib::ustring::compose(
+                        _("Unable to extract configuration for driver %1"), config.getDriverName()
+                ));
 
                 continue;
             }
 
             Glib::ustring options(driverOptions);
             if (options.empty()) {
-                std::cerr << Glib::ustring::compose(
+                this->logger->error(Glib::ustring::compose(
                         _("Unable to extract configuration for driver %1"), config.getDriverName()
-                ) << std::endl;
+                ));
 
                 continue;
             }
@@ -130,18 +131,18 @@ std::list<DriverConfiguration> DRIQuery::queryDriverConfigurationOptions(const G
             config.setDriverName(driverName);
             // If for some reason mesa is unable to query the options we simply skip this gpu
             if (driverOptions == nullptr) {
-                std::cerr << Glib::ustring::compose(
-                                 _("Unable to extract configuration for driver %1"), config.getDriverName()
-                                 ) << std::endl;
+                this->logger->error(Glib::ustring::compose(
+                        _("Unable to extract configuration for driver %1"), config.getDriverName()
+                ));
 
                 continue;
             }
 
             Glib::ustring options(driverOptions);
             if (options.empty()) {
-                std::cerr << Glib::ustring::compose(
+                this->logger->error(Glib::ustring::compose(
                         _("Unable to extract configuration for driver %1"), config.getDriverName()
-                ) << std::endl;
+                ));
 
                 continue;
             }
@@ -158,7 +159,7 @@ std::list<DriverConfiguration> DRIQuery::queryDriverConfigurationOptions(const G
 
     XCloseDisplay(display);
 
-    return std::move(configurations);
+    return configurations;
 }
 
 std::map<Glib::ustring, GPUInfo_ptr> DRIQuery::enumerateDRIDevices(const Glib::ustring &locale) {
@@ -191,7 +192,7 @@ std::map<Glib::ustring, GPUInfo_ptr> DRIQuery::enumerateDRIDevices(const Glib::u
          * This is wrong for AMD cards, because at kernel it's called amdgpu/radeon and at mesa-level it is radeonsi
          * This is a small fix to try to solve this issue
          */
-        if(gpu->getDriverName() == "amdgpu" || gpu->getDriverName() == "radeon") {
+        if (gpu->getDriverName() == "amdgpu" || gpu->getDriverName() == "radeon") {
             gpu->setDriverName("radeonsi");
         }
 
@@ -218,18 +219,18 @@ std::map<Glib::ustring, GPUInfo_ptr> DRIQuery::enumerateDRIDevices(const Glib::u
 
         // If for some reason mesa is unable to query the options we simply skip this gpu
         if (driverOptions == nullptr) {
-            std::cerr << Glib::ustring::compose(
-                             _("Unable to extract configuration for driver %1"), gpu->getDriverName()
-                             ) << std::endl;
+            this->logger->error(Glib::ustring::compose(
+                    _("Unable to extract configuration for driver %1"), gpu->getDriverName()
+            ));
 
             continue;
         }
 
         Glib::ustring options(driverOptions);
         if (options.empty()) {
-            std::cerr << Glib::ustring::compose(
+            this->logger->error(Glib::ustring::compose(
                     _("Unable to extract configuration for driver %1"), gpu->getDriverName()
-            ) << std::endl;
+            ));
 
             continue;
         }
@@ -249,7 +250,7 @@ bool DRIQuery::canHandle() {
     Display *display;
 
     if (!(display = XOpenDisplay(nullptr))) {
-        std::cerr << _("Couldn't open X display") << std::endl;
+        this->logger->error(_("Couldn't open X display"));
         return false;
     }
 
@@ -263,15 +264,14 @@ bool DRIQuery::canHandle() {
         /* Check if driver has mesa query extension or not? */
         const char *extensionString;
         extensionString = (*(this->getGlxExtensionsString))(display, i);
-        std::string possibleExts (extensionString);
+        std::string possibleExts(extensionString);
         if (possibleExts.find("GLX_MESA_query_renderer") == std::string::npos ||
-                this->getScreenDriver == nullptr ||
-                this->getDriverConfig == nullptr) {
-            std::cerr << _("Closed source driver!!") << std::endl;
+            this->getScreenDriver == nullptr ||
+            this->getDriverConfig == nullptr) {
+            this->logger->error(_("Closed source driver!!"));
             return false;
         }
     }
 
     return true;
-
 }

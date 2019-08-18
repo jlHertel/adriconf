@@ -14,14 +14,18 @@ set(SOURCE_TESTS
         ${CMAKE_SOURCE_DIR}/tests/DriverOptionTest.cpp
         ${CMAKE_SOURCE_DIR}/tests/SectionTest.cpp
         ${CMAKE_SOURCE_DIR}/tests/GPUInfoTest.cpp
-        )
+        ../adriconf/LoggerLevel.h LoggerMock.h)
 
 # GTEST
 enable_testing()
 find_package(GTest REQUIRED)
 
-add_executable(runUnitTests EXCLUDE_FROM_ALL ${SHARED_SOURCE_FILES} ${SOURCE_TESTS})
+add_executable(runUnitTests EXCLUDE_FROM_ALL ${SHARED_SOURCE_FILES} ${SOURCE_TESTS} ../adriconf/LoggerLevel.h)
 target_link_libraries(runUnitTests GTest::GTest GTest::Main)
+
+pkg_check_modules(GMOCK REQUIRED gmock)
+target_link_libraries(runUnitTests ${GMOCK_LIBRARIES})
+target_include_directories(runUnitTests PUBLIC ${GMOCK_INCLUDE_DIRS})
 
 target_link_libraries(runUnitTests ${GTKMM_LIBRARIES})
 target_include_directories(runUnitTests PUBLIC ${GTKMM_INCLUDE_DIRS})
