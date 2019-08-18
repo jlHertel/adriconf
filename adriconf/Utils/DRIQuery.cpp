@@ -9,30 +9,28 @@
 #include "PCIDatabaseQuery.h"
 
 
-DRIQuery::DRIQuery(LoggerInterface *logger, ParserInterface *parser) : logger(logger), parser(parser) {}
+DRIQuery::DRIQuery(LoggerInterface *logger, ParserInterface *parser, bool isWaylandSession) : logger(logger), parser(parser), isWaylandSession(isWaylandSession) {}
 
 
 bool DRIQuery::isSystemSupported() {
-    if (std::string(std::getenv("XDG_SESSION_TYPE")) == "wayland") {
+    if (this->isWaylandSession) {
 #ifdef ENABLE_XWAYLAND
         HelpersWayland hw;
         return hw.hasProperLibEGL();
 #endif
-    } else if (std::string(std::getenv("XDG_SESSION_TYPE")) == "x11") {
-        this->getScreenDriver = (glXGetScreenDriver_t *) glXGetProcAddress((const GLubyte *) "glXGetScreenDriver");
-        this->getDriverConfig = (glXGetDriverConfig_t *) glXGetProcAddress((const GLubyte *) "glXGetDriverConfig");
-        this->getGlxExtensionsString = (glXQueryExtensionsString_t *) glXGetProcAddress(
-                (const GLubyte *) "glXQueryExtensionsString");
-
-        if (!this->getScreenDriver || !this->getDriverConfig || !this->getGlxExtensionsString) {
-            this->logger->error(_("Error getting function pointers. LibGL must be too old."));
-            return false;
-        }
-
-        return true;
     }
 
-    return false;
+    this->getScreenDriver = (glXGetScreenDriver_t *) glXGetProcAddress((const GLubyte *) "glXGetScreenDriver");
+    this->getDriverConfig = (glXGetDriverConfig_t *) glXGetProcAddress((const GLubyte *) "glXGetDriverConfig");
+    this->getGlxExtensionsString = (glXQueryExtensionsString_t *) glXGetProcAddress(
+            (const GLubyte *) "glXQueryExtensionsString");
+
+    if (!this->getScreenDriver || !this->getDriverConfig || !this->getGlxExtensionsString) {
+        this->logger->error(_("Error getting function pointers. LibGL must be too old."));
+        return false;
+    }
+
+    return true;
 }
 
 const char *DRIQuery::queryDriverName(int s) {
@@ -85,7 +83,7 @@ std::list<DriverConfiguration> DRIQuery::queryDriverConfigurationOptions(const G
         DriverConfiguration config;
         config.setScreen(i);
 
-        if (std::string(std::getenv("XDG_SESSION_TYPE")) == "x11") {
+        if (!this->isWaylandSession) {
             /* Call glXGetClientString to load vendor libs on glvnd enabled systems */
             glXGetClientString(display, GLX_EXTENSIONS);
 
@@ -121,7 +119,7 @@ std::list<DriverConfiguration> DRIQuery::queryDriverConfigurationOptions(const G
             config.setSections(parsedSections);
 
             configurations.emplace_back(config);
-        } else if (std::string(std::getenv("XDG_SESSION_TYPE")) == "wayland") {
+        } else {
 #ifdef ENABLE_XWAYLAND
             HelpersWayland hw;
             auto driverName = hw.queryDriverName();
@@ -152,8 +150,6 @@ std::list<DriverConfiguration> DRIQuery::queryDriverConfigurationOptions(const G
             configurations.emplace_back(config);
 #endif //ENABLE_XWAYLAND
         }
-
-
     }
 
     XCloseDisplay(display);
@@ -210,16 +206,17 @@ std::map<Glib::ustring, GPUInfo_ptr> DRIQuery::enumerateDRIDevices(const Glib::u
         gpu->setVendorName(pciQuery.queryVendorName(gpu->getVendorId()));
         gpu->setDeviceName(pciQuery.queryDeviceName(gpu->getVendorId(), gpu->getDeviceId()));
 
-        this->logger->debug(Glib::ustring::compose(_("GPU has been detected as %1 from %2"), gpu->getDeviceName(), gpu->getVendorName()));
+        this->logger->debug(Glib::ustring::compose(_("GPU has been detected as %1 from %2"), gpu->getDeviceName(),
+                                                   gpu->getVendorName()));
 
         const char *driverOptions;
 
         this->logger->debug(_("Loading driver options"));
 
-        if (std::string(std::getenv("XDG_SESSION_TYPE")) == "x11") {
+        if (!this->isWaylandSession) {
             // Load the driver supported options
             driverOptions = this->queryDriverConfig((const char *) gpu->getDriverName().c_str());
-        } else if (std::string(std::getenv("XDG_SESSION_TYPE")) == "wayland") {
+        } else {
 #ifdef ENABLE_XWAYLAND
             HelpersWayland hw;
             driverOptions = hw.queryDriverConfig();

@@ -6,14 +6,14 @@
 #include <fstream>
 #include <exception>
 
-GUI::GUI(LoggerInterface *logger) : logger(logger), currentApp(nullptr), currentDriver(nullptr) {
+GUI::GUI(LoggerInterface *logger, ConfigurationLoader *configurationLoader) : logger(logger),
+                                                                              configurationLoader(configurationLoader),
+                                                                              currentApp(nullptr),
+                                                                              currentDriver(nullptr) {
     this->setupLocale();
 
     /* Load the configurations */
-    Parser parser(logger);
-    DRIQuery driQuery(logger, &parser);
-    ConfigurationLoader configurationLoader(driQuery, logger, &parser);
-    this->driverConfiguration = configurationLoader.loadDriverSpecificConfiguration(this->locale);
+    this->driverConfiguration = this->configurationLoader->loadDriverSpecificConfiguration(this->locale);
     for (auto &driver : this->driverConfiguration) {
         driver.sortSectionOptions();
     }
@@ -22,9 +22,9 @@ GUI::GUI(LoggerInterface *logger) : logger(logger), currentApp(nullptr), current
         throw std::runtime_error("No driver configuration could be loaded");
     }
 
-    this->systemWideConfiguration = configurationLoader.loadSystemWideConfiguration();
-    this->userDefinedConfiguration = configurationLoader.loadUserDefinedConfiguration();
-    this->availableGPUs = configurationLoader.loadAvailableGPUs(this->locale);
+    this->systemWideConfiguration = this->configurationLoader->loadSystemWideConfiguration();
+    this->userDefinedConfiguration = this->configurationLoader->loadUserDefinedConfiguration();
+    this->availableGPUs = this->configurationLoader->loadAvailableGPUs(this->locale);
     this->isPrimeSetup = this->availableGPUs.size() > 1;
 
     /* For each app setup their prime driver name */

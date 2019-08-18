@@ -24,6 +24,7 @@ class DRIQuery {
 private:
     LoggerInterface *logger;
     ParserInterface *parser;
+    bool isWaylandSession;
 
     glXGetScreenDriver_t *getScreenDriver;
     glXGetDriverConfig_t *getDriverConfig;
@@ -32,7 +33,7 @@ private:
     const char *queryDriverConfig(const char *dn);
 
 public:
-    DRIQuery(LoggerInterface *logger, ParserInterface *parser);
+    DRIQuery(LoggerInterface *logger, ParserInterface *parser, bool isWaylandSession);
     bool isSystemSupported();
     bool canHandle();
 

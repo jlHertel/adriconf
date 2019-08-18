@@ -11,6 +11,7 @@
 class GUI {
 private:
     LoggerInterface *logger;
+    ConfigurationLoader *configurationLoader;
 
     /* GUI-Related */
     Gtk::Window *pWindow;
@@ -43,7 +44,7 @@ private:
     void setupAboutDialog();
 
 public:
-    GUI(LoggerInterface *logger);
+    GUI(LoggerInterface *logger, ConfigurationLoader *configurationLoader);
 
     virtual ~GUI();
 
