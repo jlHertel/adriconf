@@ -9,9 +9,7 @@
 #include "PCIDatabaseQuery.h"
 
 
-DRIQuery::DRIQuery(LoggerInterface *logger) : logger(logger) {
-
-}
+DRIQuery::DRIQuery(LoggerInterface *logger, ParserInterface *parser) : logger(logger), parser(parser) {}
 
 
 bool DRIQuery::isSystemSupported() {
@@ -72,6 +70,7 @@ const char *DRIQuery::queryDriverConfig(const char *dn) {
 }
 
 std::list<DriverConfiguration> DRIQuery::queryDriverConfigurationOptions(const Glib::ustring &locale) {
+    this->logger->debug(_("Querying driver configuration options"));
     std::list<DriverConfiguration> configurations;
     Display *display;
 
@@ -118,7 +117,7 @@ std::list<DriverConfiguration> DRIQuery::queryDriverConfigurationOptions(const G
                 continue;
             }
 
-            auto parsedSections = Parser::parseAvailableConfiguration(options, locale);
+            auto parsedSections = this->parser->parseAvailableConfiguration(options, locale);
             config.setSections(parsedSections);
 
             configurations.emplace_back(config);
@@ -147,7 +146,7 @@ std::list<DriverConfiguration> DRIQuery::queryDriverConfigurationOptions(const G
                 continue;
             }
 
-            auto parsedSections = Parser::parseAvailableConfiguration(options, locale);
+            auto parsedSections = this->parser->parseAvailableConfiguration(options, locale);
             config.setSections(parsedSections);
 
             configurations.emplace_back(config);
@@ -163,12 +162,15 @@ std::list<DriverConfiguration> DRIQuery::queryDriverConfigurationOptions(const G
 }
 
 std::map<Glib::ustring, GPUInfo_ptr> DRIQuery::enumerateDRIDevices(const Glib::ustring &locale) {
+    this->logger->debug(_("Enumerating DRI Devices"));
     std::map<Glib::ustring, GPUInfo_ptr> gpus;
 
     PCIDatabaseQuery pciQuery;
 
     drmDevicePtr enumeratedDevices[MESA_MAX_DRM_DEVICES];
     int deviceCount = drmGetDevices2(0, enumeratedDevices, MESA_MAX_DRM_DEVICES);
+
+    this->logger->debug(Glib::ustring::compose(_("Found %1 devices"), deviceCount));
 
     for (int i = 0; i < deviceCount; i++) {
         GPUInfo_ptr gpu = std::make_shared<GPUInfo>();
@@ -184,6 +186,8 @@ std::map<Glib::ustring, GPUInfo_ptr> DRIQuery::enumerateDRIDevices(const Glib::u
                 enumeratedDevices[i]->businfo.pci->func
         ));
 
+        this->logger->debug(Glib::ustring::compose(_("Processing GPU with PCI ID: %1"), gpu->getPciId()));
+
         int fd = open(enumeratedDevices[i]->nodes[DRM_NODE_RENDER], O_RDONLY);
         drmVersionPtr versionPtr = drmGetVersion(fd);
 
@@ -193,6 +197,7 @@ std::map<Glib::ustring, GPUInfo_ptr> DRIQuery::enumerateDRIDevices(const Glib::u
          * This is a small fix to try to solve this issue
          */
         if (gpu->getDriverName() == "amdgpu" || gpu->getDriverName() == "radeon") {
+            this->logger->debug(Glib::ustring::compose(_("Replacing GPU name %1 with radeonsi"), gpu->getDriverName()));
             gpu->setDriverName("radeonsi");
         }
 
@@ -205,7 +210,11 @@ std::map<Glib::ustring, GPUInfo_ptr> DRIQuery::enumerateDRIDevices(const Glib::u
         gpu->setVendorName(pciQuery.queryVendorName(gpu->getVendorId()));
         gpu->setDeviceName(pciQuery.queryDeviceName(gpu->getVendorId(), gpu->getDeviceId()));
 
+        this->logger->debug(Glib::ustring::compose(_("GPU has been detected as %1 from %2"), gpu->getDeviceName(), gpu->getVendorName()));
+
         const char *driverOptions;
+
+        this->logger->debug(_("Loading driver options"));
 
         if (std::string(std::getenv("XDG_SESSION_TYPE")) == "x11") {
             // Load the driver supported options
@@ -235,7 +244,7 @@ std::map<Glib::ustring, GPUInfo_ptr> DRIQuery::enumerateDRIDevices(const Glib::u
             continue;
         }
 
-        auto parsedSections = Parser::parseAvailableConfiguration(options, locale);
+        auto parsedSections = this->parser->parseAvailableConfiguration(options, locale);
         gpu->setSections(parsedSections);
 
         gpus[gpu->getPciId()] = gpu;

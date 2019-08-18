@@ -23,6 +23,8 @@ typedef const char *glXQueryExtensionsString_t(Display *dpy, int screen);
 class DRIQuery {
 private:
     LoggerInterface *logger;
+    ParserInterface *parser;
+
     glXGetScreenDriver_t *getScreenDriver;
     glXGetDriverConfig_t *getDriverConfig;
     glXQueryExtensionsString_t *getGlxExtensionsString;
@@ -30,7 +32,7 @@ private:
     const char *queryDriverConfig(const char *dn);
 
 public:
-    DRIQuery(LoggerInterface *logger);
+    DRIQuery(LoggerInterface *logger, ParserInterface *parser);
     bool isSystemSupported();
     bool canHandle();
 

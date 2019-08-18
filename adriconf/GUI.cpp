@@ -10,8 +10,9 @@ GUI::GUI(LoggerInterface *logger) : logger(logger), currentApp(nullptr), current
     this->setupLocale();
 
     /* Load the configurations */
-    DRIQuery driQuery(logger);
-    ConfigurationLoader configurationLoader(driQuery, logger);
+    Parser parser(logger);
+    DRIQuery driQuery(logger, &parser);
+    ConfigurationLoader configurationLoader(driQuery, logger, &parser);
     this->driverConfiguration = configurationLoader.loadDriverSpecificConfiguration(this->locale);
     for (auto &driver : this->driverConfiguration) {
         driver.sortSectionOptions();
@@ -47,6 +48,8 @@ GUI::GUI(LoggerInterface *logger) : logger(logger), currentApp(nullptr), current
             this->availableGPUs,
             this->logger
     );
+
+    this->logger->debug(_("Start building GTK gui"));
 
     /* Load the GUI file */
     this->gladeBuilder = Gtk::Builder::create();

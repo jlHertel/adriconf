@@ -2,20 +2,31 @@
 #define DRICONF3_PARSER_H
 
 #include <glibmm/ustring.h>
-#include "Section.h"
-#include "Device.h"
 #include <libxml++/libxml++.h>
 #include <list>
 #include <iostream>
 
-namespace Parser {
-    std::list<Section> parseAvailableConfiguration(const Glib::ustring &xml, const Glib::ustring &currentLocale);
+#include "Section.h"
+#include "Device.h"
+#include "LoggerInterface.h"
+#include "ParserInterface.h"
 
-    DriverOption parseSectionOptions(xmlpp::Node *option, const Glib::ustring &currentLocale);
+class Parser : public ParserInterface {
+private:
+    LoggerInterface *logger;
 
-    std::list<Device_ptr> parseDevices(Glib::ustring &xml);
+public:
+    Parser(LoggerInterface *logger) : logger(logger) {}
 
-    Application_ptr parseApplication(xmlpp::Node *application);
-}
+    ~Parser() override {}
+
+    std::list<Section> parseAvailableConfiguration(const Glib::ustring &xml, const Glib::ustring &currentLocale) override;
+
+    DriverOption parseSectionOptions(xmlpp::Node *option, const Glib::ustring &currentLocale) override;
+
+    std::list<Device_ptr> parseDevices(Glib::ustring &xml) override;
+
+    Application_ptr parseApplication(xmlpp::Node *application) override;
+};
 
 #endif
