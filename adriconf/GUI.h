@@ -10,6 +10,8 @@
 
 class GUI {
 private:
+    LoggerInterface *logger;
+
     /* GUI-Related */
     Gtk::Window *pWindow;
     Gtk::AboutDialog aboutDialog;
@@ -24,7 +26,7 @@ private:
     std::map<Glib::ustring, GPUInfo_ptr> availableGPUs;
     bool isPrimeSetup;
     Application_ptr currentApp;
-    DriverConfiguration * currentDriver;
+    DriverConfiguration *currentDriver;
     std::map<Glib::ustring, Gtk::ComboBox *> currentComboBoxes;
     std::map<Glib::ustring, Gtk::SpinButton *> currentSpinButtons;
 
@@ -41,7 +43,7 @@ private:
     void setupAboutDialog();
 
 public:
-    GUI();
+    GUI(LoggerInterface *logger);
 
     virtual ~GUI();
 
@@ -52,7 +54,7 @@ public:
 
     void onSavePressed();
 
-    void onApplicationSelected(const Glib::ustring&, const Glib::ustring&);
+    void onApplicationSelected(const Glib::ustring &, const Glib::ustring &);
 
     void onCheckboxChanged(Glib::ustring);
 

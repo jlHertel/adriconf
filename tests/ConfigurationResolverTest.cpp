@@ -1,5 +1,7 @@
 #include "../adriconf/ConfigurationResolver.h"
 #include "gtest/gtest.h"
+#include "gmock/gmock.h"
+#include "LoggerMock.h"
 
 class UpdatePrimeApplicationsTest : public ::testing::Test {
 public:
@@ -106,6 +108,11 @@ public:
 };
 
 TEST_F(RemoveInvalidDriversTest, incorrectScreenNumber) {
+    LoggerMock logger;
+    Glib::ustring warnMsg("User-defined driver 'r600g' on screen '0' doesn't have a driver loaded on system. Configuration removed.");
+    EXPECT_CALL(logger, warning(warnMsg))
+            .Times(1);
+
     std::list<Device_ptr> userDefinedDevices;
     Device_ptr d = std::make_shared<Device>();
     d->setScreen(0);
@@ -113,12 +120,16 @@ TEST_F(RemoveInvalidDriversTest, incorrectScreenNumber) {
 
     userDefinedDevices.emplace_back(d);
 
-    ConfigurationResolver::removeInvalidDrivers(availableDrivers, userDefinedDevices);
+    ConfigurationResolver::removeInvalidDrivers(availableDrivers, userDefinedDevices, &logger);
 
     EXPECT_EQ(0, userDefinedDevices.size());
 }
 
 TEST_F(RemoveInvalidDriversTest, incorrectDriverName) {
+    LoggerMock logger;
+    Glib::ustring warnMsg("User-defined driver 'i965' on screen '1' doesn't have a driver loaded on system. Configuration removed.");
+    EXPECT_CALL(logger, warning(warnMsg)).Times(1);
+
     std::list<Device_ptr> userDefinedDevices;
     Device_ptr d = std::make_shared<Device>();
     d->setScreen(1);
@@ -126,12 +137,14 @@ TEST_F(RemoveInvalidDriversTest, incorrectDriverName) {
 
     userDefinedDevices.emplace_back(d);
 
-    ConfigurationResolver::removeInvalidDrivers(availableDrivers, userDefinedDevices);
+    ConfigurationResolver::removeInvalidDrivers(availableDrivers, userDefinedDevices, &logger);
 
     EXPECT_EQ(0, userDefinedDevices.size());
 }
 
 TEST_F(RemoveInvalidDriversTest, correctScreenAndDriver) {
+    LoggerMock logger;
+
     std::list<Device_ptr> userDefinedDevices;
     Device_ptr d = std::make_shared<Device>();
     d->setScreen(0);
@@ -144,7 +157,7 @@ TEST_F(RemoveInvalidDriversTest, correctScreenAndDriver) {
     userDefinedDevices.emplace_back(d);
     userDefinedDevices.emplace_back(d2);
 
-    ConfigurationResolver::removeInvalidDrivers(availableDrivers, userDefinedDevices);
+    ConfigurationResolver::removeInvalidDrivers(availableDrivers, userDefinedDevices, &logger);
 
     EXPECT_EQ(2, userDefinedDevices.size());
 }
@@ -209,6 +222,10 @@ public:
 };
 
 TEST_F(FilterDriverUnsupportedOptionsTest, invalidOption) {
+    LoggerMock logger;
+    Glib::ustring warnMessage("Driver 'i965' doesn't support option 'invalid_name' on application 'App Name'. Option removed.");
+    EXPECT_CALL(logger, warning(warnMessage)).Times(1);
+
     std::list<Device_ptr> userDefinedDevices;
     Device_ptr d = std::make_shared<Device>();
     d->setDriver("i965");
@@ -223,12 +240,14 @@ TEST_F(FilterDriverUnsupportedOptionsTest, invalidOption) {
     d->addApplication(app);
     userDefinedDevices.emplace_back(d);
 
-    ConfigurationResolver::filterDriverUnsupportedOptions(availableDrivers, userDefinedDevices, availableGPUs);
+    ConfigurationResolver::filterDriverUnsupportedOptions(availableDrivers, userDefinedDevices, availableGPUs, &logger);
 
     EXPECT_EQ(0, app->getOptions().size());
 }
 
 TEST_F(FilterDriverUnsupportedOptionsTest, validOption) {
+    LoggerMock logger;
+
     std::list<Device_ptr> userDefinedDevices;
     Device_ptr d = std::make_shared<Device>();
     d->setDriver("i965");
@@ -243,12 +262,16 @@ TEST_F(FilterDriverUnsupportedOptionsTest, validOption) {
     d->addApplication(app);
     userDefinedDevices.emplace_back(d);
 
-    ConfigurationResolver::filterDriverUnsupportedOptions(availableDrivers, userDefinedDevices, availableGPUs);
+    ConfigurationResolver::filterDriverUnsupportedOptions(availableDrivers, userDefinedDevices, availableGPUs, &logger);
 
     EXPECT_EQ(1, app->getOptions().size());
 }
 
 TEST_F(FilterDriverUnsupportedOptionsTest, invalidOptionPrime) {
+    LoggerMock logger;
+    Glib::ustring warnMessage("Driver 'r600g' doesn't support option 'invalid_name' on application 'App Name'. Option removed.");
+    EXPECT_CALL(logger, warning(warnMessage)).Times(1);
+
     std::list<Device_ptr> userDefinedDevices;
     Device_ptr d = std::make_shared<Device>();
     d->setDriver("i965");
@@ -269,12 +292,14 @@ TEST_F(FilterDriverUnsupportedOptionsTest, invalidOptionPrime) {
     d->addApplication(app);
     userDefinedDevices.emplace_back(d);
 
-    ConfigurationResolver::filterDriverUnsupportedOptions(availableDrivers, userDefinedDevices, availableGPUs);
+    ConfigurationResolver::filterDriverUnsupportedOptions(availableDrivers, userDefinedDevices, availableGPUs, &logger);
 
     EXPECT_EQ(1, app->getOptions().size());
 }
 
 TEST_F(FilterDriverUnsupportedOptionsTest, validOptionPrime) {
+    LoggerMock logger;
+
     std::list<Device_ptr> userDefinedDevices;
     Device_ptr d = std::make_shared<Device>();
     d->setDriver("i965");
@@ -295,7 +320,7 @@ TEST_F(FilterDriverUnsupportedOptionsTest, validOptionPrime) {
     d->addApplication(app);
     userDefinedDevices.emplace_back(d);
 
-    ConfigurationResolver::filterDriverUnsupportedOptions(availableDrivers, userDefinedDevices, availableGPUs);
+    ConfigurationResolver::filterDriverUnsupportedOptions(availableDrivers, userDefinedDevices, availableGPUs, &logger);
 
     EXPECT_EQ(2, app->getOptions().size());
 }

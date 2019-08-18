@@ -1,32 +1,42 @@
 #include "ConfigurationLoader.h"
 #include "ConfigurationResolver.h"
-#include <boost/filesystem.hpp>
 
+#include <boost/filesystem.hpp>
+#include <glibmm/i18n.h>
 #include <fstream>
 #include <algorithm>
 
 Glib::ustring ConfigurationLoader::readSystemWideXML() {
+    this->logger->debug(_("Reading legacy system-wide XML"));
     Glib::ustring container;
     std::ostringstream buffer;
-    std::ifstream input(this->getOldSystemWideConfigurationPath());
+    Glib::ustring filePath(this->getOldSystemWideConfigurationPath());
+
+    this->logger->debug(Glib::ustring::compose(_("Legacy system-wide XML path: %1"), filePath));
+    std::ifstream input(filePath);
 
     if (!input.good()) {
-        return std::move(container);
+        this->logger->debug(_("Legacy system-wide file doesn't exist"));
+        return container;
     }
 
     buffer << input.rdbuf();
     container = buffer.str();
 
-    return std::move(container);
+    return container;
 }
 
 Glib::ustring ConfigurationLoader::readUserDefinedXML() {
+    this->logger->debug(_("Reading user defined XML"));
     Glib::ustring container;
 
     std::string userHome(std::getenv("HOME"));
+
+    this->logger->debug(Glib::ustring::compose(_("User defined XML path: %1"), userHome + "/.drirc"));
     std::ifstream input(userHome + "/.drirc");
 
     if (!input.good()) {
+        this->logger->debug(_("User defined XML doesn't exist"));
         return container;
     }
 
@@ -47,10 +57,14 @@ std::map<Glib::ustring, GPUInfo_ptr> ConfigurationLoader::loadAvailableGPUs(cons
 }
 
 std::list<Device_ptr> ConfigurationLoader::loadSystemWideConfiguration() {
+    this->logger->debug(_("Reading system-wide XML"));
     std::list<Device_ptr> systemWideDevices;
 
     std::vector<Glib::ustring> configurationPaths;
-    for (const auto &file : boost::filesystem::directory_iterator(this->getSystemWideConfigurationPath())) {
+    boost::filesystem::path configurationPath = this->getSystemWideConfigurationPath();
+    this->logger->debug(Glib::ustring::compose(_("System-wide XML path: %1"), configurationPath.c_str()));
+
+    for (const auto &file : boost::filesystem::directory_iterator(configurationPath)) {
         if (!boost::filesystem::is_directory(file)) {
             configurationPaths.emplace_back(file.path().string());
         }
@@ -59,11 +73,12 @@ std::list<Device_ptr> ConfigurationLoader::loadSystemWideConfiguration() {
     std::sort(configurationPaths.begin(), configurationPaths.end());
 
     for (auto &filename : configurationPaths) {
-        std::cout << "Found config under: " << filename << std::endl;
+        this->logger->debug(Glib::ustring::compose(_("Found configuration on path: %1"), filename));
         Glib::ustring container;
         std::ostringstream buffer;
         std::ifstream input(filename);
         if (!input.good()) {
+            this->logger->debug(Glib::ustring::compose(_("Failed to load file: %1"), filename));
             continue;
         }
 
@@ -92,6 +107,7 @@ std::list<Device_ptr> ConfigurationLoader::loadSystemWideConfiguration() {
 std::list<Device_ptr> ConfigurationLoader::loadUserDefinedConfiguration() {
     Glib::ustring userDefinedXML(this->readUserDefinedXML());
     if (userDefinedXML.empty()) {
+        this->logger->debug(_("User defined configuration is empty. Returning an empty object"));
         std::list<Device_ptr> deviceList;
         return deviceList;
     }
@@ -102,7 +118,7 @@ Glib::ustring ConfigurationLoader::getOldSystemWideConfigurationPath() {
     Glib::ustring path("/etc/drirc");
     std::ifstream flatpakInfo("/.flatpak-info");
 
-    if(flatpakInfo.good()) {
+    if (flatpakInfo.good()) {
         path = "/var/run/host/etc/drirc";
     }
 
@@ -112,9 +128,12 @@ Glib::ustring ConfigurationLoader::getOldSystemWideConfigurationPath() {
 boost::filesystem::path ConfigurationLoader::getSystemWideConfigurationPath() {
     std::ifstream flatpakInfo("/.flatpak-info");
 
-    if(flatpakInfo.good()) {
+    if (flatpakInfo.good()) {
         return boost::filesystem::path("/var/run/host/usr/share/drirc.d/");
     }
 
     return boost::filesystem::path("/usr/share/drirc.d/");
 }
+
+ConfigurationLoader::ConfigurationLoader(const DRIQuery &driQuery, LoggerInterface *logger) : driQuery(driQuery),
+                                                                                              logger(logger) {}

@@ -18,6 +18,7 @@ private:
     Glib::ustring readUserDefinedXML();
 
     DRIQuery driQuery;
+    LoggerInterface *logger;
 
 public:
     std::list<DriverConfiguration> loadDriverSpecificConfiguration(const Glib::ustring &locale);
@@ -31,6 +32,8 @@ public:
     Glib::ustring getOldSystemWideConfigurationPath();
 
     boost::filesystem::path getSystemWideConfigurationPath();
+
+    ConfigurationLoader(const DRIQuery &driQuery, LoggerInterface *logger);
 };
 
 #endif

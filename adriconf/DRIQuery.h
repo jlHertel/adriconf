@@ -5,6 +5,7 @@
 #include "Parser.h"
 #include "GPUInfo.h"
 #include "HelpersWayland.h"
+#include "LoggerInterface.h"
 
 #include <GL/glx.h>
 #include <GL/glxext.h>
@@ -21,6 +22,7 @@ typedef const char *glXQueryExtensionsString_t(Display *dpy, int screen);
 
 class DRIQuery {
 private:
+    LoggerInterface *logger;
     glXGetScreenDriver_t *getScreenDriver;
     glXGetDriverConfig_t *getDriverConfig;
     glXQueryExtensionsString_t *getGlxExtensionsString;
@@ -28,7 +30,7 @@ private:
     const char *queryDriverConfig(const char *dn);
 
 public:
-    DRIQuery();
+    DRIQuery(LoggerInterface *logger);
     bool isSystemSupported();
     bool canHandle();
 
