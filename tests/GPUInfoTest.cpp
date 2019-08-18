@@ -1,4 +1,4 @@
-#include "../adriconf/GPUInfo.h"
+#include "../adriconf/ValueObject/GPUInfo.h"
 #include "gtest/gtest.h"
 
 class GPUInfoTest : public ::testing::Test

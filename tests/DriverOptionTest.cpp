@@ -1,4 +1,4 @@
-#include "../adriconf/DriverOption.h"
+#include "../adriconf/ValueObject/DriverOption.h"
 #include "gtest/gtest.h"
 
 class DriverOptionTest : public ::testing::Test

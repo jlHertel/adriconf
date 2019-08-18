@@ -48,39 +48,48 @@ endif ()
 GETTEXT_CREATE_TRANSLATIONS(po/adriconf.pot ALL po/en.po po/hr.po po/pt_BR.po)
 
 set(SHARED_SOURCE_FILES
-        ${CMAKE_SOURCE_DIR}/adriconf/Device.cpp
-        ${CMAKE_SOURCE_DIR}/adriconf/Device.h
-        ${CMAKE_SOURCE_DIR}/adriconf/DriverOption.cpp
-        ${CMAKE_SOURCE_DIR}/adriconf/DriverOption.h
-        ${CMAKE_SOURCE_DIR}/adriconf/Section.cpp
-        ${CMAKE_SOURCE_DIR}/adriconf/Section.h
-        ${CMAKE_SOURCE_DIR}/adriconf/Parser.cpp
-        ${CMAKE_SOURCE_DIR}/adriconf/Parser.h
-        ${CMAKE_SOURCE_DIR}/adriconf/Application.cpp
-        ${CMAKE_SOURCE_DIR}/adriconf/Application.h
-        ${CMAKE_SOURCE_DIR}/adriconf/ConfigurationResolver.cpp
-        ${CMAKE_SOURCE_DIR}/adriconf/ConfigurationResolver.h
-        ${CMAKE_SOURCE_DIR}/adriconf/DRIQuery.cpp
-        ${CMAKE_SOURCE_DIR}/adriconf/DRIQuery.h
-        ${CMAKE_SOURCE_DIR}/adriconf/HelpersWayland.cpp
-        ${CMAKE_SOURCE_DIR}/adriconf/HelpersWayland.h
-        ${CMAKE_SOURCE_DIR}/adriconf/DriverConfiguration.cpp
-        ${CMAKE_SOURCE_DIR}/adriconf/DriverConfiguration.h
-        ${CMAKE_SOURCE_DIR}/adriconf/Writer.cpp
-        ${CMAKE_SOURCE_DIR}/adriconf/Writer.h
-        ${CMAKE_SOURCE_DIR}/adriconf/GUI.cpp
-        ${CMAKE_SOURCE_DIR}/adriconf/GUI.h
-        ${CMAKE_SOURCE_DIR}/adriconf/ConfigurationLoader.cpp
-        ${CMAKE_SOURCE_DIR}/adriconf/ConfigurationLoader.h
-        ${CMAKE_SOURCE_DIR}/adriconf/ApplicationOption.cpp
-        ${CMAKE_SOURCE_DIR}/adriconf/ApplicationOption.h
-        ${CMAKE_SOURCE_DIR}/adriconf/GPUInfo.cpp
-        ${CMAKE_SOURCE_DIR}/adriconf/GPUInfo.h
-        ${CMAKE_SOURCE_DIR}/adriconf/PCIDatabaseQuery.cpp
-        ${CMAKE_SOURCE_DIR}/adriconf/PCIDatabaseQuery.h
-        ${CMAKE_SOURCE_DIR}/adriconf/ComboBoxColumn.h
-        ${CMAKE_SOURCE_DIR}/adriconf/DriverOptionType.h
+        ${CMAKE_SOURCE_DIR}/adriconf/ValueObject/Device.cpp
+        ${CMAKE_SOURCE_DIR}/adriconf/ValueObject/Device.h
+        ${CMAKE_SOURCE_DIR}/adriconf/ValueObject/DriverOption.cpp
+        ${CMAKE_SOURCE_DIR}/adriconf/ValueObject/DriverOption.h
+        ${CMAKE_SOURCE_DIR}/adriconf/ValueObject/Section.cpp
+        ${CMAKE_SOURCE_DIR}/adriconf/ValueObject/Section.h
+        ${CMAKE_SOURCE_DIR}/adriconf/Utils/ParserInterface.h
+        ${CMAKE_SOURCE_DIR}/adriconf/Logging/LoggerInterface.h
+        ${CMAKE_SOURCE_DIR}/adriconf/Logging/LoggerLevel.h
+        ${CMAKE_SOURCE_DIR}/adriconf/ValueObject/Application.cpp
+        ${CMAKE_SOURCE_DIR}/adriconf/ValueObject/Application.h
+        ${CMAKE_SOURCE_DIR}/adriconf/Utils/ConfigurationResolver.cpp
+        ${CMAKE_SOURCE_DIR}/adriconf/Utils/ConfigurationResolver.h
+        ${CMAKE_SOURCE_DIR}/adriconf/Utils/DRIQuery.cpp
+        ${CMAKE_SOURCE_DIR}/adriconf/Utils/DRIQuery.h
+        ${CMAKE_SOURCE_DIR}/adriconf/Utils/HelpersWayland.cpp
+        ${CMAKE_SOURCE_DIR}/adriconf/Utils/HelpersWayland.h
+        ${CMAKE_SOURCE_DIR}/adriconf/ValueObject/DriverConfiguration.cpp
+        ${CMAKE_SOURCE_DIR}/adriconf/ValueObject/DriverConfiguration.h
+        ${CMAKE_SOURCE_DIR}/adriconf/Utils/Writer.cpp
+        ${CMAKE_SOURCE_DIR}/adriconf/Utils/Writer.h
+        ${CMAKE_SOURCE_DIR}/adriconf/Utils/ConfigurationLoader.cpp
+        ${CMAKE_SOURCE_DIR}/adriconf/Utils/ConfigurationLoader.h
+        ${CMAKE_SOURCE_DIR}/adriconf/ValueObject/ApplicationOption.cpp
+        ${CMAKE_SOURCE_DIR}/adriconf/ValueObject/ApplicationOption.h
+        ${CMAKE_SOURCE_DIR}/adriconf/ValueObject/GPUInfo.cpp
+        ${CMAKE_SOURCE_DIR}/adriconf/ValueObject/GPUInfo.h
+        ${CMAKE_SOURCE_DIR}/adriconf/Utils/PCIDatabaseQuery.cpp
+        ${CMAKE_SOURCE_DIR}/adriconf/Utils/PCIDatabaseQuery.h
+        ${CMAKE_SOURCE_DIR}/adriconf/ValueObject/ComboBoxColumn.h
+        ${CMAKE_SOURCE_DIR}/adriconf/ValueObject/DriverOptionType.h
         )
+
+# GTest and GMock setup
+configure_file(CMakeLists.txt.in googletest-download/CMakeLists.txt)
+execute_process(COMMAND "${CMAKE_COMMAND}" -G "${CMAKE_GENERATOR}" .
+        WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/googletest-download" )
+execute_process(COMMAND "${CMAKE_COMMAND}" --build .  WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/googletest-download" )
+
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+
+add_subdirectory("${CMAKE_BINARY_DIR}/googletest-src" "${CMAKE_BINARY_DIR}/googletest-build")
 
 add_subdirectory(adriconf)
 add_subdirectory(tests)

@@ -6,7 +6,17 @@ if (NOT TOP_CMAKE_WAS_CALLED)
 endif ()
 
 # Define the executable itself
-add_executable(adriconf main.cpp ${SHARED_SOURCE_FILES} ${CMAKE_SOURCE_DIR}/adriconf/resources.c LoggerInterface.h Logger.cpp Logger.h LoggerLevel.h ParserInterface.h)
+add_executable(adriconf
+        ${CMAKE_SOURCE_DIR}/adriconf/main.cpp
+        ${SHARED_SOURCE_FILES}
+        ${CMAKE_SOURCE_DIR}/adriconf/resources.c
+        ${CMAKE_SOURCE_DIR}/adriconf/Logging/Logger.cpp
+        ${CMAKE_SOURCE_DIR}/adriconf/Logging/Logger.h
+        ${CMAKE_SOURCE_DIR}/adriconf/Utils/Parser.h
+        ${CMAKE_SOURCE_DIR}/adriconf/Utils/Parser.cpp
+        ${CMAKE_SOURCE_DIR}/adriconf/GUI.cpp
+        ${CMAKE_SOURCE_DIR}/adriconf/GUI.h
+)
 
 target_link_libraries(adriconf ${GTKMM_LIBRARIES})
 target_include_directories(adriconf PUBLIC ${GTKMM_INCLUDE_DIRS})

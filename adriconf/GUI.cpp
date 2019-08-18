@@ -1,8 +1,8 @@
 #include "GUI.h"
 
 #include <boost/locale.hpp>
-#include "ConfigurationResolver.h"
-#include "Writer.h"
+#include "Utils/ConfigurationResolver.h"
+#include "Utils/Writer.h"
 #include <fstream>
 #include <exception>
 

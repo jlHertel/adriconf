@@ -6,10 +6,10 @@
 #include <glibmm/ustring.h>
 #include <algorithm>
 
-#include "Device.h"
-#include "DriverConfiguration.h"
-#include "GPUInfo.h"
-#include "LoggerInterface.h"
+#include "../ValueObject/Device.h"
+#include "../ValueObject/DriverConfiguration.h"
+#include "../ValueObject/GPUInfo.h"
+#include "../Logging/LoggerInterface.h"
 
 namespace ConfigurationResolver {
     /**

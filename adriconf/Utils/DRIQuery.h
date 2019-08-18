@@ -1,11 +1,11 @@
 #ifndef DRICONF3_DRIQUERY_H
 #define DRICONF3_DRIQUERY_H
 
-#include "DriverConfiguration.h"
+#include "../ValueObject/DriverConfiguration.h"
 #include "Parser.h"
-#include "GPUInfo.h"
+#include "../ValueObject/GPUInfo.h"
 #include "HelpersWayland.h"
-#include "LoggerInterface.h"
+#include "../Logging/LoggerInterface.h"
 
 #include <GL/glx.h>
 #include <GL/glxext.h>

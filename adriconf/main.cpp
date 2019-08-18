@@ -1,10 +1,10 @@
 #include <iostream>
 #include <gtkmm.h>
 #include "GUI.h"
-#include "DRIQuery.h"
+#include "Utils/DRIQuery.h"
 #include <gtkmm/messagedialog.h>
-#include "Logger.h"
-#include "LoggerInterface.h"
+#include "Logging/Logger.h"
+#include "Logging/LoggerInterface.h"
 #include <memory>
 
 int main(int argc, char *argv[]) {

@@ -1,4 +1,4 @@
-#include "../adriconf/Application.h"
+#include "../adriconf/ValueObject/Application.h"
 #include "gtest/gtest.h"
 
 class ApplicationTest : public ::testing::Test
