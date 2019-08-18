@@ -6,9 +6,9 @@
 #include <list>
 #include <iostream>
 
-#include "Section.h"
-#include "Device.h"
-#include "LoggerInterface.h"
+#include "../ValueObject/Section.h"
+#include "../ValueObject/Device.h"
+#include "../Logging/LoggerInterface.h"
 #include "ParserInterface.h"
 
 class Parser : public ParserInterface {

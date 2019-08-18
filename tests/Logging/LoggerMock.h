@@ -2,7 +2,7 @@
 #define ADRICONF_LOGGERMOCK_H
 
 #include "gmock/gmock.h"
-#include "../adriconf/LoggerInterface.h"
+#include "../../adriconf/Logging/LoggerInterface.h"
 
 class LoggerMock : public LoggerInterface {
 public:

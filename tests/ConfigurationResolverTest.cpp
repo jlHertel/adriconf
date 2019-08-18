@@ -1,7 +1,7 @@
-#include "../adriconf/ConfigurationResolver.h"
+#include "../adriconf/Utils/ConfigurationResolver.h"
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
-#include "LoggerMock.h"
+#include "Logging/LoggerMock.h"
 
 class UpdatePrimeApplicationsTest : public ::testing::Test {
 public:

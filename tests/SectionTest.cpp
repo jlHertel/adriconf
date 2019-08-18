@@ -1,4 +1,4 @@
-#include "../adriconf/Section.h"
+#include "../adriconf/ValueObject/Section.h"
 #include "gtest/gtest.h"
 
 class SectionTest : public ::testing::Test

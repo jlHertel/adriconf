@@ -6,9 +6,9 @@
 #include <map>
 #include <boost/filesystem.hpp>
 
-#include "DriverConfiguration.h"
-#include "Device.h"
-#include "GPUInfo.h"
+#include "../ValueObject/DriverConfiguration.h"
+#include "../ValueObject/Device.h"
+#include "../ValueObject/GPUInfo.h"
 #include "DRIQuery.h"
 
 class ConfigurationLoader {

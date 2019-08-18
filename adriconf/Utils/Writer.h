@@ -3,7 +3,7 @@
 
 #include <list>
 #include <glibmm/ustring.h>
-#include "Device.h"
+#include "../ValueObject/Device.h"
 
 namespace Writer {
     Glib::ustring generateRawXml(const std::list<Device_ptr> &devices);

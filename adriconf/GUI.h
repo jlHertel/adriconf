@@ -3,10 +3,10 @@
 
 #include <gtkmm.h>
 #include <glibmm/i18n.h>
-#include "Device.h"
-#include "DriverConfiguration.h"
-#include "ConfigurationLoader.h"
-#include "ComboBoxColumn.h"
+#include "ValueObject/Device.h"
+#include "ValueObject/DriverConfiguration.h"
+#include "Utils/ConfigurationLoader.h"
+#include "ValueObject/ComboBoxColumn.h"
 
 class GUI {
 private:

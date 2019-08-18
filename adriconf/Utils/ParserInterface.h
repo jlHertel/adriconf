@@ -3,9 +3,9 @@
 
 #include <libxml++/libxml++.h>
 
-#include "DriverOption.h"
-#include "Device.h"
-#include "Section.h"
+#include "../ValueObject/DriverOption.h"
+#include "../ValueObject/Device.h"
+#include "../ValueObject/Section.h"
 
 class ParserInterface {
 public:

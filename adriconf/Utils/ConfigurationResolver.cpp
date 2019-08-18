@@ -1,6 +1,6 @@
 #include "ConfigurationResolver.h"
 #include "Parser.h"
-#include "LoggerInterface.h"
+#include "../Logging/LoggerInterface.h"
 #include <glibmm/i18n.h>
 
 std::list<Device_ptr> ConfigurationResolver::resolveOptionsForSave(
