@@ -11,6 +11,7 @@
 #include "../ValueObject/GPUInfo.h"
 #include "DRIQuery.h"
 #include "ConfigurationLoaderInterface.h"
+#include "ConfigurationResolverInterface.h"
 
 class ConfigurationLoader : public ConfigurationLoaderInterface {
 private:
@@ -21,6 +22,7 @@ private:
     DRIQuery driQuery;
     LoggerInterface *logger;
     ParserInterface *parser;
+    ConfigurationResolverInterface *resolver;
 
 public:
     std::list<DriverConfiguration> loadDriverSpecificConfiguration(const Glib::ustring &locale) override;
@@ -35,7 +37,7 @@ public:
 
     boost::filesystem::path getSystemWideConfigurationPath() override;
 
-    ConfigurationLoader(const DRIQuery &driQuery, LoggerInterface *logger, ParserInterface *parser);
+    ConfigurationLoader(const DRIQuery &driQuery, LoggerInterface *logger, ParserInterface *parser, ConfigurationResolverInterface *resolver);
 
     virtual ~ConfigurationLoader() {};
 };

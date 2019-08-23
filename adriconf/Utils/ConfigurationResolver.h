@@ -10,8 +10,17 @@
 #include "../ValueObject/DriverConfiguration.h"
 #include "../ValueObject/GPUInfo.h"
 #include "../Logging/LoggerInterface.h"
+#include "ConfigurationResolverInterface.h"
 
-namespace ConfigurationResolver {
+class ConfigurationResolver : public ConfigurationResolverInterface {
+private:
+    LoggerInterface *logger;
+
+public:
+    ~ConfigurationResolver() override = default;
+
+    ConfigurationResolver(LoggerInterface *logger);
+
     /**
      * Takes all the options set and filter out the options already defined system-wide
      * Filters also the options that have the value equal to driver-default
@@ -26,7 +35,7 @@ namespace ConfigurationResolver {
             const std::list<DriverConfiguration> &,
             const std::list<Device_ptr> &,
             std::map<Glib::ustring, GPUInfo_ptr> &
-    );
+    ) override;
 
     /**
      * Removes any option that is not supported by this driver
@@ -38,9 +47,8 @@ namespace ConfigurationResolver {
     void filterDriverUnsupportedOptions(
             const std::list<DriverConfiguration> &,
             std::list<Device_ptr> &,
-            std::map<Glib::ustring, GPUInfo_ptr> &,
-            LoggerInterface *logger
-    );
+            std::map<Glib::ustring, GPUInfo_ptr> &
+    ) override;
 
     /**
      * Merge all the options defined in system-wide config together with the user-defined ones
@@ -55,23 +63,21 @@ namespace ConfigurationResolver {
             const std::list<DriverConfiguration> &,
             std::list<Device_ptr> &,
             std::map<Glib::ustring, GPUInfo_ptr> &
-    );
+    ) override;
 
     /**
      * For each application check if it has a device_id defined and update its driver name accordingly
      */
-    void updatePrimeApplications(std::list<Device_ptr> &, const std::map<Glib::ustring, GPUInfo_ptr> &);
+    void updatePrimeApplications(std::list<Device_ptr> &, const std::map<Glib::ustring, GPUInfo_ptr> &) override;
 
-    void addMissingDriverOptions(Application_ptr app, std::map<Glib::ustring, Glib::ustring> driverOptions);
+    void addMissingDriverOptions(Application_ptr app, std::map<Glib::ustring, Glib::ustring> driverOptions) override;
 
-    void addMissingApplications(const Device_ptr &sourceDevice, Device_ptr &targetDevice);
+    void addMissingApplications(const Device_ptr &sourceDevice, Device_ptr &targetDevice) override;
 
     void removeInvalidDrivers(const std::list<DriverConfiguration> &availableDrivers,
-                              std::list<Device_ptr> &userDefinedDevices,
-                              LoggerInterface *logger);
+                              std::list<Device_ptr> &userDefinedDevices) override;
 
-    void mergeConfigurationOnTopOf(std::list<Device_ptr> &source, const std::list<Device_ptr> &addOnTop);
-}
-
+    void mergeConfigurationOnTopOf(std::list<Device_ptr> &source, const std::list<Device_ptr> &addOnTop) override;
+};
 
 #endif

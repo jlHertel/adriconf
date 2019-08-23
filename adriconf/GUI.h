@@ -7,11 +7,13 @@
 #include "ValueObject/DriverConfiguration.h"
 #include "Utils/ConfigurationLoaderInterface.h"
 #include "ValueObject/ComboBoxColumn.h"
+#include "Utils/ConfigurationResolverInterface.h"
 
 class GUI {
 private:
     LoggerInterface *logger;
     ConfigurationLoaderInterface *configurationLoader;
+    ConfigurationResolverInterface *resolver;
 
     /* GUI-Related */
     Gtk::Window *pWindow;
@@ -44,7 +46,7 @@ private:
     void setupAboutDialog();
 
 public:
-    GUI(LoggerInterface *logger, ConfigurationLoaderInterface *configurationLoader);
+    GUI(LoggerInterface *logger, ConfigurationLoaderInterface *configurationLoader, ConfigurationResolverInterface *resolver);
 
     virtual ~GUI();
 

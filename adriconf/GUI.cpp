@@ -7,10 +7,12 @@
 #include <fstream>
 #include <exception>
 
-GUI::GUI(LoggerInterface *logger, ConfigurationLoaderInterface *configurationLoader) : logger(logger),
-                                                                              configurationLoader(configurationLoader),
-                                                                              currentApp(nullptr),
-                                                                              currentDriver(nullptr) {
+GUI::GUI(LoggerInterface *logger, ConfigurationLoaderInterface *configurationLoader,
+         ConfigurationResolverInterface *resolver) : logger(logger),
+                                                     configurationLoader(configurationLoader),
+                                                     resolver(resolver),
+                                                     currentApp(nullptr),
+                                                     currentDriver(nullptr) {
     this->setupLocale();
 
     /* Load the configurations */
@@ -29,13 +31,13 @@ GUI::GUI(LoggerInterface *logger, ConfigurationLoaderInterface *configurationLoa
     this->isPrimeSetup = this->availableGPUs.size() > 1;
 
     /* For each app setup their prime driver name */
-    ConfigurationResolver::updatePrimeApplications(
+    this->resolver->updatePrimeApplications(
             this->userDefinedConfiguration,
             this->availableGPUs
     );
 
     /* Merge all the options in a complete structure */
-    ConfigurationResolver::mergeOptionsForDisplay(
+    this->resolver->mergeOptionsForDisplay(
             this->systemWideConfiguration,
             this->driverConfiguration,
             this->userDefinedConfiguration,
@@ -43,11 +45,10 @@ GUI::GUI(LoggerInterface *logger, ConfigurationLoaderInterface *configurationLoa
     );
 
     /* Filter invalid options */
-    ConfigurationResolver::filterDriverUnsupportedOptions(
+    this->resolver->filterDriverUnsupportedOptions(
             this->driverConfiguration,
             this->userDefinedConfiguration,
-            this->availableGPUs,
-            this->logger
+            this->availableGPUs
     );
 
     this->logger->debug(_("Start building GTK gui"));
@@ -128,7 +129,7 @@ void GUI::onQuitPressed() {
 
 void GUI::onSavePressed() {
     this->logger->debug(_("Generating final XML for saving..."));
-    auto resolvedOptions = ConfigurationResolver::resolveOptionsForSave(
+    auto resolvedOptions = this->resolver->resolveOptionsForSave(
             this->systemWideConfiguration, this->driverConfiguration, this->userDefinedConfiguration,
             this->availableGPUs
     );
@@ -583,7 +584,7 @@ void GUI::onComboboxChanged(Glib::ustring optionName) {
 
                 /* Add the missing options of the new driver */
                 auto newDriverOptions = this->availableGPUs[selectedRow[comboColumns.optionValue]]->getOptionsMap();
-                ConfigurationResolver::addMissingDriverOptions(this->currentApp, newDriverOptions);
+                this->resolver->addMissingDriverOptions(this->currentApp, newDriverOptions);
 
                 /* TODO: We should trigget a full-redraw of the available options, but how? */
             }

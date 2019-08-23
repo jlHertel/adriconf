@@ -6,6 +6,7 @@
 #include "GUI.h"
 #include "Utils/DRIQuery.h"
 #include "Utils/ConfigurationLoader.h"
+#include "Utils/ConfigurationResolver.h"
 #include "Logging/Logger.h"
 #include "Logging/LoggerInterface.h"
 
@@ -69,8 +70,9 @@ int main(int argc, char *argv[]) {
             }
         }
 
-        ConfigurationLoader loader(check, logger, &parser);
-        GUI gui(logger, &loader);
+        ConfigurationResolver resolver(logger);
+        ConfigurationLoader loader(check, logger, &parser, &resolver);
+        GUI gui(logger, &loader, &resolver);
 
         /* No need to worry about the window pointer as the gui object owns it */
         Gtk::Window *pWindow = gui.getWindowPointer();
