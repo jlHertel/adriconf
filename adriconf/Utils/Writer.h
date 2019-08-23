@@ -4,9 +4,13 @@
 #include <list>
 #include <glibmm/ustring.h>
 #include "../ValueObject/Device.h"
+#include "WriterInterface.h"
 
-namespace Writer {
-    Glib::ustring generateRawXml(const std::list<Device_ptr> &devices);
-}
+class Writer : public WriterInterface {
+public:
+    ~Writer() override = default;
+
+    Glib::ustring generateRawXml(const std::list<Device_ptr> &devices) override;
+};
 
 #endif

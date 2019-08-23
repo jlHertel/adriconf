@@ -14,6 +14,7 @@ set(SOURCE_TESTS
         ${CMAKE_SOURCE_DIR}/tests/DriverOptionTest.cpp
         ${CMAKE_SOURCE_DIR}/tests/SectionTest.cpp
         ${CMAKE_SOURCE_DIR}/tests/GPUInfoTest.cpp
+
         ${CMAKE_SOURCE_DIR}/tests/Logging/LoggerMock.h
         ${CMAKE_SOURCE_DIR}/tests/Utils/ParserMock.h
 )

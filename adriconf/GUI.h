@@ -8,12 +8,14 @@
 #include "Utils/ConfigurationLoaderInterface.h"
 #include "ValueObject/ComboBoxColumn.h"
 #include "Utils/ConfigurationResolverInterface.h"
+#include "Utils/WriterInterface.h"
 
 class GUI {
 private:
     LoggerInterface *logger;
     ConfigurationLoaderInterface *configurationLoader;
     ConfigurationResolverInterface *resolver;
+    WriterInterface *writer;
 
     /* GUI-Related */
     Gtk::Window *pWindow;
@@ -46,7 +48,7 @@ private:
     void setupAboutDialog();
 
 public:
-    GUI(LoggerInterface *logger, ConfigurationLoaderInterface *configurationLoader, ConfigurationResolverInterface *resolver);
+    GUI(LoggerInterface *logger, ConfigurationLoaderInterface *configurationLoader, ConfigurationResolverInterface *resolver, WriterInterface *writer);
 
     virtual ~GUI();
 

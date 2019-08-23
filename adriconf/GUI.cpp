@@ -7,12 +7,16 @@
 #include <fstream>
 #include <exception>
 
-GUI::GUI(LoggerInterface *logger, ConfigurationLoaderInterface *configurationLoader,
-         ConfigurationResolverInterface *resolver) : logger(logger),
-                                                     configurationLoader(configurationLoader),
-                                                     resolver(resolver),
-                                                     currentApp(nullptr),
-                                                     currentDriver(nullptr) {
+GUI::GUI(
+        LoggerInterface *logger,
+        ConfigurationLoaderInterface *configurationLoader,
+        ConfigurationResolverInterface *resolver,
+        WriterInterface *writer) : logger(logger),
+                                   configurationLoader(configurationLoader),
+                                   resolver(resolver),
+                                   writer(writer),
+                                   currentApp(nullptr),
+                                   currentDriver(nullptr) {
     this->setupLocale();
 
     /* Load the configurations */
@@ -133,7 +137,7 @@ void GUI::onSavePressed() {
             this->systemWideConfiguration, this->driverConfiguration, this->userDefinedConfiguration,
             this->availableGPUs
     );
-    auto rawXML = Writer::generateRawXml(resolvedOptions);
+    auto rawXML = this->writer->generateRawXml(resolvedOptions);
     this->logger->debug(Glib::ustring::compose(_("Writing generated XML: %1"), rawXML));
     std::string userHome(std::getenv("HOME"));
     std::ofstream outFile(userHome + "/.drirc");

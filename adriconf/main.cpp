@@ -9,7 +9,7 @@
 #include "Utils/ConfigurationResolver.h"
 #include "Logging/Logger.h"
 #include "Logging/LoggerInterface.h"
-
+#include "Utils/Writer.h"
 
 int main(int argc, char *argv[]) {
     char *verbosity = std::getenv("VERBOSITY");
@@ -70,9 +70,10 @@ int main(int argc, char *argv[]) {
             }
         }
 
+        Writer writer;
         ConfigurationResolver resolver(logger);
         ConfigurationLoader loader(check, logger, &parser, &resolver);
-        GUI gui(logger, &loader, &resolver);
+        GUI gui(logger, &loader, &resolver, &writer);
 
         /* No need to worry about the window pointer as the gui object owns it */
         Gtk::Window *pWindow = gui.getWindowPointer();
