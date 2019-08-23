@@ -3,10 +3,11 @@
 #include <boost/locale.hpp>
 #include "Utils/ConfigurationResolver.h"
 #include "Utils/Writer.h"
+#include "Utils/ConfigurationLoaderInterface.h"
 #include <fstream>
 #include <exception>
 
-GUI::GUI(LoggerInterface *logger, ConfigurationLoader *configurationLoader) : logger(logger),
+GUI::GUI(LoggerInterface *logger, ConfigurationLoaderInterface *configurationLoader) : logger(logger),
                                                                               configurationLoader(configurationLoader),
                                                                               currentApp(nullptr),
                                                                               currentDriver(nullptr) {

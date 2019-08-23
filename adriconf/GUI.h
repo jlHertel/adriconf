@@ -5,13 +5,13 @@
 #include <glibmm/i18n.h>
 #include "ValueObject/Device.h"
 #include "ValueObject/DriverConfiguration.h"
-#include "Utils/ConfigurationLoader.h"
+#include "Utils/ConfigurationLoaderInterface.h"
 #include "ValueObject/ComboBoxColumn.h"
 
 class GUI {
 private:
     LoggerInterface *logger;
-    ConfigurationLoader *configurationLoader;
+    ConfigurationLoaderInterface *configurationLoader;
 
     /* GUI-Related */
     Gtk::Window *pWindow;
@@ -44,7 +44,7 @@ private:
     void setupAboutDialog();
 
 public:
-    GUI(LoggerInterface *logger, ConfigurationLoader *configurationLoader);
+    GUI(LoggerInterface *logger, ConfigurationLoaderInterface *configurationLoader);
 
     virtual ~GUI();
 

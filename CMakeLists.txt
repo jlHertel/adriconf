@@ -71,6 +71,7 @@ set(SHARED_SOURCE_FILES
         ${CMAKE_SOURCE_DIR}/adriconf/Utils/Writer.h
         ${CMAKE_SOURCE_DIR}/adriconf/Utils/ConfigurationLoader.cpp
         ${CMAKE_SOURCE_DIR}/adriconf/Utils/ConfigurationLoader.h
+        ${CMAKE_SOURCE_DIR}/adriconf/Utils/ConfigurationLoaderInterface.h
         ${CMAKE_SOURCE_DIR}/adriconf/ValueObject/ApplicationOption.cpp
         ${CMAKE_SOURCE_DIR}/adriconf/ValueObject/ApplicationOption.h
         ${CMAKE_SOURCE_DIR}/adriconf/ValueObject/GPUInfo.cpp

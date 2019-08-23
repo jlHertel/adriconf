@@ -1,11 +1,14 @@
 #include <iostream>
 #include <gtkmm.h>
+#include <memory>
+#include <gtkmm/messagedialog.h>
+
 #include "GUI.h"
 #include "Utils/DRIQuery.h"
-#include <gtkmm/messagedialog.h>
+#include "Utils/ConfigurationLoader.h"
 #include "Logging/Logger.h"
 #include "Logging/LoggerInterface.h"
-#include <memory>
+
 
 int main(int argc, char *argv[]) {
     char *verbosity = std::getenv("VERBOSITY");
