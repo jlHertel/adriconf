@@ -54,32 +54,42 @@ set(SHARED_SOURCE_FILES
         ${CMAKE_SOURCE_DIR}/adriconf/ValueObject/DriverOption.h
         ${CMAKE_SOURCE_DIR}/adriconf/ValueObject/Section.cpp
         ${CMAKE_SOURCE_DIR}/adriconf/ValueObject/Section.h
-        ${CMAKE_SOURCE_DIR}/adriconf/Utils/ParserInterface.h
-        ${CMAKE_SOURCE_DIR}/adriconf/Logging/LoggerInterface.h
-        ${CMAKE_SOURCE_DIR}/adriconf/Logging/LoggerLevel.h
+        ${CMAKE_SOURCE_DIR}/adriconf/ValueObject/DriverConfiguration.cpp
+        ${CMAKE_SOURCE_DIR}/adriconf/ValueObject/DriverConfiguration.h
+        ${CMAKE_SOURCE_DIR}/adriconf/ValueObject/GPUInfo.cpp
+        ${CMAKE_SOURCE_DIR}/adriconf/ValueObject/GPUInfo.h
         ${CMAKE_SOURCE_DIR}/adriconf/ValueObject/Application.cpp
         ${CMAKE_SOURCE_DIR}/adriconf/ValueObject/Application.h
-        ${CMAKE_SOURCE_DIR}/adriconf/Utils/ConfigurationResolver.cpp
-        ${CMAKE_SOURCE_DIR}/adriconf/Utils/ConfigurationResolver.h
+        ${CMAKE_SOURCE_DIR}/adriconf/ValueObject/ApplicationOption.cpp
+        ${CMAKE_SOURCE_DIR}/adriconf/ValueObject/ApplicationOption.h
+        ${CMAKE_SOURCE_DIR}/adriconf/ValueObject/ComboBoxColumn.h
+        ${CMAKE_SOURCE_DIR}/adriconf/ValueObject/DriverOptionType.h
+
+        ${CMAKE_SOURCE_DIR}/adriconf/Logging/LoggerInterface.h
+        ${CMAKE_SOURCE_DIR}/adriconf/Logging/LoggerLevel.h
+
+        ${CMAKE_SOURCE_DIR}/adriconf/Utils/ParserInterface.h
+        ${CMAKE_SOURCE_DIR}/adriconf/Utils/ConfigurationResolverInterface.h
         ${CMAKE_SOURCE_DIR}/adriconf/Utils/DRIQuery.cpp
         ${CMAKE_SOURCE_DIR}/adriconf/Utils/DRIQuery.h
         ${CMAKE_SOURCE_DIR}/adriconf/Utils/HelpersWayland.cpp
         ${CMAKE_SOURCE_DIR}/adriconf/Utils/HelpersWayland.h
-        ${CMAKE_SOURCE_DIR}/adriconf/ValueObject/DriverConfiguration.cpp
-        ${CMAKE_SOURCE_DIR}/adriconf/ValueObject/DriverConfiguration.h
+        ${CMAKE_SOURCE_DIR}/adriconf/Utils/WriterInterface.h
+        ${CMAKE_SOURCE_DIR}/adriconf/Utils/ConfigurationLoaderInterface.h
+        ${CMAKE_SOURCE_DIR}/adriconf/Utils/PCIDatabaseQuery.cpp
+        ${CMAKE_SOURCE_DIR}/adriconf/Utils/PCIDatabaseQuery.h
+
+        ${CMAKE_SOURCE_DIR}/adriconf/Utils/Parser.h
+        ${CMAKE_SOURCE_DIR}/adriconf/Utils/Parser.cpp
+        ${CMAKE_SOURCE_DIR}/adriconf/Utils/ConfigurationResolver.cpp
+        ${CMAKE_SOURCE_DIR}/adriconf/Utils/ConfigurationResolver.h
         ${CMAKE_SOURCE_DIR}/adriconf/Utils/Writer.cpp
         ${CMAKE_SOURCE_DIR}/adriconf/Utils/Writer.h
         ${CMAKE_SOURCE_DIR}/adriconf/Utils/ConfigurationLoader.cpp
         ${CMAKE_SOURCE_DIR}/adriconf/Utils/ConfigurationLoader.h
-        ${CMAKE_SOURCE_DIR}/adriconf/Utils/ConfigurationLoaderInterface.h
-        ${CMAKE_SOURCE_DIR}/adriconf/ValueObject/ApplicationOption.cpp
-        ${CMAKE_SOURCE_DIR}/adriconf/ValueObject/ApplicationOption.h
-        ${CMAKE_SOURCE_DIR}/adriconf/ValueObject/GPUInfo.cpp
-        ${CMAKE_SOURCE_DIR}/adriconf/ValueObject/GPUInfo.h
-        ${CMAKE_SOURCE_DIR}/adriconf/Utils/PCIDatabaseQuery.cpp
-        ${CMAKE_SOURCE_DIR}/adriconf/Utils/PCIDatabaseQuery.h
-        ${CMAKE_SOURCE_DIR}/adriconf/ValueObject/ComboBoxColumn.h
-        ${CMAKE_SOURCE_DIR}/adriconf/ValueObject/DriverOptionType.h
+
+        ${CMAKE_SOURCE_DIR}/adriconf/GUI.cpp
+        ${CMAKE_SOURCE_DIR}/adriconf/GUI.h
         )
 
 # GTest and GMock setup

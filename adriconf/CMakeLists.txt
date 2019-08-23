@@ -12,11 +12,7 @@ add_executable(adriconf
         ${CMAKE_SOURCE_DIR}/adriconf/resources.c
         ${CMAKE_SOURCE_DIR}/adriconf/Logging/Logger.cpp
         ${CMAKE_SOURCE_DIR}/adriconf/Logging/Logger.h
-        ${CMAKE_SOURCE_DIR}/adriconf/Utils/Parser.h
-        ${CMAKE_SOURCE_DIR}/adriconf/Utils/Parser.cpp
-        ${CMAKE_SOURCE_DIR}/adriconf/GUI.cpp
-        ${CMAKE_SOURCE_DIR}/adriconf/GUI.h
-        Utils/ConfigurationResolverInterface.h)
+        )
 
 target_link_libraries(adriconf ${GTKMM_LIBRARIES})
 target_include_directories(adriconf PUBLIC ${GTKMM_INCLUDE_DIRS})
