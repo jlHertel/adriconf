@@ -6,10 +6,10 @@
 
 class LoggerMock : public LoggerInterface {
 public:
-    MOCK_METHOD1(debug, void(Glib::ustring));
-    MOCK_METHOD1(info, void(Glib::ustring));
-    MOCK_METHOD1(warning, void(Glib::ustring));
-    MOCK_METHOD1(error, void(Glib::ustring));
+    MOCK_METHOD(void, debug, (Glib::ustring), (override));
+    MOCK_METHOD(void, info, (Glib::ustring), (override));
+    MOCK_METHOD(void, warning, (Glib::ustring), (override));
+    MOCK_METHOD(void, error, (Glib::ustring), (override));
 };
 
 #endif //ADRICONF_LOGGERMOCK_H

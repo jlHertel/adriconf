@@ -3,6 +3,8 @@
 #include "../Logging/LoggerInterface.h"
 #include <glibmm/i18n.h>
 
+ConfigurationResolver::ConfigurationResolver(LoggerInterface *logger): logger(logger) {}
+
 std::list<Device_ptr> ConfigurationResolver::resolveOptionsForSave(
         const std::list<Device_ptr> &systemWideDevices,
         const std::list<DriverConfiguration> &driverAvailableOptions,
@@ -145,11 +147,10 @@ std::list<Device_ptr> ConfigurationResolver::resolveOptionsForSave(
 void ConfigurationResolver::filterDriverUnsupportedOptions(
         const std::list<DriverConfiguration> &driverAvailableOptions,
         std::list<Device_ptr> &userDefinedDevices,
-        std::map<Glib::ustring, GPUInfo_ptr> &availableGPUs,
-        LoggerInterface *logger
+        std::map<Glib::ustring, GPUInfo_ptr> &availableGPUs
 ) {
     // Remove user-defined configurations that don't exists at driver level
-    ConfigurationResolver::removeInvalidDrivers(driverAvailableOptions, userDefinedDevices, logger);
+    this->removeInvalidDrivers(driverAvailableOptions, userDefinedDevices);
 
     for (auto &userDefinedDevice : userDefinedDevices) {
         auto driverConfig = std::find_if(driverAvailableOptions.begin(), driverAvailableOptions.end(),
@@ -203,7 +204,7 @@ void ConfigurationResolver::filterDriverUnsupportedOptions(
                 }
 
                 if (driverRealOptions.count((*itr)->getName()) == 0) {
-                    logger->warning(Glib::ustring::compose(
+                    this->logger->warning(Glib::ustring::compose(
                             _("Driver '%1' doesn't support option '%2' on application '%3'. Option removed."),
                             correctDriverName,
                             (*itr)->getName(),
@@ -273,7 +274,7 @@ void ConfigurationResolver::mergeOptionsForDisplay(
         std::map<Glib::ustring, Glib::ustring> driverOptions;
 
         /* Check if we can add any of the system-wide apps for this config */
-        ConfigurationResolver::addMissingApplications(systemWideDevice, userDefinedDevice);
+        this->addMissingApplications(systemWideDevice, userDefinedDevice);
 
         std::list<Application_ptr> newDeviceApps = userDefinedDevice->getApplications();
 
@@ -287,7 +288,7 @@ void ConfigurationResolver::mergeOptionsForDisplay(
                 }
             }
 
-            ConfigurationResolver::addMissingDriverOptions(userDefinedApp, driverOptions);
+            this->addMissingDriverOptions(userDefinedApp, driverOptions);
         }
 
         /* Check if we have a default config */
@@ -300,7 +301,7 @@ void ConfigurationResolver::mergeOptionsForDisplay(
             Application_ptr defaultApplication = std::make_shared<Application>();
             defaultApplication->setName("Default");
 
-            ConfigurationResolver::addMissingDriverOptions(defaultApplication, realDriverOptions);
+            this->addMissingDriverOptions(defaultApplication, realDriverOptions);
 
             userDefinedDevice->addApplication(defaultApplication);
         }
@@ -350,8 +351,7 @@ void ConfigurationResolver::addMissingDriverOptions(Application_ptr app,
 
 void ConfigurationResolver::removeInvalidDrivers(
         const std::list<DriverConfiguration> &availableDrivers,
-        std::list<Device_ptr> &userDefinedDevices,
-        LoggerInterface *logger
+        std::list<Device_ptr> &userDefinedDevices
 ) {
     auto deviceIterator = userDefinedDevices.begin();
     while (deviceIterator != userDefinedDevices.end()) {
@@ -368,7 +368,7 @@ void ConfigurationResolver::removeInvalidDrivers(
                                            });
 
         if (driverSupports == availableDrivers.end()) {
-            logger->warning(Glib::ustring::compose(
+            this->logger->warning(Glib::ustring::compose(
                     _("User-defined driver '%1' on screen '%2' doesn't have a driver loaded on system. Configuration removed."),
                     currentUserDefinedDriver,
                     currentUserDefinedScreen
