@@ -9,7 +9,15 @@
 #include "PCIDatabaseQuery.h"
 
 
-DRIQuery::DRIQuery(LoggerInterface *logger, ParserInterface *parser, bool isWaylandSession) : logger(logger), parser(parser), isWaylandSession(isWaylandSession) {}
+DRIQuery::DRIQuery(
+        LoggerInterface *logger,
+        ParserInterface *parser,
+        PCIDatabaseQueryInterface *pciQuery,
+        bool isWaylandSession
+) : logger(logger),
+    parser(parser),
+    pciQuery(pciQuery),
+    isWaylandSession(isWaylandSession) {}
 
 
 bool DRIQuery::isSystemSupported() {
@@ -161,8 +169,6 @@ std::map<Glib::ustring, GPUInfo_ptr> DRIQuery::enumerateDRIDevices(const Glib::u
     this->logger->debug(_("Enumerating DRI Devices"));
     std::map<Glib::ustring, GPUInfo_ptr> gpus;
 
-    PCIDatabaseQuery pciQuery;
-
     drmDevicePtr enumeratedDevices[MESA_MAX_DRM_DEVICES];
     int deviceCount = drmGetDevices2(0, enumeratedDevices, MESA_MAX_DRM_DEVICES);
 
@@ -203,8 +209,8 @@ std::map<Glib::ustring, GPUInfo_ptr> DRIQuery::enumerateDRIDevices(const Glib::u
         gpu->setVendorId(enumeratedDevices[i]->deviceinfo.pci->vendor_id);
         gpu->setDeviceId(enumeratedDevices[i]->deviceinfo.pci->device_id);
 
-        gpu->setVendorName(pciQuery.queryVendorName(gpu->getVendorId()));
-        gpu->setDeviceName(pciQuery.queryDeviceName(gpu->getVendorId(), gpu->getDeviceId()));
+        gpu->setVendorName(this->pciQuery->queryVendorName(gpu->getVendorId()));
+        gpu->setDeviceName(this->pciQuery->queryDeviceName(gpu->getVendorId(), gpu->getDeviceId()));
 
         this->logger->debug(Glib::ustring::compose(_("GPU has been detected as %1 from %2"), gpu->getDeviceName(),
                                                    gpu->getVendorName()));

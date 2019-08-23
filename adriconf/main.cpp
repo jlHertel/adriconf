@@ -10,6 +10,7 @@
 #include "Logging/Logger.h"
 #include "Logging/LoggerInterface.h"
 #include "Utils/Writer.h"
+#include "Utils/PCIDatabaseQuery.h"
 
 int main(int argc, char *argv[]) {
     char *verbosity = std::getenv("VERBOSITY");
@@ -46,7 +47,8 @@ int main(int argc, char *argv[]) {
 
         logger->debug(_("Checking if the system is supported"));
         Parser parser(logger);
-        DRIQuery check(logger, &parser, isWayland);
+        PCIDatabaseQuery pciQuery;
+        DRIQuery check(logger, &parser, &pciQuery, isWayland);
         if (!check.isSystemSupported()) {
             return 1;
         }
