@@ -10,8 +10,9 @@
 #include "../ValueObject/Device.h"
 #include "../ValueObject/GPUInfo.h"
 #include "DRIQuery.h"
+#include "ConfigurationLoaderInterface.h"
 
-class ConfigurationLoader {
+class ConfigurationLoader : public ConfigurationLoaderInterface {
 private:
     Glib::ustring readSystemWideXML();
 
@@ -22,19 +23,21 @@ private:
     ParserInterface *parser;
 
 public:
-    std::list<DriverConfiguration> loadDriverSpecificConfiguration(const Glib::ustring &locale);
+    std::list<DriverConfiguration> loadDriverSpecificConfiguration(const Glib::ustring &locale) override;
 
-    std::list<Device_ptr> loadSystemWideConfiguration();
+    std::list<Device_ptr> loadSystemWideConfiguration() override;
 
-    std::list<Device_ptr> loadUserDefinedConfiguration();
+    std::list<Device_ptr> loadUserDefinedConfiguration() override;
 
-    std::map<Glib::ustring, GPUInfo_ptr> loadAvailableGPUs(const Glib::ustring &locale);
+    std::map<Glib::ustring, GPUInfo_ptr> loadAvailableGPUs(const Glib::ustring &locale) override;
 
-    Glib::ustring getOldSystemWideConfigurationPath();
+    Glib::ustring getOldSystemWideConfigurationPath() override;
 
-    boost::filesystem::path getSystemWideConfigurationPath();
+    boost::filesystem::path getSystemWideConfigurationPath() override;
 
     ConfigurationLoader(const DRIQuery &driQuery, LoggerInterface *logger, ParserInterface *parser);
+
+    virtual ~ConfigurationLoader() {};
 };
 
 #endif
