@@ -78,6 +78,7 @@ set(SHARED_SOURCE_FILES
         ${CMAKE_SOURCE_DIR}/adriconf/Utils/ConfigurationLoaderInterface.h
         ${CMAKE_SOURCE_DIR}/adriconf/Utils/PCIDatabaseQuery.cpp
         ${CMAKE_SOURCE_DIR}/adriconf/Utils/PCIDatabaseQuery.h
+        ${CMAKE_SOURCE_DIR}/adriconf/Utils/PCIDatabaseQueryInterface.h
 
         ${CMAKE_SOURCE_DIR}/adriconf/Utils/Parser.h
         ${CMAKE_SOURCE_DIR}/adriconf/Utils/Parser.cpp

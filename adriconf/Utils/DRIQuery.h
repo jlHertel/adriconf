@@ -6,6 +6,7 @@
 #include "../ValueObject/GPUInfo.h"
 #include "HelpersWayland.h"
 #include "../Logging/LoggerInterface.h"
+#include "PCIDatabaseQueryInterface.h"
 
 #include <GL/glx.h>
 #include <GL/glxext.h>
@@ -24,6 +25,7 @@ class DRIQuery {
 private:
     LoggerInterface *logger;
     ParserInterface *parser;
+    PCIDatabaseQueryInterface *pciQuery;
     bool isWaylandSession;
 
     glXGetScreenDriver_t *getScreenDriver;
@@ -33,7 +35,7 @@ private:
     const char *queryDriverConfig(const char *dn);
 
 public:
-    DRIQuery(LoggerInterface *logger, ParserInterface *parser, bool isWaylandSession);
+    DRIQuery(LoggerInterface *logger, ParserInterface *parser, PCIDatabaseQueryInterface *pciQuery, bool isWaylandSession);
     bool isSystemSupported();
     bool canHandle();
 
