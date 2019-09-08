@@ -4,6 +4,7 @@ project(adriconf)
 set(CMAKE_CXX_STANDARD 14)
 
 option(ENABLE_XWAYLAND "Enable XWayland support" ON)
+option(ENABLE_UNIT_TESTS "Enables building Unit tests" ON)
 set(TOP_CMAKE_WAS_CALLED TRUE)
 
 find_package(PkgConfig REQUIRED)
@@ -94,14 +95,17 @@ set(SHARED_SOURCE_FILES
         )
 
 # GTest and GMock setup
-configure_file(CMakeLists.txt.in googletest-download/CMakeLists.txt)
-execute_process(COMMAND "${CMAKE_COMMAND}" -G "${CMAKE_GENERATOR}" .
-        WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/googletest-download" )
-execute_process(COMMAND "${CMAKE_COMMAND}" --build .  WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/googletest-download" )
+if (ENABLE_UNIT_TESTS)
+    configure_file(CMakeLists.txt.in googletest-download/CMakeLists.txt)
+    execute_process(COMMAND "${CMAKE_COMMAND}" -G "${CMAKE_GENERATOR}" .
+            WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/googletest-download" )
+    execute_process(COMMAND "${CMAKE_COMMAND}" --build .  WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/googletest-download" )
 
-set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+    set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 
-add_subdirectory("${CMAKE_BINARY_DIR}/googletest-src" "${CMAKE_BINARY_DIR}/googletest-build")
+    add_subdirectory("${CMAKE_BINARY_DIR}/googletest-src" "${CMAKE_BINARY_DIR}/googletest-build")
+    add_subdirectory(tests)
+endif()
 
 add_subdirectory(adriconf)
-add_subdirectory(tests)
+
