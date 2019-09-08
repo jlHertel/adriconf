@@ -6,15 +6,22 @@
    "command": "adriconf",
    "finish-args": [
       "--socket=x11",
+      "--socket=wayland",
       "--share=ipc",
       "--device=dri",
       "--filesystem=host"
    ],
-   "cleanup": [ "/include", "/bin/gtk4-*", "*.a" ],
+   "cleanup": [
+      "/include",
+      "/lib/pkgconfig",
+      "*.a",
+      "*.la"
+   ],
    "modules": [
       {
          "name": "GTest",
          "buildsystem": "cmake-ninja",
+         "cleanup": ["*"],
          "sources": [
             {
                "type": "archive",
@@ -43,6 +50,9 @@
          "config-opts": [
             "--disable-documentation"
          ],
+         "cleanup": [
+            "/lib/sigc++-2.0"
+         ],
          "sources": [
             {
                "type": "archive",
@@ -53,6 +63,12 @@
       },
       {
          "name": "cairomm",
+         "config-opts": [
+            "--disable-documentation"
+         ],
+         "cleanup": [
+            "/lib/cairomm-1.0"
+         ],
          "sources": [
             {
                "type": "archive",
@@ -63,6 +79,13 @@
       },
       {
          "name": "glibmm",
+         "config-opts": [
+            "--disable-documentation"
+         ],
+         "cleanup": [
+            "/lib/glibmm-2.4",
+            "/lib/giomm-2.4"
+         ],
          "sources": [
             {
                "type": "archive",
@@ -73,6 +96,12 @@
       },
       {
          "name": "pangomm",
+         "config-opts": [
+            "--disable-documentation"
+         ],
+         "cleanup": [
+            "/lib/pangomm-1.4"
+         ],
          "sources": [
             {
                "type": "archive",
@@ -83,6 +112,12 @@
       },
       {
          "name": "atkmm",
+         "config-opts": [
+            "--disable-documentation"
+         ],
+         "cleanup": [
+            "/lib/atkmm-1.6"
+         ],
          "sources": [
             {
                "type": "archive",
@@ -92,28 +127,14 @@
          ]
       },
       {
-         "name": "graphene-gobject-1.0",
-         "buildsystem": "meson",
-         "sources": [
-            {
-               "type": "archive",
-               "url": "http://archive.ubuntu.com/ubuntu/pool/main/g/graphene/graphene_1.8.0.orig.tar.gz",
-               "md5": "d0ee65f4bdd30a5db4fd8d2ac46cd8cc"
-            }
-         ]
-      },
-      {
-         "name": "gtk+-4.0",
-         "sources": [
-            {
-               "type": "archive",
-               "url": "https://launchpad.net/ubuntu/+archive/primary/+sourcefiles/gtk+4.0/3.90.0-0ubuntu2/gtk+4.0_3.90.0.orig.tar.xz",
-               "sha256": "7bb33b4101a4b3e51dc286000d61d1130575c3e7dee88656f4b43fc2a5a05b97"
-            }
-         ]
-      },
-      {
          "name": "gtkmm",
+         "config-opts": [
+            "--disable-documentation"
+         ],
+         "cleanup": [
+            "/lib/gtkmm-3.0",
+            "/lib/gdkmm-3.0"
+         ],
          "sources": [
             {
                "type": "archive",
@@ -124,6 +145,12 @@
       },
       {
          "name": "libxml++-2.6",
+         "config-opts": [
+            "--disable-documentation"
+         ],
+         "cleanup": [
+            "/lib/libxml++-2.6"
+         ],
          "sources": [
             {
                "type": "archive",
@@ -134,6 +161,10 @@
       },
       {
          "name": "libpci",
+         "cleanup": [
+            "/sbin",
+            "/man"
+         ],
          "sources": [
             {
                "type": "archive",
@@ -157,31 +188,29 @@
       {
          "name": "adriconf",
          "buildsystem": "cmake-ninja",
-         "config-opts": "-DCMAKE_INSTALL_PREFIX:PATH=/app",
+         "config-opts": ["-DENABLE_XWAYLAND=1"],
          "sources": [
             {
                "type": "git",
                "url": "https://github.com/jlHertel/adriconf",
-               "tag": "v1.2"
+               "tag": "v1.4"
             },
             {
-                "type": "file",
-                "path": "br.com.jeanhertel.adriconf.appdata.xml"
+               "type": "file",
+               "path": "br.com.jeanhertel.adriconf.appdata.xml"
             },
             {
-                "type": "file",
-                "path": "br.com.jeanhertel.adriconf.desktop"
-            },
-            {
-                "type": "file",
-                "path": "br.com.jeanhertel.adriconf.png"
+               "type": "shell",
+               "//": "FIXME: Upstream this, checking if running in flatpak",
+               "commands": [
+                  "sed -i 's|/etc/drirc|/var/run/host/etc/drirc|' ConfigurationLoader.cpp"
+               ]
             }
          ],
          "build-commands": [
-             "install -Dm644 br.com.jeanhertel.adriconf.appdata.xml /app/share/appdata/br.com.jeanhertel.adriconf.appdata.xml",
-             "install -Dm644 br.com.jeanhertel.adriconf.desktop /app/share/desktop/br.com.jeanhertel.adriconf.desktop",
-             "install -Dm644 br.com.jeanhertel.adriconf.png /app/share/icons/hicolor/256x256/br.com.jeanhertel.adriconf.png"
-
+            "install -Dm644 br.com.jeanhertel.adriconf.appdata.xml /app/share/appdata/br.com.jeanhertel.adriconf.appdata.xml",
+            "install -Dm644 flatpak/br.com.jeanhertel.adriconf.desktop /app/share/applications/br.com.jeanhertel.adriconf.desktop",
+            "install -Dm644 flatpak/br.com.jeanhertel.adriconf.png /app/share/icons/hicolor/256x256/apps/br.com.jeanhertel.adriconf.png"
          ]
       }
    ]

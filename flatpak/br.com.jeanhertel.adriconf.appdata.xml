@@ -8,9 +8,11 @@
    <summary>Advanced DRI configurator</summary>
    <description>
       <p>adriconf (Advanced DRI CONFigurator) is a GUI tool used to configure open source graphics drivers. It works by setting options and writing them to the standard drirc file used by the Mesa drivers.</p>
-      <p xml:lang="pt_BR">adriconf (Advanced DRI CONFigurator) é uma ferramenta visual utilizada para configurar os drivers gráficos open source. Ele funciona definindo e escrevendo opções para o arquivo padrão drirc utilizado pelos drivers Mesa.</p>
       <p>A GUI Tool used to configure OpenGL drivers. You can use it to optimize game settings or even workaround issues with them.</p>
-      <p xml:lang="pt_BR">Uma ferramenta visual utilizada para configurar drivers OpenGL. Você pode utilizá-lo para otimizar as configurações de jogos ou até mesmo corrigir problemas conhecidos.</p>
+   </description>
+   <description xml:lang="pt_BR">
+      <p>adriconf (Advanced DRI CONFigurator) é uma ferramenta visual utilizada para configurar os drivers gráficos open source. Ele funciona definindo e escrevendo opções para o arquivo padrão drirc utilizado pelos drivers Mesa.</p>
+      <p>Uma ferramenta visual utilizada para configurar drivers OpenGL. Você pode utilizá-lo para otimizar as configurações de jogos ou até mesmo corrigir problemas conhecidos.</p>
    </description>
    <launchable type="desktop-id">br.com.jeanhertel.adriconf.desktop</launchable>
    <screenshots>
@@ -18,12 +20,38 @@
          <caption>Performance Window</caption>
          <image type="source">https://github.com/jlHertel/adriconf/blob/master/flatpak/br.com.jeanhertel.adriconf.screenshot-0.png?raw=true</image>
       </screenshot>
-      <screenshot type="default">
+      <screenshot>
          <caption>Debugging Window</caption>
          <image type="source">https://github.com/jlHertel/adriconf/blob/master/flatpak/br.com.jeanhertel.adriconf.screenshot-1.png?raw=true</image>
       </screenshot>
    </screenshots>
    <releases>
+      <release version="1.4" date="2019-01-26" urgency="low">
+         <description>
+            <p>This release finally brings the Wayland support along with some other fixes.</p>
+            <ul>
+               <li>Fix for AppStream validation @har9862</li>
+               <li>Remove DEBIAN build instructions and any debian packaging related artifact as we now provide a flatpak package @jlHertel</li>
+               <li>Remove glXQueryRendererIntegerMESA usage @velurimithun</li>
+               <li>Update the translation files @velurimithun</li>
+               <li>Allow to build with LibXML++ 3.0 @City-busz</li>
+               <li>Add XWayland support to adriconf @velurimithun</li>
+               <li>Don't bind the textdomain, so that we can properly get translations inside flatpak @jlHertel</li>
+               <li>Add a AUTHORS and CONTRIBUTING file @jlHertel</li>
+            </ul>
+         </description>
+      </release>
+      <release version="1.3" date="2018-09-15" urgency="low">
+         <description>
+            <p>This is mostly a bug-fixing release.</p>
+            <ul>
+               <li>Make changes to packaging files @velurimithun</li>
+               <li>Add pt_BR translation to flatpak data. Fixes #40</li>
+               <li>Fixes incorrect image urls on flatpak metadata</li>
+               <li>Fix uncaught exception when no user defined config file exists</li>
+            </ul>
+         </description>
+      </release>
       <release version="1.2" date="2018-09-06" urgency="low">
          <description>
             <p>This release has the following improvements.</p>
