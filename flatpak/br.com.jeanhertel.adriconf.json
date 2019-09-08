@@ -19,30 +19,18 @@
    ],
    "modules": [
       {
-         "name": "GTest",
-         "buildsystem": "cmake-ninja",
-         "cleanup": ["*"],
-         "sources": [
-            {
-               "type": "archive",
-               "url": "http://archive.ubuntu.com/ubuntu/pool/universe/g/googletest/googletest_1.8.0.orig.tar.gz",
-               "md5": "16877098823401d1bf2ed7891d7dce36"
-            }
-         ]
-      },
-      {
          "name": "boost",
          "buildsystem": "simple",
          "sources": [
             {
                "type": "archive",
-               "url": "https://dl.bintray.com/boostorg/release/1.68.0/source/boost_1_68_0.tar.bz2",
-               "md5": "7fbd1890f571051f2a209681d57d486a"
+               "url": "https://dl.bintray.com/boostorg/release/1.71.0/source/boost_1_71_0.tar.bz2",
+               "sha256": "d73a8da01e8bf8c7eda40b4c84915071a8c8a0df4a6734537ddde4a8580524ee"
             }
          ],
          "build-commands": [
             "./bootstrap.sh",
-            "./b2 install --prefix=/app --with-locale -j $FLATPAK_BUILDER_N_JOBS define=\"BOOST_SYSTEM_NO_DEPRECATED\" -sNO_BZIP2=1 cxxflags=-fPIC cflags=-fPIC"
+            "./b2 install --prefix=/app --with-locale --with-filesystem -j $FLATPAK_BUILDER_N_JOBS define=\"BOOST_SYSTEM_NO_DEPRECATED\" -sNO_BZIP2=1 cxxflags=-fPIC cflags=-fPIC"
          ]
       },
       {
@@ -188,23 +176,16 @@
       {
          "name": "adriconf",
          "buildsystem": "cmake-ninja",
-         "config-opts": ["-DENABLE_XWAYLAND=1"],
+         "config-opts": ["-DENABLE_XWAYLAND=1", "-DENABLE_UNIT_TESTS=0"],
          "sources": [
             {
                "type": "git",
                "url": "https://github.com/jlHertel/adriconf",
-               "tag": "v1.4"
+               "tag": "v1.5.1"
             },
             {
                "type": "file",
                "path": "br.com.jeanhertel.adriconf.appdata.xml"
-            },
-            {
-               "type": "shell",
-               "//": "FIXME: Upstream this, checking if running in flatpak",
-               "commands": [
-                  "sed -i 's|/etc/drirc|/var/run/host/etc/drirc|' ConfigurationLoader.cpp"
-               ]
             }
          ],
          "build-commands": [

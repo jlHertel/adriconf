@@ -26,6 +26,25 @@
       </screenshot>
    </screenshots>
    <releases>
+      <release version="1.5.1" date="2019-09-08" urgency="low">
+         <description>
+            <p>This release is just a small bug-fix to disable building unit tests on flatpak builds.</p>
+         </description>
+      </release>
+      <release version="1.5" date="2019-09-08" urgency="low">
+         <description>
+            <p>This release is mostly bug-fixes and improvements to the general stability of the program. The source code has also been re-organized to make maintenance easier.</p>
+            <ul>
+               <li>Improve error handling for missing configurations and extensions. @jlHertel</li>
+               <li>Restructure project to make it easier to maintain. @jlHertel</li>
+               <li>Add support to read new MESA system-wide configuration path. @jlHertel</li>
+               <li>Add initial Latvian translation. @Linards</li>
+               <li>Add simplified Chinese translation. @wsxy162</li>
+               <li>Improve unit tests. @jlHertel</li>
+               <li>Add new debug option. @jlHertel</li>
+            </ul>
+         </description>
+      </release>
       <release version="1.4" date="2019-01-26" urgency="low">
          <description>
             <p>This release finally brings the Wayland support along with some other fixes.</p>
