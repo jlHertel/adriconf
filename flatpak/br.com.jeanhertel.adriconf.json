@@ -9,7 +9,9 @@
       "--socket=wayland",
       "--share=ipc",
       "--device=dri",
-      "--filesystem=host"
+      "--filesystem=~/.drirc",
+      "--filesystem=/etc/drirc:ro",
+      "--filesystem=/usr/share/drirc.d/:ro"
    ],
    "cleanup": [
       "/include",
