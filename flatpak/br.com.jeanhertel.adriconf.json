@@ -1,7 +1,7 @@
 {
    "app-id": "br.com.jeanhertel.adriconf",
    "runtime": "org.freedesktop.Platform",
-   "runtime-version": "18.08",
+   "runtime-version": "19.08",
    "sdk": "org.freedesktop.Sdk",
    "command": "adriconf",
    "finish-args": [
