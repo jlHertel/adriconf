@@ -46,7 +46,7 @@ if (ENABLE_XWAYLAND)
 endif ()
 
 #INTL INSTALL TRANSLATIONS
-GETTEXT_CREATE_TRANSLATIONS(po/adriconf.pot ALL po/en.po po/hr.po po/pt_BR.po)
+GETTEXT_CREATE_TRANSLATIONS(po/adriconf.pot ALL po/en.po po/hr.po po/lv.po po/pt_BR.po po/zh_CN.po)
 
 set(SHARED_SOURCE_FILES
         ${CMAKE_SOURCE_DIR}/adriconf/ValueObject/Device.cpp
