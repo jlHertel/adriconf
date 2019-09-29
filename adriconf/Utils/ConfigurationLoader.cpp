@@ -63,30 +63,33 @@ std::list<Device_ptr> ConfigurationLoader::loadSystemWideConfiguration() {
     std::vector<Glib::ustring> configurationPaths;
     boost::filesystem::path configurationPath = this->getSystemWideConfigurationPath();
     this->logger->debug(Glib::ustring::compose(_("System-wide XML path: %1"), configurationPath.c_str()));
-
-    for (const auto &file : boost::filesystem::directory_iterator(configurationPath)) {
-        if (!boost::filesystem::is_directory(file)) {
-            configurationPaths.emplace_back(file.path().string());
-        }
-    }
-
-    std::sort(configurationPaths.begin(), configurationPaths.end());
-
-    for (auto &filename : configurationPaths) {
-        this->logger->debug(Glib::ustring::compose(_("Found configuration on path: %1"), filename));
-        Glib::ustring container;
-        std::ostringstream buffer;
-        std::ifstream input(filename);
-        if (!input.good()) {
-            this->logger->debug(Glib::ustring::compose(_("Failed to load file: %1"), filename));
-            continue;
+    if (boost::filesystem::exists(configurationPath)) {
+        for (const auto &file : boost::filesystem::directory_iterator(configurationPath)) {
+            if (!boost::filesystem::is_directory(file)) {
+                configurationPaths.emplace_back(file.path().string());
+            }
         }
 
-        buffer << input.rdbuf();
-        container = buffer.str();
-        std::list<Device_ptr> justLoadedDevices = this->parser->parseDevices(container);
+        std::sort(configurationPaths.begin(), configurationPaths.end());
 
-        this->resolver->mergeConfigurationOnTopOf(systemWideDevices, justLoadedDevices);
+        for (auto &filename : configurationPaths) {
+            this->logger->debug(Glib::ustring::compose(_("Found configuration on path: %1"), filename));
+            Glib::ustring container;
+            std::ostringstream buffer;
+            std::ifstream input(filename);
+            if (!input.good()) {
+                this->logger->debug(Glib::ustring::compose(_("Failed to load file: %1"), filename));
+                continue;
+            }
+
+            buffer << input.rdbuf();
+            container = buffer.str();
+            std::list<Device_ptr> justLoadedDevices = this->parser->parseDevices(container);
+
+            this->resolver->mergeConfigurationOnTopOf(systemWideDevices, justLoadedDevices);
+        }
+    } else {
+        this->logger->warning(_("System-wide configuration path doesn't exist!"));
     }
 
     Glib::ustring systemWideXML = this->readSystemWideXML();
