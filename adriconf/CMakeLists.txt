@@ -12,6 +12,8 @@ add_executable(adriconf
         ${CMAKE_SOURCE_DIR}/adriconf/resources.c
         ${CMAKE_SOURCE_DIR}/adriconf/Logging/Logger.cpp
         ${CMAKE_SOURCE_DIR}/adriconf/Logging/Logger.h
+        ${CMAKE_SOURCE_DIR}/adriconf/Translation/GetTextTranslator.cpp
+        ${CMAKE_SOURCE_DIR}/adriconf/Translation/GetTextTranslator.h
         )
 
 target_link_libraries(adriconf ${GTKMM_LIBRARIES})

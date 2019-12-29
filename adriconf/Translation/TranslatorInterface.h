@@ -5,8 +5,7 @@
 
 class TranslatorInterface {
 public:
-    virtual char *trns(const char *text) = 0;
+    virtual const char *trns(const char *text) = 0;
 };
-
 
 #endif //ADRICONF_TRANSLATORINTERFACE_H

@@ -2,7 +2,7 @@
 #define ADRICONF_EGLDISPLAYWRAPPER_H
 
 #include "EGLDisplayInterface.h"
-#include "../Utils/TranslatorInterface.h"
+#include "../Translation/TranslatorInterface.h"
 
 #include <functional>
 #include <EGL/egl.h>

@@ -13,7 +13,7 @@
 #include "Utils/DRMDeviceFactory.h"
 #include "Utils/GBMDeviceFactory.h"
 #include "Utils/EGLDisplayFactory.h"
-#include "Utils/GetTextTranslator.h"
+#include "Translation/GetTextTranslator.h"
 
 int main(int argc, char *argv[]) {
     char *verbosity = std::getenv("VERBOSITY");

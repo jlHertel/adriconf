@@ -2,7 +2,7 @@
 #define ADRICONF_EGLDISPLAYFACTORY_H
 
 #include "EGLDisplayFactoryInterface.h"
-#include "TranslatorInterface.h"
+#include "../Translation/TranslatorInterface.h"
 
 #include <functional>
 

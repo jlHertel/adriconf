@@ -2,6 +2,7 @@
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
 #include "Logging/LoggerMock.h"
+#include "Translation/TranslatorMock.h"
 
 class UpdatePrimeApplicationsTest : public ::testing::Test {
 public:
@@ -10,9 +11,10 @@ public:
     Application_ptr app;
     ApplicationOption_ptr opt;
     LoggerMock logger;
+    TranslatorMock translator;
     ConfigurationResolver resolver;
 
-    UpdatePrimeApplicationsTest() : resolver(&logger) {
+    UpdatePrimeApplicationsTest() : resolver(&logger, &translator) {
         GPUInfo_ptr gpu = std::make_shared<GPUInfo>();
         gpu->setDriverName("i965");
         gpu->setPciId("pci-testing-10");
@@ -52,9 +54,10 @@ class AddMissingDriverOptionsTest : public ::testing::Test {
 public:
     Application_ptr app;
     LoggerMock logger;
+    TranslatorMock translator;
     ConfigurationResolver resolver;
 
-    AddMissingDriverOptionsTest() : resolver(&logger) {
+    AddMissingDriverOptionsTest() : resolver(&logger, &translator) {
         app = std::make_shared<Application>();
 
     }
@@ -96,9 +99,10 @@ class RemoveInvalidDriversTest : public ::testing::Test {
 public:
     std::list<DriverConfiguration> availableDrivers;
     LoggerMock logger;
+    TranslatorMock translator;
     ConfigurationResolver resolver;
 
-    RemoveInvalidDriversTest() : resolver(&logger) {
+    RemoveInvalidDriversTest() : resolver(&logger, &translator) {
         DriverConfiguration conf1, conf2;
         conf1.setDriverName("i965");
         conf1.setScreen(0);
@@ -112,10 +116,10 @@ public:
 };
 
 TEST_F(RemoveInvalidDriversTest, incorrectScreenNumber) {
-    Glib::ustring warnMsg(
-            "User-defined driver 'r600g' on screen '0' doesn't have a driver loaded on system. Configuration removed.");
-    EXPECT_CALL(this->logger, warning(warnMsg))
-            .Times(1);
+    std::string text(
+            "User-defined driver '%1' on screen '%2' doesn't have a driver loaded on system. Configuration removed.");
+    EXPECT_CALL(translator, trns(::testing::StrCaseEq(text)))
+            .WillRepeatedly(testing::Return(text.c_str()));
 
     std::list<Device_ptr> userDefinedDevices;
     Device_ptr d = std::make_shared<Device>();
@@ -130,9 +134,10 @@ TEST_F(RemoveInvalidDriversTest, incorrectScreenNumber) {
 }
 
 TEST_F(RemoveInvalidDriversTest, incorrectDriverName) {
-    Glib::ustring warnMsg(
-            "User-defined driver 'i965' on screen '1' doesn't have a driver loaded on system. Configuration removed.");
-    EXPECT_CALL(this->logger, warning(warnMsg)).Times(1);
+    std::string text("User-defined driver '%1' on screen '%2' doesn't have a driver loaded on system. Configuration removed.");
+
+    EXPECT_CALL(translator, trns(::testing::StrCaseEq(text)))
+            .WillRepeatedly(testing::Return(text.c_str()));
 
     std::list<Device_ptr> userDefinedDevices;
     Device_ptr d = std::make_shared<Device>();
@@ -170,9 +175,10 @@ public:
     std::list<DriverConfiguration> availableDrivers;
     std::map<Glib::ustring, GPUInfo_ptr> availableGPUs;
     LoggerMock logger;
+    TranslatorMock translator;
     ConfigurationResolver resolver;
 
-    FilterDriverUnsupportedOptionsTest(): resolver(&logger) {
+    FilterDriverUnsupportedOptionsTest() : resolver(&logger, &translator) {
         DriverConfiguration conf1;
         conf1.setDriverName("i965");
         conf1.setScreen(0);
@@ -226,9 +232,9 @@ public:
 };
 
 TEST_F(FilterDriverUnsupportedOptionsTest, invalidOption) {
-    Glib::ustring warnMessage(
-            "Driver 'i965' doesn't support option 'invalid_name' on application 'App Name'. Option removed.");
-    EXPECT_CALL(this->logger, warning(warnMessage)).Times(1);
+    std::string text("Driver '%1' doesn't support option '%2' on application '%3'. Option removed.");
+    EXPECT_CALL(translator, trns(::testing::StrCaseEq(text)))
+            .WillRepeatedly(testing::Return(text.c_str()));
 
     std::list<Device_ptr> userDefinedDevices;
     Device_ptr d = std::make_shared<Device>();
@@ -270,9 +276,9 @@ TEST_F(FilterDriverUnsupportedOptionsTest, validOption) {
 }
 
 TEST_F(FilterDriverUnsupportedOptionsTest, invalidOptionPrime) {
-    Glib::ustring warnMessage(
-            "Driver 'r600g' doesn't support option 'invalid_name' on application 'App Name'. Option removed.");
-    EXPECT_CALL(this->logger, warning(warnMessage)).Times(1);
+    std::string text("Driver '%1' doesn't support option '%2' on application '%3'. Option removed.");
+    EXPECT_CALL(translator, trns(::testing::StrCaseEq(text)))
+            .WillRepeatedly(testing::Return(text.c_str()));
 
     std::list<Device_ptr> userDefinedDevices;
     Device_ptr d = std::make_shared<Device>();
@@ -329,9 +335,10 @@ class AddMissingApplicationsTest : public ::testing::Test {
 public:
     Device_ptr sourceDevice;
     LoggerMock logger;
+    TranslatorMock translator;
     ConfigurationResolver resolver;
 
-    AddMissingApplicationsTest(): resolver(&logger) {
+    AddMissingApplicationsTest() : resolver(&logger, &translator) {
         sourceDevice = std::make_shared<Device>();
 
         Application_ptr app1 = std::make_shared<Application>();

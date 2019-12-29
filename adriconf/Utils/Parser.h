@@ -10,7 +10,7 @@
 #include "../ValueObject/Device.h"
 #include "../Logging/LoggerInterface.h"
 #include "ParserInterface.h"
-#include "TranslatorInterface.h"
+#include "../Translation/TranslatorInterface.h"
 
 class Parser : public ParserInterface {
 private:
