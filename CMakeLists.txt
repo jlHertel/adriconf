@@ -52,6 +52,9 @@ pkg_check_modules(X11 REQUIRED x11)
 # LIBDRM
 pkg_check_modules(DRM REQUIRED libdrm)
 
+# GBM
+pkg_check_modules(GBM REQUIRED gbm)
+
 # LIBPCI
 pkg_check_modules(PCILIB REQUIRED libpci)
 
@@ -86,6 +89,10 @@ set(SHARED_SOURCE_FILES
         ${CMAKE_SOURCE_DIR}/adriconf/ValueObject/ApplicationOption.h
         ${CMAKE_SOURCE_DIR}/adriconf/ValueObject/ComboBoxColumn.h
         ${CMAKE_SOURCE_DIR}/adriconf/ValueObject/DriverOptionType.h
+        ${CMAKE_SOURCE_DIR}/adriconf/ValueObject/GBMDevice.cpp
+        ${CMAKE_SOURCE_DIR}/adriconf/ValueObject/GBMDevice.h
+        ${CMAKE_SOURCE_DIR}/adriconf/ValueObject/EGLDisplayWrapper.cpp
+        ${CMAKE_SOURCE_DIR}/adriconf/ValueObject/EGLDisplayWrapper.h
 
         ${CMAKE_SOURCE_DIR}/adriconf/Logging/LoggerInterface.h
         ${CMAKE_SOURCE_DIR}/adriconf/Logging/LoggerLevel.h
@@ -110,6 +117,13 @@ set(SHARED_SOURCE_FILES
         ${CMAKE_SOURCE_DIR}/adriconf/Utils/Writer.h
         ${CMAKE_SOURCE_DIR}/adriconf/Utils/ConfigurationLoader.cpp
         ${CMAKE_SOURCE_DIR}/adriconf/Utils/ConfigurationLoader.h
+
+        ${CMAKE_SOURCE_DIR}/adriconf/Utils/GBMUtilsInterface.h
+        ${CMAKE_SOURCE_DIR}/adriconf/Utils/GBMUtils.cpp
+        ${CMAKE_SOURCE_DIR}/adriconf/Utils/GBMUtils.h
+        ${CMAKE_SOURCE_DIR}/adriconf/Utils/EGLDisplayFactoryInterface.h
+        ${CMAKE_SOURCE_DIR}/adriconf/Utils/EGLDisplayFactory.cpp
+        ${CMAKE_SOURCE_DIR}/adriconf/Utils/EGLDisplayFactory.h
 
         ${CMAKE_SOURCE_DIR}/adriconf/GUI.cpp
         ${CMAKE_SOURCE_DIR}/adriconf/GUI.h

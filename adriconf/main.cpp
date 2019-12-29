@@ -11,10 +11,12 @@
 #include "Logging/LoggerInterface.h"
 #include "Utils/Writer.h"
 #include "Utils/PCIDatabaseQuery.h"
+#include "Utils/GBMUtils.h"
+#include "Utils/EGLDisplayFactory.h"
 
 int main(int argc, char *argv[]) {
     char *verbosity = std::getenv("VERBOSITY");
-    Logger *logger = new Logger();
+    auto *logger = new Logger();
     logger->setLevel(LoggerLevel::INFO);
 
     if (verbosity != nullptr) {
@@ -48,7 +50,9 @@ int main(int argc, char *argv[]) {
         logger->debug(_("Checking if the system is supported"));
         Parser parser(logger);
         PCIDatabaseQuery pciQuery;
-        DRIQuery check(logger, &parser, &pciQuery, isWayland);
+        GBMUtils gbmUtils;
+        EGLDisplayFactory eglWrapper;
+        DRIQuery check(logger, &parser, &pciQuery, &gbmUtils, &eglWrapper, isWayland);
         if (!check.isSystemSupported()) {
             return 1;
         }

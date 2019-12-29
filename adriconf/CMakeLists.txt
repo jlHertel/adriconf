@@ -31,6 +31,9 @@ target_include_directories(adriconf PUBLIC ${X11_INCLUDE_DIRS})
 target_link_libraries(adriconf ${DRM_LIBRARIES})
 target_include_directories(adriconf PUBLIC ${DRM_INCLUDE_DIRS})
 
+target_link_libraries(adriconf ${GBM_LIBRARIES})
+target_include_directories(adriconf PUBLIC ${GBM_INCLUDE_DIRS})
+
 target_link_libraries(adriconf ${PCILIB_LIBRARIES})
 target_include_directories(adriconf PUBLIC ${PCILIB_INCLUDE_DIRS})
 

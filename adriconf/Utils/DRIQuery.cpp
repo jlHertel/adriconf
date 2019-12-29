@@ -1,24 +1,29 @@
-#include <giomm.h>
 #include <xf86drm.h>
 #include <iomanip>
-#include <fcntl.h>
 #include <glibmm/i18n.h>
 #include <string>
+
+#include <stdexcept>
 
 #include "DRIQuery.h"
 #include "PCIDatabaseQuery.h"
 
+#include <EGL/egl.h>
+#include <EGL/eglext.h>
 
 DRIQuery::DRIQuery(
         LoggerInterface *logger,
         ParserInterface *parser,
         PCIDatabaseQueryInterface *pciQuery,
+        GBMUtilsInterface *gbmUtils,
+        EGLDisplayFactoryInterface *eglWrapper,
         bool isWaylandSession
 ) : logger(logger),
     parser(parser),
     pciQuery(pciQuery),
+    gbmUtils(gbmUtils),
+    eglDisplayFactory(eglWrapper),
     isWaylandSession(isWaylandSession) {}
-
 
 bool DRIQuery::isSystemSupported() {
     if (this->isWaylandSession) {
@@ -175,82 +180,90 @@ std::map<Glib::ustring, GPUInfo_ptr> DRIQuery::enumerateDRIDevices(const Glib::u
     this->logger->debug(Glib::ustring::compose(_("Found %1 devices"), deviceCount));
 
     for (int i = 0; i < deviceCount; i++) {
-        GPUInfo_ptr gpu = std::make_shared<GPUInfo>();
+        try {
+            GPUInfo_ptr gpu = std::make_shared<GPUInfo>();
 
-        gpu->setPciId(Glib::ustring::compose(
-                "pci-%1_%2_%3_%4",
-                Glib::ustring::format(std::setfill(L'0'), std::setw(4), std::hex,
-                                      enumeratedDevices[i]->businfo.pci->domain),
-                Glib::ustring::format(std::setfill(L'0'), std::setw(2), std::hex,
-                                      enumeratedDevices[i]->businfo.pci->bus),
-                Glib::ustring::format(std::setfill(L'0'), std::setw(2), std::hex,
-                                      enumeratedDevices[i]->businfo.pci->dev),
-                enumeratedDevices[i]->businfo.pci->func
-        ));
-
-        this->logger->debug(Glib::ustring::compose(_("Processing GPU with PCI ID: %1"), gpu->getPciId()));
-
-        int fd = open(enumeratedDevices[i]->nodes[DRM_NODE_RENDER], O_RDONLY);
-        drmVersionPtr versionPtr = drmGetVersion(fd);
-
-        gpu->setDriverName(versionPtr->name);
-        /* LibDRM returns the kernel-level driver name
-         * This is wrong for AMD cards, because at kernel it's called amdgpu/radeon and at mesa-level it is radeonsi
-         * This is a small fix to try to solve this issue
-         */
-        if (gpu->getDriverName() == "amdgpu" || gpu->getDriverName() == "radeon") {
-            this->logger->debug(Glib::ustring::compose(_("Replacing GPU name %1 with radeonsi"), gpu->getDriverName()));
-            gpu->setDriverName("radeonsi");
-        }
-
-        drmFreeVersion(versionPtr);
-        close(fd);
-
-        gpu->setVendorId(enumeratedDevices[i]->deviceinfo.pci->vendor_id);
-        gpu->setDeviceId(enumeratedDevices[i]->deviceinfo.pci->device_id);
-
-        gpu->setVendorName(this->pciQuery->queryVendorName(gpu->getVendorId()));
-        gpu->setDeviceName(this->pciQuery->queryDeviceName(gpu->getVendorId(), gpu->getDeviceId()));
-
-        this->logger->debug(Glib::ustring::compose(_("GPU has been detected as %1 from %2"), gpu->getDeviceName(),
-                                                   gpu->getVendorName()));
-
-        const char *driverOptions;
-
-        this->logger->debug(_("Loading driver options"));
-
-        if (!this->isWaylandSession) {
-            // Load the driver supported options
-            driverOptions = this->queryDriverConfig((const char *) gpu->getDriverName().c_str());
-        } else {
-#ifdef ENABLE_XWAYLAND
-            HelpersWayland hw;
-            driverOptions = hw.queryDriverConfig();
-#endif //ENABLE_XWAYLAND
-        }
-
-        // If for some reason mesa is unable to query the options we simply skip this gpu
-        if (driverOptions == nullptr) {
-            this->logger->error(Glib::ustring::compose(
-                    _("Unable to extract configuration for driver %1"), gpu->getDriverName()
+            gpu->setPciId(Glib::ustring::compose(
+                    "pci-%1_%2_%3_%4",
+                    Glib::ustring::format(std::setfill(L'0'), std::setw(4), std::hex,
+                                          enumeratedDevices[i]->businfo.pci->domain),
+                    Glib::ustring::format(std::setfill(L'0'), std::setw(2), std::hex,
+                                          enumeratedDevices[i]->businfo.pci->bus),
+                    Glib::ustring::format(std::setfill(L'0'), std::setw(2), std::hex,
+                                          enumeratedDevices[i]->businfo.pci->dev),
+                    enumeratedDevices[i]->businfo.pci->func
             ));
 
-            continue;
+            this->logger->debug(Glib::ustring::compose(_("Processing GPU with PCI ID \"%1\""), gpu->getPciId()));
+            gpu->setVendorId(enumeratedDevices[i]->deviceinfo.pci->vendor_id);
+            gpu->setDeviceId(enumeratedDevices[i]->deviceinfo.pci->device_id);
+
+            gpu->setVendorName(this->pciQuery->queryVendorName(gpu->getVendorId()));
+            gpu->setDeviceName(this->pciQuery->queryDeviceName(gpu->getVendorId(), gpu->getDeviceId()));
+
+            this->logger->debug(
+                    Glib::ustring::compose(
+                            _("GPU has been detected as \"%1\" from \"%2\""),
+                            gpu->getDeviceName(),
+                            gpu->getVendorName()
+                    )
+            );
+
+
+            this->logger->debug(
+                    Glib::ustring::compose(
+                            _("Generating gbm device for path \"%1\""),
+                            enumeratedDevices[i]->nodes[DRM_NODE_RENDER]
+                    )
+            );
+
+            GBMDevice gbmDevice = this->gbmUtils->generateDeviceFromPath(enumeratedDevices[i]->nodes[DRM_NODE_RENDER]);
+
+            this->logger->debug(
+                    Glib::ustring::compose(
+                            _("Generating EGL Display from GBM device for \"%1\""),
+                            enumeratedDevices[i]->nodes[DRM_NODE_RENDER]
+                    )
+            );
+
+            auto display = this->eglDisplayFactory->createDisplayFromGBM(gbmDevice);
+            gpu->setDriverName(display->getDriverName());
+            this->logger->debug(Glib::ustring::compose(_("Driver \"%1\" is named \"%2\""), i, gpu->getDriverName()));
+
+            this->logger->debug(_("Loading driver options"));
+            const char *driverOptions = display->getDriverOptions();
+
+            // If for some reason mesa is unable to query the options we simply skip this gpu
+            if (driverOptions == nullptr) {
+                this->logger->error(
+                        Glib::ustring::compose(
+                                _("Unable to extract configuration for driver %1"),
+                                gpu->getDriverName()
+                        )
+                );
+
+                continue;
+            }
+
+            Glib::ustring options(driverOptions);
+            if (options.empty()) {
+                this->logger->error(
+                        Glib::ustring::compose(
+                                _("Unable to extract configuration for driver %1"),
+                                gpu->getDriverName()
+                        )
+                );
+
+                continue;
+            }
+
+            auto parsedSections = this->parser->parseAvailableConfiguration(options, locale);
+            gpu->setSections(parsedSections);
+
+            gpus[gpu->getPciId()] = gpu;
+        } catch (std::runtime_error &ex) {
+            this->logger->error(Glib::ustring::compose(_("Skipping device %1 due to error: %2"), i, ex.what()));
         }
-
-        Glib::ustring options(driverOptions);
-        if (options.empty()) {
-            this->logger->error(Glib::ustring::compose(
-                    _("Unable to extract configuration for driver %1"), gpu->getDriverName()
-            ));
-
-            continue;
-        }
-
-        auto parsedSections = this->parser->parseAvailableConfiguration(options, locale);
-        gpu->setSections(parsedSections);
-
-        gpus[gpu->getPciId()] = gpu;
     }
 
     drmFreeDevices(enumeratedDevices, deviceCount);

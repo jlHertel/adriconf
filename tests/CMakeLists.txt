@@ -41,6 +41,9 @@ target_include_directories(runUnitTests PUBLIC ${X11_INCLUDE_DIRS})
 target_link_libraries(runUnitTests ${DRM_LIBRARIES})
 target_include_directories(runUnitTests PUBLIC ${DRM_INCLUDE_DIRS})
 
+target_link_libraries(runUnitTests ${GBM_LIBRARIES})
+target_include_directories(runUnitTests PUBLIC ${GBM_INCLUDE_DIRS})
+
 target_link_libraries(runUnitTests ${PCILIB_LIBRARIES})
 target_include_directories(runUnitTests PUBLIC ${PCILIB_INCLUDE_DIRS})
 
