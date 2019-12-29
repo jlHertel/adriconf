@@ -1,5 +1,3 @@
-#include <xf86drm.h>
-#include <iomanip>
 #include <glibmm/i18n.h>
 #include <string>
 
@@ -12,25 +10,28 @@
 
 DRIQuery::DRIQuery(
         LoggerInterface *logger,
+        TranslatorInterface *translator,
         ParserInterface *parser,
         PCIDatabaseQueryInterface *pciQuery,
         DRMDeviceFactoryInterface *drmDeviceFactory,
         GBMDeviceFactoryInterface *gbmDeviceFactory,
         EGLDisplayFactoryInterface *eglWrapper,
+        HelpersWayland waylandHelper,
         bool isWaylandSession
 ) : logger(logger),
+    translator(translator),
     parser(parser),
     pciQuery(pciQuery),
     drmDeviceFactory(drmDeviceFactory),
     gbmDeviceFactory(gbmDeviceFactory),
     eglDisplayFactory(eglWrapper),
+    waylandHelper(waylandHelper),
     isWaylandSession(isWaylandSession) {}
 
 bool DRIQuery::isSystemSupported() {
     if (this->isWaylandSession) {
 #ifdef ENABLE_XWAYLAND
-        HelpersWayland hw;
-        return hw.hasProperLibEGL();
+        return this->waylandHelper.hasProperLibEGL();
 #endif
     }
 
@@ -40,7 +41,7 @@ bool DRIQuery::isSystemSupported() {
             (const GLubyte *) "glXQueryExtensionsString");
 
     if (!this->getScreenDriver || !this->getDriverConfig || !this->getGlxExtensionsString) {
-        this->logger->error(_("Error getting function pointers. LibGL must be too old."));
+        this->logger->error(this->translator->trns("Error getting function pointers. LibGL must be too old."));
         return false;
     }
 
@@ -52,7 +53,7 @@ const char *DRIQuery::queryDriverName(int s) {
     const char *ret;
 
     if (!(display = XOpenDisplay(nullptr))) {
-        this->logger->error(_("Couldn't open X display"));
+        this->logger->error(this->translator->trns("Couldn't open X display"));
         return "";
     }
 
@@ -69,7 +70,7 @@ const char *DRIQuery::queryDriverConfig(const char *dn) {
     const char *ret;
 
     if (!(display = XOpenDisplay(nullptr))) {
-        this->logger->error(_("Couldn't open X display"));
+        this->logger->error(this->translator->trns("Couldn't open X display"));
         return "";
     }
 
@@ -82,12 +83,12 @@ const char *DRIQuery::queryDriverConfig(const char *dn) {
 }
 
 std::list<DriverConfiguration> DRIQuery::queryDriverConfigurationOptions(const Glib::ustring &locale) {
-    this->logger->debug(_("Querying driver configuration options"));
+    this->logger->debug(this->translator->trns("Querying driver configuration options"));
     std::list<DriverConfiguration> configurations;
     Display *display;
 
     if (!(display = XOpenDisplay(nullptr))) {
-        this->logger->error(_("Couldn't open X display"));
+        this->logger->error(this->translator->trns("Couldn't open X display"));
         return configurations;
     }
 
@@ -104,7 +105,7 @@ std::list<DriverConfiguration> DRIQuery::queryDriverConfigurationOptions(const G
             auto driverName = this->queryDriverName(i);
             if (driverName == nullptr) {
                 this->logger->error(Glib::ustring::compose(
-                        _("Unable to extract driver name for screen %1"), i
+                        this->translator->trns("Unable to extract driver name for screen %1"), i
                 ));
                 continue;
             }
@@ -113,18 +114,24 @@ std::list<DriverConfiguration> DRIQuery::queryDriverConfigurationOptions(const G
             auto driverOptions = this->queryDriverConfig(driverName);
             // If for some reason mesa is unable to query the options we simply skip this gpu
             if (driverOptions == nullptr) {
-                this->logger->error(Glib::ustring::compose(
-                        _("Unable to extract configuration for driver %1"), config.getDriverName()
-                ));
+                this->logger->error(
+                        Glib::ustring::compose(
+                                this->translator->trns("Unable to extract configuration for driver %1"),
+                                config.getDriverName()
+                        )
+                );
 
                 continue;
             }
 
             Glib::ustring options(driverOptions);
             if (options.empty()) {
-                this->logger->error(Glib::ustring::compose(
-                        _("Unable to extract configuration for driver %1"), config.getDriverName()
-                ));
+                this->logger->error(
+                        Glib::ustring::compose(
+                                this->translator->trns("Unable to extract configuration for driver %1"),
+                                config.getDriverName()
+                        )
+                );
 
                 continue;
             }
@@ -135,25 +142,30 @@ std::list<DriverConfiguration> DRIQuery::queryDriverConfigurationOptions(const G
             configurations.emplace_back(config);
         } else {
 #ifdef ENABLE_XWAYLAND
-            HelpersWayland hw;
-            auto driverName = hw.queryDriverName();
-            auto driverOptions = hw.queryDriverConfig();
+            auto driverName = this->waylandHelper.queryDriverName();
+            auto driverOptions = this->waylandHelper.queryDriverConfig();
 
             config.setDriverName(driverName);
             // If for some reason mesa is unable to query the options we simply skip this gpu
             if (driverOptions == nullptr) {
-                this->logger->error(Glib::ustring::compose(
-                        _("Unable to extract configuration for driver %1"), config.getDriverName()
-                ));
+                this->logger->error(
+                        Glib::ustring::compose(
+                                this->translator->trns("Unable to extract configuration for driver %1"),
+                                config.getDriverName()
+                        )
+                );
 
                 continue;
             }
 
             Glib::ustring options(driverOptions);
             if (options.empty()) {
-                this->logger->error(Glib::ustring::compose(
-                        _("Unable to extract configuration for driver %1"), config.getDriverName()
-                ));
+                this->logger->error(
+                        Glib::ustring::compose(
+                                this->translator->trns("Unable to extract configuration for driver %1"),
+                                config.getDriverName()
+                        )
+                );
 
                 continue;
             }
@@ -172,11 +184,13 @@ std::list<DriverConfiguration> DRIQuery::queryDriverConfigurationOptions(const G
 }
 
 std::map<Glib::ustring, GPUInfo_ptr> DRIQuery::enumerateDRIDevices(const Glib::ustring &locale) {
-    this->logger->debug(_("Enumerating DRI Devices"));
+    this->logger->debug(this->translator->trns("Enumerating DRI Devices"));
     std::map<Glib::ustring, GPUInfo_ptr> gpus;
 
     auto drmDevices = this->drmDeviceFactory->getDevices();
-    this->logger->debug(Glib::ustring::compose(_("Found %1 devices"), drmDevices.size()));
+    this->logger->debug(
+            Glib::ustring::compose(this->translator->trns("Found %1 devices"), drmDevices.size())
+    );
 
     int i = 0;
     for (auto &device : drmDevices) {
@@ -185,7 +199,12 @@ std::map<Glib::ustring, GPUInfo_ptr> DRIQuery::enumerateDRIDevices(const Glib::u
             GPUInfo_ptr gpu = std::make_shared<GPUInfo>();
 
             gpu->setPciId(device->getFormattedPCIId());
-            this->logger->debug(Glib::ustring::compose(_("Processing GPU with PCI ID \"%1\""), gpu->getPciId()));
+            this->logger->debug(
+                    Glib::ustring::compose(
+                            this->translator->trns("Processing GPU with PCI ID \"%1\""),
+                            gpu->getPciId()
+                    )
+            );
             gpu->setVendorId(device->getVendorPCIId());
             gpu->setDeviceId(device->getDevicePCIId());
 
@@ -194,7 +213,7 @@ std::map<Glib::ustring, GPUInfo_ptr> DRIQuery::enumerateDRIDevices(const Glib::u
 
             this->logger->debug(
                     Glib::ustring::compose(
-                            _("GPU has been detected as \"%1\" from \"%2\""),
+                            this->translator->trns("GPU has been detected as \"%1\" from \"%2\""),
                             gpu->getDeviceName(),
                             gpu->getVendorName()
                     )
@@ -203,7 +222,7 @@ std::map<Glib::ustring, GPUInfo_ptr> DRIQuery::enumerateDRIDevices(const Glib::u
 
             this->logger->debug(
                     Glib::ustring::compose(
-                            _("Generating gbm device for path \"%1\""),
+                            this->translator->trns("Generating gbm device for path \"%1\""),
                             device->getDeviceRenderNodeName()
                     )
             );
@@ -212,23 +231,29 @@ std::map<Glib::ustring, GPUInfo_ptr> DRIQuery::enumerateDRIDevices(const Glib::u
 
             this->logger->debug(
                     Glib::ustring::compose(
-                            _("Generating EGL Display from GBM device for \"%1\""),
+                            this->translator->trns("Generating EGL Display from GBM device for \"%1\""),
                             device->getDeviceRenderNodeName()
                     )
             );
 
             auto display = this->eglDisplayFactory->createDisplayFromGBM(gbmDevice);
             gpu->setDriverName(display->getDriverName());
-            this->logger->debug(Glib::ustring::compose(_("GPU \"%1\" has the driver \"%2\""), i, gpu->getDriverName()));
+            this->logger->debug(
+                    Glib::ustring::compose(
+                            this->translator->trns("GPU \"%1\" has the driver \"%2\""),
+                            i,
+                            gpu->getDriverName()
+                    )
+            );
 
-            this->logger->debug(_("Loading driver options"));
+            this->logger->debug(this->translator->trns("Loading driver options"));
             const char *driverOptions = display->getDriverOptions();
 
             // If for some reason mesa is unable to query the options we simply skip this gpu
             if (driverOptions == nullptr) {
                 this->logger->error(
                         Glib::ustring::compose(
-                                _("Unable to extract configuration for driver %1"),
+                                this->translator->trns("Unable to extract configuration for driver %1"),
                                 gpu->getDriverName()
                         )
                 );
@@ -240,7 +265,7 @@ std::map<Glib::ustring, GPUInfo_ptr> DRIQuery::enumerateDRIDevices(const Glib::u
             if (options.empty()) {
                 this->logger->error(
                         Glib::ustring::compose(
-                                _("Unable to extract configuration for driver %1"),
+                                this->translator->trns("Unable to extract configuration for driver %1"),
                                 gpu->getDriverName()
                         )
                 );
@@ -253,7 +278,13 @@ std::map<Glib::ustring, GPUInfo_ptr> DRIQuery::enumerateDRIDevices(const Glib::u
 
             gpus[gpu->getPciId()] = gpu;
         } catch (std::runtime_error &ex) {
-            this->logger->error(Glib::ustring::compose(_("Skipping device %1 due to error: %2"), i, ex.what()));
+            this->logger->error(
+                    Glib::ustring::compose(
+                            this->translator->trns("Skipping device %1 due to error: %2"),
+                            i,
+                            ex.what()
+                    )
+            );
         }
     }
 
@@ -264,7 +295,7 @@ bool DRIQuery::canHandle() {
     Display *display;
 
     if (!(display = XOpenDisplay(nullptr))) {
-        this->logger->error(_("Couldn't open X display"));
+        this->logger->error(this->translator->trns("Couldn't open X display"));
         return false;
     }
 
@@ -282,7 +313,7 @@ bool DRIQuery::canHandle() {
         if (possibleExts.find("GLX_MESA_query_renderer") == std::string::npos ||
             this->getScreenDriver == nullptr ||
             this->getDriverConfig == nullptr) {
-            this->logger->error(_("Closed source driver!!"));
+            this->logger->error(this->translator->trns("Closed source driver!!"));
             return false;
         }
     }

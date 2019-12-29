@@ -21,6 +21,7 @@ private:
 
     DRIQuery driQuery;
     LoggerInterface *logger;
+    TranslatorInterface *translator;
     ParserInterface *parser;
     ConfigurationResolverInterface *resolver;
 
@@ -37,7 +38,13 @@ public:
 
     boost::filesystem::path getSystemWideConfigurationPath() override;
 
-    ConfigurationLoader(const DRIQuery &driQuery, LoggerInterface *logger, ParserInterface *parser, ConfigurationResolverInterface *resolver);
+    ConfigurationLoader(
+            const DRIQuery &driQuery,
+            LoggerInterface *logger,
+            TranslatorInterface *translator,
+            ParserInterface *parser,
+            ConfigurationResolverInterface *resolver
+    );
 
     virtual ~ConfigurationLoader() {};
 };

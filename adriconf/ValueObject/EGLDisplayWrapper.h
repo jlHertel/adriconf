@@ -2,6 +2,7 @@
 #define ADRICONF_EGLDISPLAYWRAPPER_H
 
 #include "EGLDisplayInterface.h"
+#include "../Utils/TranslatorInterface.h"
 
 #include <functional>
 #include <EGL/egl.h>
@@ -15,11 +16,12 @@ private:
     Glib::ustring extensions;
     std::function<const char *(EGLDisplay)> queryDriverName;
     std::function<const char *(EGLDisplay)> queryDriverOptions;
+    TranslatorInterface *translator;
 
     bool hasMesaQueryDriverExtension() const;
 
 public:
-    EGLDisplayWrapper();
+    explicit EGLDisplayWrapper(TranslatorInterface *translator);
 
     virtual ~EGLDisplayWrapper();
 

@@ -9,6 +9,8 @@
 #include <cstdlib>
 
 #include <EGL/egl.h>
+#include "../Logging/LoggerInterface.h"
+#include "TranslatorInterface.h"
 
 typedef const char *eglGetDisplayDriverName_t(EGLDisplay disp);
 typedef const char *eglGetDisplayDriverconfig_t(EGLDisplay disp);
@@ -18,9 +20,11 @@ class HelpersWayland
 private:
     eglGetDisplayDriverName_t *driverName;
     eglGetDisplayDriverconfig_t *driverConfig;
+    LoggerInterface *logger;
+    TranslatorInterface *translator;
 
 public:
-    HelpersWayland() {}
+    HelpersWayland(LoggerInterface *logger, TranslatorInterface *translator) : logger(logger), translator(translator) {}
     bool hasProperLibEGL();
     const char *queryDriverName();
     const char *queryDriverConfig();

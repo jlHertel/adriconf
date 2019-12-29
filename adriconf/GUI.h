@@ -13,6 +13,7 @@
 class GUI {
 private:
     LoggerInterface *logger;
+    TranslatorInterface *translator;
     ConfigurationLoaderInterface *configurationLoader;
     ConfigurationResolverInterface *resolver;
     WriterInterface *writer;
@@ -48,7 +49,13 @@ private:
     void setupAboutDialog();
 
 public:
-    GUI(LoggerInterface *logger, ConfigurationLoaderInterface *configurationLoader, ConfigurationResolverInterface *resolver, WriterInterface *writer);
+    GUI(
+            LoggerInterface *logger,
+            TranslatorInterface *translator,
+            ConfigurationLoaderInterface *configurationLoader,
+            ConfigurationResolverInterface *resolver,
+            WriterInterface *writer
+    );
 
     virtual ~GUI();
 

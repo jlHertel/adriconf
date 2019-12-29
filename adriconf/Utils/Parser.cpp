@@ -3,7 +3,7 @@
 
 std::list<Section>
 Parser::parseAvailableConfiguration(const Glib::ustring &xml, const Glib::ustring &currentLocale) {
-    this->logger->debug(Glib::ustring::compose(_("Parsing XML %1"), xml));
+    this->logger->debug(Glib::ustring::compose(this->translator->trns("Parsing XML %1"), xml));
     std::list<Section> availableSections;
     try {
         xmlpp::DomParser parser;
@@ -125,7 +125,7 @@ DriverOption Parser::parseSectionOptions(xmlpp::Node *option, const Glib::ustrin
 std::list<Device_ptr> Parser::parseDevices(Glib::ustring &xml) {
     std::list<Device_ptr> deviceList;
 
-    this->logger->debug(Glib::ustring::compose(_("Parsing device for XML: %1"), xml));
+    this->logger->debug(Glib::ustring::compose(this->translator->trns("Parsing device for XML: %1"), xml));
     try {
         xmlpp::DomParser parser;
         parser.set_throw_messages(true);
@@ -162,7 +162,12 @@ std::list<Device_ptr> Parser::parseDevices(Glib::ustring &xml) {
             }
         }
     } catch (const std::exception &ex) {
-        this->logger->error(Glib::ustring::compose(_("Exception caught during device XML parsing: %1"), ex.what()));
+        this->logger->error(
+                Glib::ustring::compose(
+                        this->translator->trns("Exception caught during device XML parsing: %1"),
+                        ex.what()
+                )
+        );
     }
 
     return deviceList;

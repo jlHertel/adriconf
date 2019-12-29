@@ -29,11 +29,13 @@ typedef const char *glXQueryExtensionsString_t(Display *dpy, int screen);
 class DRIQuery {
 private:
     LoggerInterface *logger;
+    TranslatorInterface *translator;
     ParserInterface *parser;
     PCIDatabaseQueryInterface *pciQuery;
     DRMDeviceFactoryInterface *drmDeviceFactory;
     GBMDeviceFactoryInterface *gbmDeviceFactory;
     EGLDisplayFactoryInterface *eglDisplayFactory;
+    HelpersWayland waylandHelper;
     bool isWaylandSession;
 
     glXGetScreenDriver_t *getScreenDriver;
@@ -47,11 +49,13 @@ private:
 public:
     DRIQuery(
             LoggerInterface *logger,
+            TranslatorInterface *translator,
             ParserInterface *parser,
             PCIDatabaseQueryInterface *pciQuery,
             DRMDeviceFactoryInterface *drmDeviceFactory,
             GBMDeviceFactoryInterface *gbmUtils,
             EGLDisplayFactoryInterface *eglWrapper,
+            HelpersWayland waylandHelper,
             bool isWaylandSession
     );
 

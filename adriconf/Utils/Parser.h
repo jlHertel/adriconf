@@ -10,17 +10,20 @@
 #include "../ValueObject/Device.h"
 #include "../Logging/LoggerInterface.h"
 #include "ParserInterface.h"
+#include "TranslatorInterface.h"
 
 class Parser : public ParserInterface {
 private:
     LoggerInterface *logger;
+    TranslatorInterface *translator;
 
 public:
-    Parser(LoggerInterface *logger) : logger(logger) {}
+    Parser(LoggerInterface *logger, TranslatorInterface *translator) : logger(logger), translator(translator) {}
 
-    ~Parser() override {}
+    ~Parser() override = default;
 
-    std::list<Section> parseAvailableConfiguration(const Glib::ustring &xml, const Glib::ustring &currentLocale) override;
+    std::list<Section>
+    parseAvailableConfiguration(const Glib::ustring &xml, const Glib::ustring &currentLocale) override;
 
     DriverOption parseSectionOptions(xmlpp::Node *option, const Glib::ustring &currentLocale) override;
 

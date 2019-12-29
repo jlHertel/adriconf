@@ -2,6 +2,7 @@
 #define ADRICONF_EGLDISPLAYFACTORY_H
 
 #include "EGLDisplayFactoryInterface.h"
+#include "TranslatorInterface.h"
 
 #include <functional>
 
@@ -11,9 +12,10 @@
 class EGLDisplayFactory : public EGLDisplayFactoryInterface {
 private:
     std::function<EGLDisplay(EGLenum, void *, const EGLint *)> getPlatformDisplay;
+    TranslatorInterface *translator;
 
 public:
-    EGLDisplayFactory();
+    explicit EGLDisplayFactory(TranslatorInterface *translator);
 
     virtual ~EGLDisplayFactory() = default;
 

@@ -1,4 +1,3 @@
-#include <iostream>
 #include <gtkmm.h>
 #include <memory>
 #include <gtkmm/messagedialog.h>
@@ -14,11 +13,13 @@
 #include "Utils/DRMDeviceFactory.h"
 #include "Utils/GBMDeviceFactory.h"
 #include "Utils/EGLDisplayFactory.h"
+#include "Utils/GetTextTranslator.h"
 
 int main(int argc, char *argv[]) {
     char *verbosity = std::getenv("VERBOSITY");
-    auto *logger = new Logger();
+    auto logger = std::make_shared<Logger>();
     logger->setLevel(LoggerLevel::INFO);
+    auto translator = std::make_shared<GetTextTranslator>();
 
     if (verbosity != nullptr) {
         Glib::ustring verbosityStr(verbosity);
@@ -40,7 +41,7 @@ int main(int argc, char *argv[]) {
     }
 
     try {
-        logger->debug(_("Creating the GTK application object"));
+        logger->debug(translator->trns("Creating the GTK application object"));
 
         /* Start the GUI work */
         auto app = Gtk::Application::create(argc, argv, "br.com.jeanhertel.adriconf");
@@ -48,28 +49,30 @@ int main(int argc, char *argv[]) {
         char *waylandDisplay = std::getenv("WAYLAND_DISPLAY");
         bool isWayland = waylandDisplay != nullptr;
 
-        logger->debug(_("Checking if the system is supported"));
-        Parser parser(logger);
+        logger->debug(translator->trns("Checking if the system is supported"));
+        Parser parser(logger.get(), translator.get());
         PCIDatabaseQuery pciQuery;
-        GBMDeviceFactory gbmUtils;
+        GBMDeviceFactory gbmDeviceFactory(translator.get());
         DRMDeviceFactory drmDeviceFactory;
-        EGLDisplayFactory eglWrapper;
-        DRIQuery check(logger, &parser, &pciQuery, &drmDeviceFactory, &gbmUtils, &eglWrapper, isWayland);
+        EGLDisplayFactory eglDisplayFactory(translator.get());
+        HelpersWayland waylandHelper(logger.get(), translator.get());
+        DRIQuery check(logger.get(), translator.get(), &parser, &pciQuery, &drmDeviceFactory, &gbmDeviceFactory,
+                       &eglDisplayFactory, waylandHelper, isWayland);
         if (!check.isSystemSupported()) {
             return 1;
         }
         if (isWayland) {
-            logger->info(_("adriconf running on Wayland"));
+            logger->info(translator->trns("adriconf running on Wayland"));
         } else {
-            logger->info(_("adriconf running on X11"));
+            logger->info(translator->trns("adriconf running on X11"));
 
             //Error window pops up even when a screen has a driver which we can't configure
             if (!check.canHandle()) {
-                logger->error(_("Not all screens have open source drivers"));
+                logger->error(translator->trns("Not all screens have open source drivers"));
 
                 //pop up error window here
-                Gtk::MessageDialog *errorDialog = new Gtk::MessageDialog("Closed source driver(s) detected!",
-                                                                         false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_CLOSE);
+                auto *errorDialog = new Gtk::MessageDialog("Closed source driver(s) detected!",
+                                                           false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_CLOSE);
                 errorDialog->set_secondary_text("Currently adriconf cannot handle closed source drivers.");
                 if (errorDialog->run()) {
                     errorDialog->close();
@@ -79,9 +82,9 @@ int main(int argc, char *argv[]) {
         }
 
         Writer writer;
-        ConfigurationResolver resolver(logger);
-        ConfigurationLoader loader(check, logger, &parser, &resolver);
-        GUI gui(logger, &loader, &resolver, &writer);
+        ConfigurationResolver resolver(logger.get(), translator.get());
+        ConfigurationLoader loader(check, logger.get(), translator.get(), &parser, &resolver);
+        GUI gui(logger.get(), translator.get(), &loader, &resolver, &writer);
 
         /* No need to worry about the window pointer as the gui object owns it */
         Gtk::Window *pWindow = gui.getWindowPointer();

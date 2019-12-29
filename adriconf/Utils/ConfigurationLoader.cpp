@@ -7,16 +7,21 @@
 #include <algorithm>
 
 Glib::ustring ConfigurationLoader::readSystemWideXML() {
-    this->logger->debug(_("Reading legacy system-wide XML"));
+    this->logger->debug(this->translator->trns("Reading legacy system-wide XML"));
     Glib::ustring container;
     std::ostringstream buffer;
     Glib::ustring filePath(this->getOldSystemWideConfigurationPath());
 
-    this->logger->debug(Glib::ustring::compose(_("Legacy system-wide XML path: %1"), filePath));
+    this->logger->debug(
+            Glib::ustring::compose(
+                    this->translator->trns("Legacy system-wide XML path: %1"),
+                    filePath
+            )
+    );
     std::ifstream input(filePath);
 
     if (!input.good()) {
-        this->logger->debug(_("Legacy system-wide file doesn't exist"));
+        this->logger->debug(this->translator->trns("Legacy system-wide file doesn't exist"));
         return container;
     }
 
@@ -27,16 +32,21 @@ Glib::ustring ConfigurationLoader::readSystemWideXML() {
 }
 
 Glib::ustring ConfigurationLoader::readUserDefinedXML() {
-    this->logger->debug(_("Reading user defined XML"));
+    this->logger->debug(this->translator->trns("Reading user defined XML"));
     Glib::ustring container;
 
     std::string userHome(std::getenv("HOME"));
 
-    this->logger->debug(Glib::ustring::compose(_("User defined XML path: %1"), userHome + "/.drirc"));
+    this->logger->debug(
+            Glib::ustring::compose(
+                    this->translator->trns("User defined XML path: %1"),
+                    userHome + "/.drirc"
+            )
+    );
     std::ifstream input(userHome + "/.drirc");
 
     if (!input.good()) {
-        this->logger->debug(_("User defined XML doesn't exist"));
+        this->logger->debug(this->translator->trns("User defined XML doesn't exist"));
         return container;
     }
 
@@ -57,12 +67,17 @@ std::map<Glib::ustring, GPUInfo_ptr> ConfigurationLoader::loadAvailableGPUs(cons
 }
 
 std::list<Device_ptr> ConfigurationLoader::loadSystemWideConfiguration() {
-    this->logger->debug(_("Reading system-wide XML"));
+    this->logger->debug(this->translator->trns("Reading system-wide XML"));
     std::list<Device_ptr> systemWideDevices;
 
     std::vector<Glib::ustring> configurationPaths;
     boost::filesystem::path configurationPath = this->getSystemWideConfigurationPath();
-    this->logger->debug(Glib::ustring::compose(_("System-wide XML path: %1"), configurationPath.c_str()));
+    this->logger->debug(
+            Glib::ustring::compose(
+                    this->translator->trns("System-wide XML path: %1"),
+                    configurationPath.c_str()
+            )
+    );
     if (boost::filesystem::exists(configurationPath)) {
         for (const auto &file : boost::filesystem::directory_iterator(configurationPath)) {
             if (!boost::filesystem::is_directory(file)) {
@@ -73,12 +88,22 @@ std::list<Device_ptr> ConfigurationLoader::loadSystemWideConfiguration() {
         std::sort(configurationPaths.begin(), configurationPaths.end());
 
         for (auto &filename : configurationPaths) {
-            this->logger->debug(Glib::ustring::compose(_("Found configuration on path: %1"), filename));
+            this->logger->debug(
+                    Glib::ustring::compose(
+                            this->translator->trns("Found configuration on path: %1"),
+                            filename
+                    )
+            );
             Glib::ustring container;
             std::ostringstream buffer;
             std::ifstream input(filename);
             if (!input.good()) {
-                this->logger->debug(Glib::ustring::compose(_("Failed to load file: %1"), filename));
+                this->logger->debug(
+                        Glib::ustring::compose(
+                                this->translator->trns("Failed to load file: %1"),
+                                filename
+                        )
+                );
                 continue;
             }
 
@@ -89,7 +114,7 @@ std::list<Device_ptr> ConfigurationLoader::loadSystemWideConfiguration() {
             this->resolver->mergeConfigurationOnTopOf(systemWideDevices, justLoadedDevices);
         }
     } else {
-        this->logger->warning(_("System-wide configuration path doesn't exist!"));
+        this->logger->warning(this->translator->trns("System-wide configuration path doesn't exist!"));
     }
 
     Glib::ustring systemWideXML = this->readSystemWideXML();
@@ -110,7 +135,9 @@ std::list<Device_ptr> ConfigurationLoader::loadSystemWideConfiguration() {
 std::list<Device_ptr> ConfigurationLoader::loadUserDefinedConfiguration() {
     Glib::ustring userDefinedXML(this->readUserDefinedXML());
     if (userDefinedXML.empty()) {
-        this->logger->debug(_("User defined configuration is empty. Returning an empty object"));
+        this->logger->debug(
+                this->translator->trns("User defined configuration is empty. Returning an empty object")
+        );
         std::list<Device_ptr> deviceList;
         return deviceList;
     }
@@ -138,9 +165,15 @@ boost::filesystem::path ConfigurationLoader::getSystemWideConfigurationPath() {
     return boost::filesystem::path("/usr/share/drirc.d/");
 }
 
-ConfigurationLoader::ConfigurationLoader(const DRIQuery &driQuery, LoggerInterface *logger, ParserInterface *parser,
-                                         ConfigurationResolverInterface *resolver)
+ConfigurationLoader::ConfigurationLoader(
+        const DRIQuery &driQuery,
+        LoggerInterface *logger,
+        TranslatorInterface *translator,
+        ParserInterface *parser,
+        ConfigurationResolverInterface *resolver
+)
         : driQuery(driQuery),
           logger(logger),
+          translator(translator),
           parser(parser),
           resolver(resolver) {}

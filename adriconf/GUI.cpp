@@ -10,14 +10,17 @@
 
 GUI::GUI(
         LoggerInterface *logger,
+        TranslatorInterface *translator,
         ConfigurationLoaderInterface *configurationLoader,
         ConfigurationResolverInterface *resolver,
-        WriterInterface *writer) : logger(logger),
-                                   configurationLoader(configurationLoader),
-                                   resolver(resolver),
-                                   writer(writer),
-                                   currentApp(nullptr),
-                                   currentDriver(nullptr) {
+        WriterInterface *writer
+) : logger(logger),
+    translator(translator),
+    configurationLoader(configurationLoader),
+    resolver(resolver),
+    writer(writer),
+    currentApp(nullptr),
+    currentDriver(nullptr) {
     this->setupLocale();
 
     /* Load the configurations */
@@ -56,7 +59,7 @@ GUI::GUI(
             this->availableGPUs
     );
 
-    this->logger->debug(_("Start building GTK gui"));
+    this->logger->debug(this->translator->trns("Start building GTK gui"));
 
     /* Load the GUI file */
     this->gladeBuilder = Gtk::Builder::create();
@@ -65,7 +68,7 @@ GUI::GUI(
     /* Extract the main object */
     this->gladeBuilder->get_widget("mainwindow", this->pWindow);
     if (!pWindow) {
-        this->logger->error(_("Main window object is not in glade file!"));
+        this->logger->error(this->translator->trns("Main window object is not in glade file!"));
         return;
     }
 
@@ -90,7 +93,7 @@ GUI::GUI(
     /* Create the menu itens */
     this->pMenuAddApplication = Gtk::manage(new Gtk::MenuItem);
     this->pMenuAddApplication->set_visible(true);
-    this->pMenuAddApplication->set_label(_("Add new"));
+    this->pMenuAddApplication->set_label(this->translator->trns("Add new"));
     this->pMenuAddApplication->signal_activate().connect(sigc::mem_fun(this, &GUI::onAddApplicationPressed));
     this->pMenuAddApplication->add_accelerator(
             "activate",
@@ -102,7 +105,7 @@ GUI::GUI(
 
     this->pMenuRemoveApplication = Gtk::manage(new Gtk::MenuItem);
     this->pMenuRemoveApplication->set_visible(true);
-    this->pMenuRemoveApplication->set_label(_("Remove current Application"));
+    this->pMenuRemoveApplication->set_label(this->translator->trns("Remove current Application"));
     this->pMenuRemoveApplication->signal_activate().connect(sigc::mem_fun(this, &GUI::onRemoveApplicationPressed));
     this->pMenuRemoveApplication->add_accelerator(
             "activate",
@@ -133,13 +136,15 @@ void GUI::onQuitPressed() {
 }
 
 void GUI::onSavePressed() {
-    this->logger->debug(_("Generating final XML for saving..."));
+    this->logger->debug(this->translator->trns("Generating final XML for saving..."));
     auto resolvedOptions = this->resolver->resolveOptionsForSave(
             this->systemWideConfiguration, this->driverConfiguration, this->userDefinedConfiguration,
             this->availableGPUs
     );
     auto rawXML = this->writer->generateRawXml(resolvedOptions);
-    this->logger->debug(Glib::ustring::compose(_("Writing generated XML: %1"), rawXML));
+    this->logger->debug(
+            Glib::ustring::compose(this->translator->trns("Writing generated XML: %1"), rawXML)
+    );
     std::string userHome(std::getenv("HOME"));
     std::ofstream outFile(userHome + "/.drirc");
     outFile << rawXML;
@@ -159,7 +164,9 @@ void GUI::setupLocale() {
 
     Glib::ustring langCode(std::use_facet<boost::locale::info>(l).language());
 
-    this->logger->debug(Glib::ustring::compose(_("Current language code is %1"), langCode));
+    this->logger->debug(
+            Glib::ustring::compose(this->translator->trns("Current language code is %1"), langCode)
+    );
 
     this->locale = langCode;
 }
@@ -200,7 +207,9 @@ void GUI::drawApplicationSelectionMenu() {
                                                     return d.getDriverName() == driver->getDriver();
                                                 });
                 if (foundDriver == this->driverConfiguration.end()) {
-                    this->logger->error(Glib::ustring::compose(_("Driver %1 not found"), driver));
+                    this->logger->error(
+                            Glib::ustring::compose(this->translator->trns("Driver %1 not found"), driver)
+                    );
                 }
                 this->currentDriver = &(*foundDriver);
             }
@@ -264,7 +273,12 @@ void GUI::onApplicationSelected(const Glib::ustring &driverName, const Glib::ust
     );
 
     if (selectedApp == (*userSelectedDriver)->getApplications().end()) {
-        this->logger->error(Glib::ustring::compose(_("Application %1 not found "), applicationName));
+        this->logger->error(
+                Glib::ustring::compose(
+                        this->translator->trns("Application %1 not found "),
+                        applicationName
+                )
+        );
         return;
     }
 
@@ -276,7 +290,12 @@ void GUI::onApplicationSelected(const Glib::ustring &driverName, const Glib::ust
                                        });
 
     if (driverSelected == this->driverConfiguration.end()) {
-        this->logger->error(Glib::ustring::compose(_("Driver %1 not found "), driverName));
+        this->logger->error(
+                Glib::ustring::compose(
+                        this->translator->trns("Driver %1 not found "),
+                        driverName
+                )
+        );
         return;
     }
 
@@ -292,7 +311,7 @@ void GUI::drawApplicationOptions() {
     Gtk::Notebook *pNotebook;
     this->gladeBuilder->get_widget("notebook", pNotebook);
     if (!pNotebook) {
-        this->logger->error(_("Notebook object not found in glade file!"));
+        this->logger->error(this->translator->trns("Notebook object not found in glade file!"));
         return;
     }
 
@@ -337,7 +356,7 @@ void GUI::drawApplicationOptions() {
 
             if (optionValue == selectedAppOptions.end()) {
                 this->logger->error(Glib::ustring::compose(
-                        _("Option %1 doesn't exist in application %2. Merge failed"),
+                        this->translator->trns("Option %1 doesn't exist in application %2. Merge failed"),
                         option.getName(),
                         this->currentApp->getName()
                 ));
@@ -469,7 +488,7 @@ void GUI::drawApplicationOptions() {
         gpuCombo->set_model(listStore);
 
         Gtk::TreeModel::Row firstRow = *(listStore->append());
-        firstRow[this->comboColumns.optionName] = _("Use default GPU of screen");
+        firstRow[this->comboColumns.optionName] = this->translator->trns("Use default GPU of screen");
         firstRow[this->comboColumns.optionValue] = "";
 
         if (!this->currentApp->getIsUsingPrime()) {
@@ -496,7 +515,7 @@ void GUI::drawApplicationOptions() {
 
 
         Gtk::Label *label = Gtk::manage(new Gtk::Label);
-        label->set_label(_("Force Application to use GPU"));
+        label->set_label(this->translator->trns("Force Application to use GPU"));
         label->set_visible(true);
         label->set_justify(Gtk::Justification::JUSTIFY_LEFT);
         label->set_line_wrap(true);
@@ -511,7 +530,7 @@ void GUI::drawApplicationOptions() {
         optionBox->pack_start(*label, false, true);
         primeTabBox->add(*optionBox);
 
-        pNotebook->append_page(*primeTabBox, _("PRIME Settings"));
+        pNotebook->append_page(*primeTabBox, this->translator->trns("PRIME Settings"));
     }
 
 }
@@ -616,11 +635,11 @@ void GUI::setupAboutDialog() {
     this->aboutDialog.set_program_name("Advanced DRI Configurator");
     this->aboutDialog.set_version(Glib::ustring::compose("version: %1 \ngit-revision: %2", BUILD_VERSION_NUMBER, GIT_COMMIT_HASH));
     this->aboutDialog.set_copyright("Jean Hertel");
-    this->aboutDialog.set_comments(_("An advanced DRI configurator tool."));
+    this->aboutDialog.set_comments(this->translator->trns("An advanced DRI configurator tool."));
     this->aboutDialog.set_license("GPLv3");
 
     this->aboutDialog.set_website("https://github.com/jlHertel/adriconf");
-    this->aboutDialog.set_website_label(_("Source Code"));
+    this->aboutDialog.set_website_label(this->translator->trns("Source Code"));
 
     std::vector<Glib::ustring> list_authors;
     list_authors.emplace_back("Jean Hertel and contributors");
@@ -635,7 +654,10 @@ void GUI::setupAboutDialog() {
                 break;
             default:
                 this->logger->debug(
-                        Glib::ustring::compose(_("Unexpected response code from about dialog: %1"), responseCode)
+                        Glib::ustring::compose(
+                                this->translator->trns("Unexpected response code from about dialog: %1"),
+                                responseCode
+                        )
                 );
                 break;
         }
@@ -652,8 +674,9 @@ void GUI::setupAboutDialog() {
 
 void GUI::onRemoveApplicationPressed() {
     if (this->currentApp->getExecutable().empty()) {
-        Gtk::MessageDialog dialog(*(this->pWindow), _("The default application cannot be removed."));
-        dialog.set_secondary_text(_("The driver needs a default configuration."));
+        Gtk::MessageDialog dialog(*(this->pWindow),
+                                  this->translator->trns("The default application cannot be removed."));
+        dialog.set_secondary_text(this->translator->trns("The driver needs a default configuration."));
         dialog.run();
         return;
     }
@@ -666,8 +689,8 @@ void GUI::onRemoveApplicationPressed() {
         }
     }
 
-    Gtk::MessageDialog dialog(*(this->pWindow), _("Application removed successfully."));
-    dialog.set_secondary_text(_("The application has been removed."));
+    Gtk::MessageDialog dialog(*(this->pWindow), this->translator->trns("Application removed successfully."));
+    dialog.set_secondary_text(this->translator->trns("The application has been removed."));
     dialog.run();
 
     this->drawApplicationSelectionMenu();
@@ -682,25 +705,27 @@ void GUI::onAddApplicationPressed() {
 
     this->gladeBuilder->get_widget("newAppDialog", pDialog);
     if (!pDialog) {
-        this->logger->error(_("Add Application dialog is not in glade file!"));
+        this->logger->error(this->translator->trns("Add Application dialog is not in glade file!"));
         return;
     }
 
     this->gladeBuilder->get_widget("newAppName", pAppName);
     if (!pAppName) {
-        this->logger->error(_("Add Application app name widget is not in glade file!"));
+        this->logger->error(this->translator->trns("Add Application app name widget is not in glade file!"));
         return;
     }
 
     this->gladeBuilder->get_widget("newAppExecutable", pAppExecutable);
     if (!pAppExecutable) {
-        this->logger->error(_("Add Application app executable widget is not in glade file!"));
+        this->logger->error(
+                this->translator->trns("Add Application app executable widget is not in glade file!")
+        );
         return;
     }
 
     this->gladeBuilder->get_widget("newAppDriver", pAppDriver);
     if (!pAppDriver) {
-        this->logger->error(_("Add Application app driver widget is not in glade file!"));
+        this->logger->error(this->translator->trns("Add Application app driver widget is not in glade file!"));
         return;
     }
 
@@ -723,9 +748,10 @@ void GUI::onAddApplicationPressed() {
         if (pAppName->get_text().empty() ||
             pAppExecutable->get_text().empty() ||
             pAppDriver->get_active_text().empty()) {
-            Gtk::MessageDialog validationDialog(*(this->pWindow), _("Validation error"));
+            Gtk::MessageDialog validationDialog(*(this->pWindow), this->translator->trns("Validation error"));
             validationDialog.set_secondary_text(
-                    _("You need to specify the application name, executable and driver."));
+                    this->translator->trns("You need to specify the application name, executable and driver.")
+            );
             validationDialog.run();
             return;
         }
@@ -747,8 +773,10 @@ void GUI::onAddApplicationPressed() {
             }
         }
 
-        Gtk::MessageDialog dialog(*(this->pWindow), _("Application successfully added."));
-        dialog.set_secondary_text(_("The application was successfully added. Reloading default app options."));
+        Gtk::MessageDialog dialog(*(this->pWindow), this->translator->trns("Application successfully added."));
+        dialog.set_secondary_text(
+                this->translator->trns("The application was successfully added. Reloading default app options.")
+        );
 
         dialog.run();
 

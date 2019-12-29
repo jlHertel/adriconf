@@ -11,15 +11,17 @@
 #include "../ValueObject/GPUInfo.h"
 #include "../Logging/LoggerInterface.h"
 #include "ConfigurationResolverInterface.h"
+#include "TranslatorInterface.h"
 
 class ConfigurationResolver : public ConfigurationResolverInterface {
 private:
     LoggerInterface *logger;
+    TranslatorInterface *translator;
 
 public:
     ~ConfigurationResolver() override = default;
 
-    ConfigurationResolver(LoggerInterface *logger);
+    ConfigurationResolver(LoggerInterface *logger, TranslatorInterface *translator);
 
     /**
      * Takes all the options set and filter out the options already defined system-wide
