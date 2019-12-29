@@ -1,8 +1,8 @@
 #include "EGLDisplayWrapper.h"
 #include <glibmm/i18n.h>
 
-EGLDisplayWrapper::EGLDisplayWrapper()
-        : rawDisplay(), minorVersion(0), majorVersion(0), extensions() {
+EGLDisplayWrapper::EGLDisplayWrapper(TranslatorInterface *translator)
+        : rawDisplay(), minorVersion(0), majorVersion(0), extensions(), translator(translator) {
     this->queryDriverName = (const char *(*)(EGLDisplay)) eglGetProcAddress("eglGetDisplayDriverName");
     this->queryDriverOptions = (const char *(*)(EGLDisplay)) eglGetProcAddress("eglGetDisplayDriverConfig");
 }
@@ -34,7 +34,7 @@ bool EGLDisplayWrapper::hasMesaQueryDriverExtension() const {
 
 const char *EGLDisplayWrapper::getDriverName() {
     if (!this->hasMesaQueryDriverExtension()) {
-        throw std::runtime_error(_("Display is missing EGL_MESA_query_driver extension"));
+        throw std::runtime_error(this->translator->trns("Display is missing EGL_MESA_query_driver extension"));
     }
 
     return this->queryDriverName(this->rawDisplay);
@@ -42,7 +42,7 @@ const char *EGLDisplayWrapper::getDriverName() {
 
 const char *EGLDisplayWrapper::getDriverOptions() {
     if (!this->hasMesaQueryDriverExtension()) {
-        throw std::runtime_error(_("Display is missing EGL_MESA_query_driver extension"));
+        throw std::runtime_error(this->translator->trns("Display is missing EGL_MESA_query_driver extension"));
     }
 
     return this->queryDriverOptions(this->rawDisplay);

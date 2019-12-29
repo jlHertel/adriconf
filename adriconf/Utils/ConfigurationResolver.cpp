@@ -3,7 +3,10 @@
 #include "../Logging/LoggerInterface.h"
 #include <glibmm/i18n.h>
 
-ConfigurationResolver::ConfigurationResolver(LoggerInterface *logger): logger(logger) {}
+ConfigurationResolver::ConfigurationResolver(
+        LoggerInterface *logger,
+        TranslatorInterface *translator
+) : logger(logger), translator(translator) {}
 
 std::list<Device_ptr> ConfigurationResolver::resolveOptionsForSave(
         const std::list<Device_ptr> &systemWideDevices,
@@ -204,12 +207,15 @@ void ConfigurationResolver::filterDriverUnsupportedOptions(
                 }
 
                 if (driverRealOptions.count((*itr)->getName()) == 0) {
-                    this->logger->warning(Glib::ustring::compose(
-                            _("Driver '%1' doesn't support option '%2' on application '%3'. Option removed."),
-                            correctDriverName,
-                            (*itr)->getName(),
-                            userDefinedApp->getName()
-                    ));
+                    this->logger->warning(
+                            Glib::ustring::compose(
+                                    this->translator->trns(
+                                            "Driver '%1' doesn't support option '%2' on application '%3'. Option removed."),
+                                    correctDriverName,
+                                    (*itr)->getName(),
+                                    userDefinedApp->getName()
+                            )
+                    );
                     itr = options.erase(itr);
                 } else {
                     ++itr;
@@ -368,11 +374,14 @@ void ConfigurationResolver::removeInvalidDrivers(
                                            });
 
         if (driverSupports == availableDrivers.end()) {
-            this->logger->warning(Glib::ustring::compose(
-                    _("User-defined driver '%1' on screen '%2' doesn't have a driver loaded on system. Configuration removed."),
-                    currentUserDefinedDriver,
-                    currentUserDefinedScreen
-            ));
+            this->logger->warning(
+                    Glib::ustring::compose(
+                            this->translator->trns(
+                                    "User-defined driver '%1' on screen '%2' doesn't have a driver loaded on system. Configuration removed."),
+                            currentUserDefinedDriver,
+                            currentUserDefinedScreen
+                    )
+            );
 
             deviceIterator = userDefinedDevices.erase(deviceIterator);
         } else {
