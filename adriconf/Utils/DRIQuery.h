@@ -7,7 +7,7 @@
 #include "HelpersWayland.h"
 #include "../Logging/LoggerInterface.h"
 #include "PCIDatabaseQueryInterface.h"
-#include "GBMUtilsInterface.h"
+#include "GBMDeviceFactoryInterface.h"
 #include "EGLDisplayFactoryInterface.h"
 
 #include <GL/glx.h>
@@ -30,7 +30,7 @@ private:
     LoggerInterface *logger;
     ParserInterface *parser;
     PCIDatabaseQueryInterface *pciQuery;
-    GBMUtilsInterface *gbmUtils;
+    GBMDeviceFactoryInterface *gbmDeviceFactory;
     EGLDisplayFactoryInterface *eglDisplayFactory;
     bool isWaylandSession;
 
@@ -47,7 +47,7 @@ public:
             LoggerInterface *logger,
             ParserInterface *parser,
             PCIDatabaseQueryInterface *pciQuery,
-            GBMUtilsInterface *gbmUtils,
+            GBMDeviceFactoryInterface *gbmUtils,
             EGLDisplayFactoryInterface *eglWrapper,
             bool isWaylandSession
     );

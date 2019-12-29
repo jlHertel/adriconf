@@ -17,8 +17,6 @@ public:
 
     void setRawGBMDevice(struct gbm_device *device);
 
-    int getRawFileDescriptor() const;
-
     struct gbm_device *getRawGBMDevice() const;
 };
 
