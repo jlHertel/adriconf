@@ -26,10 +26,6 @@ void GBMDevice::setRawGBMDevice(struct gbm_device *device) {
     this->rawGBMDevice = device;
 }
 
-int GBMDevice::getRawFileDescriptor() const {
-    return this->rawFileDescriptor;
-}
-
 struct gbm_device *GBMDevice::getRawGBMDevice() const {
     return this->rawGBMDevice;
 }

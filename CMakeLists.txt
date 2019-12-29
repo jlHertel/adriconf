@@ -118,9 +118,9 @@ set(SHARED_SOURCE_FILES
         ${CMAKE_SOURCE_DIR}/adriconf/Utils/ConfigurationLoader.cpp
         ${CMAKE_SOURCE_DIR}/adriconf/Utils/ConfigurationLoader.h
 
-        ${CMAKE_SOURCE_DIR}/adriconf/Utils/GBMUtilsInterface.h
-        ${CMAKE_SOURCE_DIR}/adriconf/Utils/GBMUtils.cpp
-        ${CMAKE_SOURCE_DIR}/adriconf/Utils/GBMUtils.h
+        ${CMAKE_SOURCE_DIR}/adriconf/Utils/GBMDeviceFactoryInterface.h
+        ${CMAKE_SOURCE_DIR}/adriconf/Utils/GBMDeviceFactory.cpp
+        ${CMAKE_SOURCE_DIR}/adriconf/Utils/GBMDeviceFactory.h
         ${CMAKE_SOURCE_DIR}/adriconf/Utils/EGLDisplayFactoryInterface.h
         ${CMAKE_SOURCE_DIR}/adriconf/Utils/EGLDisplayFactory.cpp
         ${CMAKE_SOURCE_DIR}/adriconf/Utils/EGLDisplayFactory.h

@@ -1,10 +1,10 @@
-#include "GBMUtils.h"
+#include "GBMDeviceFactory.h"
 #include <fcntl.h>
 #include <stdexcept>
 #include <glibmm/i18n.h>
 #include <glibmm/ustring.h>
 
-GBMDevice GBMUtils::generateDeviceFromPath(const char *path) {
+GBMDevice GBMDeviceFactory::generateDeviceFromPath(const char *path) {
     int fileDescriptor = open(path, O_RDWR | FD_CLOEXEC);
     if (fileDescriptor <= 0) {
         throw std::runtime_error(Glib::ustring::compose(_("Failed to open device %1"), path));

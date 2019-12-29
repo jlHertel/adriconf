@@ -11,7 +11,7 @@
 #include "Logging/LoggerInterface.h"
 #include "Utils/Writer.h"
 #include "Utils/PCIDatabaseQuery.h"
-#include "Utils/GBMUtils.h"
+#include "Utils/GBMDeviceFactory.h"
 #include "Utils/EGLDisplayFactory.h"
 
 int main(int argc, char *argv[]) {
@@ -50,7 +50,7 @@ int main(int argc, char *argv[]) {
         logger->debug(_("Checking if the system is supported"));
         Parser parser(logger);
         PCIDatabaseQuery pciQuery;
-        GBMUtils gbmUtils;
+        GBMDeviceFactory gbmUtils;
         EGLDisplayFactory eglWrapper;
         DRIQuery check(logger, &parser, &pciQuery, &gbmUtils, &eglWrapper, isWayland);
         if (!check.isSystemSupported()) {

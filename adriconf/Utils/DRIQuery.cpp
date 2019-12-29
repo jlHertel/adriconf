@@ -15,13 +15,13 @@ DRIQuery::DRIQuery(
         LoggerInterface *logger,
         ParserInterface *parser,
         PCIDatabaseQueryInterface *pciQuery,
-        GBMUtilsInterface *gbmUtils,
+        GBMDeviceFactoryInterface *gbmDeviceFactory,
         EGLDisplayFactoryInterface *eglWrapper,
         bool isWaylandSession
 ) : logger(logger),
     parser(parser),
     pciQuery(pciQuery),
-    gbmUtils(gbmUtils),
+    gbmDeviceFactory(gbmDeviceFactory),
     eglDisplayFactory(eglWrapper),
     isWaylandSession(isWaylandSession) {}
 
@@ -217,7 +217,7 @@ std::map<Glib::ustring, GPUInfo_ptr> DRIQuery::enumerateDRIDevices(const Glib::u
                     )
             );
 
-            GBMDevice gbmDevice = this->gbmUtils->generateDeviceFromPath(enumeratedDevices[i]->nodes[DRM_NODE_RENDER]);
+            GBMDevice gbmDevice = this->gbmDeviceFactory->generateDeviceFromPath(enumeratedDevices[i]->nodes[DRM_NODE_RENDER]);
 
             this->logger->debug(
                     Glib::ustring::compose(
