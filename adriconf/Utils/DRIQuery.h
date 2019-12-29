@@ -9,6 +9,7 @@
 #include "PCIDatabaseQueryInterface.h"
 #include "GBMDeviceFactoryInterface.h"
 #include "EGLDisplayFactoryInterface.h"
+#include "DRMDeviceFactoryInterface.h"
 
 #include <GL/glx.h>
 #include <GL/glxext.h>
@@ -30,6 +31,7 @@ private:
     LoggerInterface *logger;
     ParserInterface *parser;
     PCIDatabaseQueryInterface *pciQuery;
+    DRMDeviceFactoryInterface *drmDeviceFactory;
     GBMDeviceFactoryInterface *gbmDeviceFactory;
     EGLDisplayFactoryInterface *eglDisplayFactory;
     bool isWaylandSession;
@@ -47,6 +49,7 @@ public:
             LoggerInterface *logger,
             ParserInterface *parser,
             PCIDatabaseQueryInterface *pciQuery,
+            DRMDeviceFactoryInterface *drmDeviceFactory,
             GBMDeviceFactoryInterface *gbmUtils,
             EGLDisplayFactoryInterface *eglWrapper,
             bool isWaylandSession
