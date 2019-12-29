@@ -5,7 +5,7 @@
 
 class GetTextTranslator : public TranslatorInterface {
 public:
-    char *trns(const char *text) override;
+    const char * trns(const char *text) override;
 };
 
 

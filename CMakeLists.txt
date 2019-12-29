@@ -130,9 +130,7 @@ set(SHARED_SOURCE_FILES
         ${CMAKE_SOURCE_DIR}/adriconf/Utils/DRMDeviceFactoryInterface.h
         ${CMAKE_SOURCE_DIR}/adriconf/Utils/DRMDeviceFactory.cpp
         ${CMAKE_SOURCE_DIR}/adriconf/Utils/DRMDeviceFactory.h
-        ${CMAKE_SOURCE_DIR}/adriconf/Utils/TranslatorInterface.h
-        ${CMAKE_SOURCE_DIR}/adriconf/Utils/GetTextTranslator.cpp
-        ${CMAKE_SOURCE_DIR}/adriconf/Utils/GetTextTranslator.h
+        ${CMAKE_SOURCE_DIR}/adriconf/Translation/TranslatorInterface.h
 
         ${CMAKE_SOURCE_DIR}/adriconf/GUI.cpp
         ${CMAKE_SOURCE_DIR}/adriconf/GUI.h

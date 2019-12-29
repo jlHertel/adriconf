@@ -10,7 +10,7 @@
 
 #include <EGL/egl.h>
 #include "../Logging/LoggerInterface.h"
-#include "TranslatorInterface.h"
+#include "../Translation/TranslatorInterface.h"
 
 typedef const char *eglGetDisplayDriverName_t(EGLDisplay disp);
 typedef const char *eglGetDisplayDriverconfig_t(EGLDisplay disp);

@@ -17,6 +17,7 @@ set(SOURCE_TESTS
 
         ${CMAKE_SOURCE_DIR}/tests/Logging/LoggerMock.h
         ${CMAKE_SOURCE_DIR}/tests/Utils/ParserMock.h
+        ${CMAKE_SOURCE_DIR}/tests/Translation/TranslatorMock.h
 )
 
 enable_testing()

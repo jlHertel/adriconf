@@ -11,7 +11,7 @@
 #include "../ValueObject/GPUInfo.h"
 #include "../Logging/LoggerInterface.h"
 #include "ConfigurationResolverInterface.h"
-#include "TranslatorInterface.h"
+#include "../Translation/TranslatorInterface.h"
 
 class ConfigurationResolver : public ConfigurationResolverInterface {
 private:

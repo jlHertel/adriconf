@@ -2,7 +2,7 @@
 #define ADRICONF_GBMDEVICEFACTORY_H
 
 #include "GBMDeviceFactoryInterface.h"
-#include "TranslatorInterface.h"
+#include "../Translation/TranslatorInterface.h"
 
 class GBMDeviceFactory : public GBMDeviceFactoryInterface {
 private:
