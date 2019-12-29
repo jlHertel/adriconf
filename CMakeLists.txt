@@ -93,6 +93,9 @@ set(SHARED_SOURCE_FILES
         ${CMAKE_SOURCE_DIR}/adriconf/ValueObject/GBMDevice.h
         ${CMAKE_SOURCE_DIR}/adriconf/ValueObject/EGLDisplayWrapper.cpp
         ${CMAKE_SOURCE_DIR}/adriconf/ValueObject/EGLDisplayWrapper.h
+        ${CMAKE_SOURCE_DIR}/adriconf/ValueObject/DRMDeviceInterface.h
+        ${CMAKE_SOURCE_DIR}/adriconf/ValueObject/DRMDevice.h
+        ${CMAKE_SOURCE_DIR}/adriconf/ValueObject/DRMDevice.cpp
 
         ${CMAKE_SOURCE_DIR}/adriconf/Logging/LoggerInterface.h
         ${CMAKE_SOURCE_DIR}/adriconf/Logging/LoggerLevel.h
@@ -124,6 +127,9 @@ set(SHARED_SOURCE_FILES
         ${CMAKE_SOURCE_DIR}/adriconf/Utils/EGLDisplayFactoryInterface.h
         ${CMAKE_SOURCE_DIR}/adriconf/Utils/EGLDisplayFactory.cpp
         ${CMAKE_SOURCE_DIR}/adriconf/Utils/EGLDisplayFactory.h
+        ${CMAKE_SOURCE_DIR}/adriconf/Utils/DRMDeviceFactoryInterface.h
+        ${CMAKE_SOURCE_DIR}/adriconf/Utils/DRMDeviceFactory.cpp
+        ${CMAKE_SOURCE_DIR}/adriconf/Utils/DRMDeviceFactory.h
 
         ${CMAKE_SOURCE_DIR}/adriconf/GUI.cpp
         ${CMAKE_SOURCE_DIR}/adriconf/GUI.h

@@ -1,7 +1,3 @@
-//
-// Created by jean on 29/12/2019.
-//
-
 #include "GBMDevice.h"
 
 #include <unistd.h>
