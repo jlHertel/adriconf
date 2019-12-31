@@ -131,6 +131,11 @@ set(SHARED_SOURCE_FILES
         ${CMAKE_SOURCE_DIR}/adriconf/Utils/DRMDeviceFactory.cpp
         ${CMAKE_SOURCE_DIR}/adriconf/Utils/DRMDeviceFactory.h
         ${CMAKE_SOURCE_DIR}/adriconf/Translation/TranslatorInterface.h
+        ${CMAKE_SOURCE_DIR}/adriconf/Utils/DisplayServerQueryInterface.h
+        ${CMAKE_SOURCE_DIR}/adriconf/Utils/WaylandQuery.cpp
+        ${CMAKE_SOURCE_DIR}/adriconf/Utils/WaylandQuery.h
+        ${CMAKE_SOURCE_DIR}/adriconf/Utils/XorgQuery.cpp
+        ${CMAKE_SOURCE_DIR}/adriconf/Utils/XorgQuery.h
 
         ${CMAKE_SOURCE_DIR}/adriconf/GUI.cpp
         ${CMAKE_SOURCE_DIR}/adriconf/GUI.h

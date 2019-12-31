@@ -14,6 +14,8 @@
 #include "Utils/GBMDeviceFactory.h"
 #include "Utils/EGLDisplayFactory.h"
 #include "Translation/GetTextTranslator.h"
+#include "Utils/WaylandQuery.h"
+#include "Utils/XorgQuery.h"
 
 int main(int argc, char *argv[]) {
     char *verbosity = std::getenv("VERBOSITY");
@@ -49,41 +51,30 @@ int main(int argc, char *argv[]) {
         char *waylandDisplay = std::getenv("WAYLAND_DISPLAY");
         bool isWayland = waylandDisplay != nullptr;
 
-        logger->debug(translator->trns("Checking if the system is supported"));
         Parser parser(logger.get(), translator.get());
         PCIDatabaseQuery pciQuery;
         GBMDeviceFactory gbmDeviceFactory(translator.get());
         DRMDeviceFactory drmDeviceFactory;
         EGLDisplayFactory eglDisplayFactory(translator.get());
-        HelpersWayland waylandHelper(logger.get(), translator.get());
         DRIQuery check(logger.get(), translator.get(), &parser, &pciQuery, &drmDeviceFactory, &gbmDeviceFactory,
-                       &eglDisplayFactory, waylandHelper, isWayland);
-        if (!check.isSystemSupported()) {
-            return 1;
-        }
+                       &eglDisplayFactory);
+        std::shared_ptr<DisplayServerQueryInterface> displayQuery;
         if (isWayland) {
             logger->info(translator->trns("adriconf running on Wayland"));
+            displayQuery = std::make_shared<WaylandQuery>(logger.get(), translator.get(), &parser, &eglDisplayFactory);
         } else {
             logger->info(translator->trns("adriconf running on X11"));
+            displayQuery = std::make_shared<XorgQuery>(logger.get(), translator.get(), &parser);
+        }
 
-            //Error window pops up even when a screen has a driver which we can't configure
-            if (!check.canHandle()) {
-                logger->error(translator->trns("Not all screens have open source drivers"));
-
-                //pop up error window here
-                auto *errorDialog = new Gtk::MessageDialog("Closed source driver(s) detected!",
-                                                           false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_CLOSE);
-                errorDialog->set_secondary_text("Currently adriconf cannot handle closed source drivers.");
-                if (errorDialog->run()) {
-                    errorDialog->close();
-                    return 0;
-                }
-            }
+        logger->debug(translator->trns("Checking if the system is supported"));
+        if (!displayQuery->checkNecessaryExtensions()) {
+            return 1;
         }
 
         Writer writer;
         ConfigurationResolver resolver(logger.get(), translator.get());
-        ConfigurationLoader loader(check, logger.get(), translator.get(), &parser, &resolver);
+        ConfigurationLoader loader(check,displayQuery.get(), logger.get(), translator.get(), &parser, &resolver);
         GUI gui(logger.get(), translator.get(), &loader, &resolver, &writer);
 
         /* No need to worry about the window pointer as the gui object owns it */

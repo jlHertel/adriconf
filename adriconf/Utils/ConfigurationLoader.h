@@ -12,6 +12,7 @@
 #include "DRIQuery.h"
 #include "ConfigurationLoaderInterface.h"
 #include "ConfigurationResolverInterface.h"
+#include "DisplayServerQueryInterface.h"
 
 class ConfigurationLoader : public ConfigurationLoaderInterface {
 private:
@@ -20,6 +21,7 @@ private:
     Glib::ustring readUserDefinedXML();
 
     DRIQuery driQuery;
+    DisplayServerQueryInterface *displayQuery;
     LoggerInterface *logger;
     TranslatorInterface *translator;
     ParserInterface *parser;
@@ -40,6 +42,7 @@ public:
 
     ConfigurationLoader(
             const DRIQuery &driQuery,
+            DisplayServerQueryInterface *displayQuery,
             LoggerInterface *logger,
             TranslatorInterface *translator,
             ParserInterface *parser,

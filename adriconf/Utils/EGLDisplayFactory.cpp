@@ -31,3 +31,27 @@ std::shared_ptr<EGLDisplayInterface> EGLDisplayFactory::createDisplayFromGBM(con
 
     return wrapper;
 }
+
+std::shared_ptr<EGLDisplayInterface> EGLDisplayFactory::createDefaultDisplay() {
+    EGLDisplay display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
+    if (display == EGL_NO_DISPLAY) {
+        throw std::runtime_error(this->translator->trns("Failed to create EGL display"));
+    }
+
+    EGLint major = 0, minor = 0;
+    EGLBoolean initialized = eglInitialize(display, &major, &minor);
+    if (initialized == EGL_FALSE) {
+        throw std::runtime_error(this->translator->trns("Failed to initialize EGL display"));
+    }
+
+    const char *extensions = eglQueryString(display, EGL_EXTENSIONS);
+    std::string extStr(extensions);
+
+    auto wrapper = std::make_shared<EGLDisplayWrapper>(this->translator);
+    wrapper->setRawDisplay(display);
+    wrapper->setMajorVersion(major);
+    wrapper->setMinorVersion(minor);
+    wrapper->setExtensions(extStr);
+
+    return wrapper;
+}

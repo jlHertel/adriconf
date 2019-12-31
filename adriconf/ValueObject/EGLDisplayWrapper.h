@@ -33,6 +33,8 @@ public:
 
     void setExtensions(const Glib::ustring &extensions);
 
+    Glib::ustring getExtensions() const override;
+
     const char *getDriverName() override;
 
     const char *getDriverOptions() override;
