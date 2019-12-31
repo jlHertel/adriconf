@@ -59,7 +59,7 @@ Glib::ustring ConfigurationLoader::readUserDefinedXML() {
 }
 
 std::list<DriverConfiguration> ConfigurationLoader::loadDriverSpecificConfiguration(const Glib::ustring &locale) {
-    return this->driQuery.queryDriverConfigurationOptions(locale);
+    return this->displayQuery->queryDriverConfigurationOptions(locale);
 }
 
 std::map<Glib::ustring, GPUInfo_ptr> ConfigurationLoader::loadAvailableGPUs(const Glib::ustring &locale) {
@@ -167,12 +167,14 @@ boost::filesystem::path ConfigurationLoader::getSystemWideConfigurationPath() {
 
 ConfigurationLoader::ConfigurationLoader(
         const DRIQuery &driQuery,
+        DisplayServerQueryInterface *displayQuery,
         LoggerInterface *logger,
         TranslatorInterface *translator,
         ParserInterface *parser,
         ConfigurationResolverInterface *resolver
 )
         : driQuery(driQuery),
+          displayQuery(displayQuery),
           logger(logger),
           translator(translator),
           parser(parser),

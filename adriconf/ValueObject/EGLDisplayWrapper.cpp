@@ -48,3 +48,7 @@ const char *EGLDisplayWrapper::getDriverOptions() {
     return this->queryDriverOptions(this->rawDisplay);
 }
 
+Glib::ustring EGLDisplayWrapper::getExtensions() const {
+    return this->extensions;
+}
+

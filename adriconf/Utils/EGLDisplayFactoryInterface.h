@@ -8,6 +8,7 @@
 class EGLDisplayFactoryInterface {
 public:
     virtual std::shared_ptr<EGLDisplayInterface> createDisplayFromGBM(const GBMDevice &device) = 0;
+    virtual std::shared_ptr<EGLDisplayInterface> createDefaultDisplay() = 0;
 };
 
 #endif //ADRICONF_EGLDISPLAYFACTORYINTERFACE_H

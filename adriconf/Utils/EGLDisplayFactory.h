@@ -20,6 +20,7 @@ public:
     virtual ~EGLDisplayFactory() = default;
 
     std::shared_ptr<EGLDisplayInterface> createDisplayFromGBM(const GBMDevice &device) override;
+    std::shared_ptr<EGLDisplayInterface> createDefaultDisplay() override;
 };
 
 
