@@ -6,6 +6,7 @@
 #include "Utils/ConfigurationLoaderInterface.h"
 #include <fstream>
 #include <exception>
+#include "version.h"
 
 GUI::GUI(
         LoggerInterface *logger,
@@ -613,8 +614,8 @@ void GUI::onNumberEntryChanged(Glib::ustring optionName) {
 void GUI::setupAboutDialog() {
     this->aboutDialog.set_transient_for(*this->pWindow);
     this->aboutDialog.set_program_name("Advanced DRI Configurator");
-    this->aboutDialog.set_version("1.0.0");
-    this->aboutDialog.set_copyright("Jean Lorenz Hertel");
+    this->aboutDialog.set_version(Glib::ustring::compose("version: %1 \ngit-revision: %2", BUILD_VERSION_NUMBER, GIT_COMMIT_HASH));
+    this->aboutDialog.set_copyright("Jean Hertel");
     this->aboutDialog.set_comments(_("An advanced DRI configurator tool."));
     this->aboutDialog.set_license("GPLv3");
 
@@ -622,7 +623,7 @@ void GUI::setupAboutDialog() {
     this->aboutDialog.set_website_label(_("Source Code"));
 
     std::vector<Glib::ustring> list_authors;
-    list_authors.emplace_back("Jean Lorenz Hertel");
+    list_authors.emplace_back("Jean Hertel and contributors");
     this->aboutDialog.set_authors(list_authors);
 
     this->aboutDialog.signal_response().connect([this](int responseCode) {
