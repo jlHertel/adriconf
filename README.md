@@ -50,12 +50,12 @@ you will need to add it to the [mesa](https://www.mesa3d.org/) project itself.
 ## Author
 
 This tool is written and maintained by Jean Lorenz Hertel.
-To see a full list of contributors check the AUTHORS file included in the source
+To see a full list of contributors check the [AUTHORS](AUTHORS) file included in the source
 code.
 
 ## Contributing
 
-Check our CONTRIBUTING file for further details on how to contribute.
+Check our [CONTRIBUTING](CONTRIBUTING.md) file for further details on how to contribute.
 
 ## License
 

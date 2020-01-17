@@ -28,8 +28,8 @@ The following questions might help us better understand the issue:
 
 ## Enabling debug mode
 
-Since version 1.5 we support different log levels, which gives a lot more output and
-helps in finding issues.
+Since version 1.5 we support different log levels, which gives a lot more output
+and helps in finding issues.
 The log levels are the following:
 
 - ERROR: Only display errors
@@ -66,21 +66,4 @@ Releases can also be made in case of a high number of users affected by an
 issue like some specific linux distribution not working anymore, or the 
 last release has broken something.
 
-### On GitHub
-
-To do a release on GitHub simple use the built-in functionality.
-Any code available on MASTER branch should be released.
-
-### On Flatpak
-
-To do a new Flatpak release you new to update the xml and JSON files.
-
-1 - Update the appdata.xml with the new release notes
-2 - Update the json configuration file to point to the new GitHub release tag.
-
-After updating the data simple commit and wait for Flathub bot to build
-the new version.
-
-The FlatPak data is available under [this repository][1].
-
-[1]: https://github.com/flathub/br.com.jeanhertel.adriconf
+To view instructions on how to release check our [RELEASING](RELEASING.md).
