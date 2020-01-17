@@ -7,6 +7,27 @@ option(ENABLE_XWAYLAND "Enable XWayland support" ON)
 option(ENABLE_UNIT_TESTS "Enables building Unit tests" ON)
 set(TOP_CMAKE_WAS_CALLED TRUE)
 
+# Setup version string
+if(EXISTS "${CMAKE_SOURCE_DIR}/.git")
+    execute_process(
+        COMMAND git log -1 --format=%h
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        OUTPUT_VARIABLE GIT_COMMIT_HASH
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+else()
+    set(GIT_COMMIT_HASH "UNKNOWN")
+endif()
+
+file (STRINGS "VERSION" BUILD_VERSION_NUMBER)
+
+configure_file(
+        ${CMAKE_SOURCE_DIR}/adriconf/version.h.in
+        ${CMAKE_BINARY_DIR}/generated/version.h
+)
+
+include_directories(${CMAKE_BINARY_DIR}/generated)
+
 find_package(PkgConfig REQUIRED)
 set(OpenGL_GL_PREFERENCE "GLVND")
 find_package(OpenGL REQUIRED)

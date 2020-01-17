@@ -1,0 +1,7 @@
+#ifndef VERSION_H
+#define VERSION_H
+
+#define GIT_COMMIT_HASH "@GIT_COMMIT_HASH@"
+#define BUILD_VERSION_NUMBER "@BUILD_VERSION_NUMBER@"
+
+#endif
