@@ -26,6 +26,20 @@
       </screenshot>
    </screenshots>
    <releases>
+      <release version="1.6" date="2020-01-19" urgency="low">
+         <description>
+            <p>This release has some bug-fixes but mostly is a rework in the code structure to better handle future changes</p>
+            <ul>
+               <li>Make sure we don't crash in case the new system-wide xml path is not available. @jlHertel</li>
+               <li>Generate version in about dialog at compile time. @jlHertel</li>
+               <li>Create EGL displays using GBM during gpu listing to avoid kernel driver names. @jlHertel</li>
+               <li>Rework code for easy unit testing. @jlHertel</li>
+               <li>Lower minimum desktop specification version for increased compatibility. @akien-mga</li>
+               <li>Improve documentation around releasing new versions. @jlHertel</li>
+               <li></li>
+            </ul>
+         </description>
+      </release>
       <release version="1.5.1" date="2019-09-08" urgency="low">
          <description>
             <p>This release is just a small bug-fix to disable building unit tests on flatpak builds.</p>
