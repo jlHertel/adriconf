@@ -20,7 +20,7 @@ msgstr ""
 #: ../ConfigurationResolver.cpp:182
 msgid ""
 "Driver '%1' doesn't support option '%2' on application '%3'. Option removed."
-msgstr"" 
+msgstr "" 
 "Il driver '%1' non supporta l'opzione '%2' sull'applicazione '%3'. Opzione rimossa."
 
 #: ../ConfigurationResolver.cpp:323
