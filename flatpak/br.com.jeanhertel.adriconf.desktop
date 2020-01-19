@@ -2,9 +2,9 @@
 Name=adriconf
 GenericName=Advanced DRI Configurator
 Comment=A GUI tool used to configure open source graphics drivers
-Version=1.4
+Version=1.1
 Exec=adriconf
 Type=Application
 Terminal=false
 Icon=br.com.jeanhertel.adriconf
-Categories=Graphics;HardwareSettings;GNOME;GTK
+Categories=Settings;HardwareSettings;GNOME;GTK
