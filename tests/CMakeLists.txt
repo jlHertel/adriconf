@@ -53,9 +53,10 @@ if (OpenGL_GLX_FOUND)
     target_link_libraries(runUnitTests ${OPENGL_glx_LIBRARY})
 endif ()
 
+target_link_libraries(runUnitTests ${EGL_LIBRARIES})
+target_include_directories(runUnitTests PUBLIC ${EGL_INCLUDE_DIRS})
+
 if (ENABLE_XWAYLAND)
-    target_link_libraries(runUnitTests ${EGL_LIBRARIES})
-    target_include_directories(runUnitTests PUBLIC ${EGL_INCLUDE_DIRS})
     target_compile_definitions(runUnitTests PRIVATE ENABLE_XWAYLAND)
 endif ()
 

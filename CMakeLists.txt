@@ -65,9 +65,7 @@ include_directories(${INTL_INCLUDE_DIRS})
 link_directories(${INTL_LIBRARY_DIRS})
 
 #EGL
-if (ENABLE_XWAYLAND)
-    pkg_check_modules(EGL REQUIRED egl)
-endif ()
+pkg_check_modules(EGL REQUIRED egl)
 
 #INTL INSTALL TRANSLATIONS
 GETTEXT_CREATE_TRANSLATIONS(po/adriconf.pot ALL po/en.po po/hr.po po/lv.po po/pt_BR.po po/zh_CN.po)

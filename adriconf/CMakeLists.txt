@@ -44,9 +44,10 @@ if (OpenGL_GLX_FOUND)
     target_link_libraries(adriconf ${OPENGL_glx_LIBRARY})
 endif ()
 
+target_link_libraries(adriconf ${EGL_LIBRARIES})
+target_include_directories(adriconf PUBLIC ${EGL_INCLUDE_DIRS})
+
 if (ENABLE_XWAYLAND)
-    target_link_libraries(adriconf ${EGL_LIBRARIES})
-    target_include_directories(adriconf PUBLIC ${EGL_INCLUDE_DIRS})
     target_compile_definitions(adriconf PRIVATE ENABLE_XWAYLAND)
 endif ()
 
