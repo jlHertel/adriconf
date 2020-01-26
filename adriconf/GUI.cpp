@@ -275,7 +275,7 @@ void GUI::onApplicationSelected(const Glib::ustring &driverName, const Glib::ust
     if (selectedApp == (*userSelectedDriver)->getApplications().end()) {
         this->logger->error(
                 Glib::ustring::compose(
-                        this->translator->trns("Application %1 not found "),
+                        this->translator->trns("Application %1 not found"),
                         applicationName
                 )
         );
@@ -292,7 +292,7 @@ void GUI::onApplicationSelected(const Glib::ustring &driverName, const Glib::ust
     if (driverSelected == this->driverConfiguration.end()) {
         this->logger->error(
                 Glib::ustring::compose(
-                        this->translator->trns("Driver %1 not found "),
+                        this->translator->trns("Driver %1 not found"),
                         driverName
                 )
         );
