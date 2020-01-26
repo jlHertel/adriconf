@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: 1.0.1\n"
 "Report-Msgid-Bugs-To: Jean Lorenz Hertel <jean.hertel@hotmail.com>\n"
 "POT-Creation-Date: 2018-08-06 08:10-0300\n"
-"PO-Revision-Date: 2018-08-06 08:10-0300\n"
+"PO-Revision-Date: 2020-01-26 20:10-0300\n"
 "Last-Translator: Jean Lorenz Hertel <jean.hertel@hotmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: en\n"
@@ -17,40 +17,35 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../GUI.cpp:687
-#, fuzzy
+#: ../GUI.cpp:728
 msgid "Add Application app driver widget is not in glade file!"
 msgstr "Main window object is not in glade file!"
 
-#: ../GUI.cpp:681
-#, fuzzy
+#: ../GUI.cpp:721
 msgid "Add Application app executable widget is not in glade file!"
 msgstr "Main window object is not in glade file!"
 
-#: ../GUI.cpp:675
-#, fuzzy
+#: ../GUI.cpp:714
 msgid "Add Application app name widget is not in glade file!"
 msgstr "Main window object is not in glade file!"
 
-#: ../GUI.cpp:669
-#, fuzzy
+#: ../GUI.cpp:708
 msgid "Add Application dialog is not in glade file!"
 msgstr "Main window object is not in glade file!"
 
-#: ../GUI.cpp:76
+#: ../GUI.cpp:96
 msgid "Add new"
 msgstr "Add new"
 
-#: ../GUI.cpp:604
+#: ../GUI.cpp:638
 msgid "An advanced DRI configurator tool."
 msgstr "An advanced DRI configurator tool."
 
-#: ../GUI.cpp:251
-msgid "Application %1 not found "
+#: ../GUI.cpp:278
+msgid "Application %1 not found"
 msgstr "Application %1 not found "
 
 #: ../DriConf.glade.h:6
-#, fuzzy
 msgid "Application executable:"
 msgstr "Application executable"
 
@@ -59,11 +54,11 @@ msgstr "Application executable"
 msgid "Application name:"
 msgstr "Application name"
 
-#: ../GUI.cpp:653
+#: ../GUI.cpp:692
 msgid "Application removed successfully."
 msgstr "Application removed successfully."
 
-#: ../GUI.cpp:734
+#: ../GUI.cpp:776
 msgid "Application successfully added."
 msgstr "Application successfully added."
 
@@ -71,122 +66,246 @@ msgstr "Application successfully added."
 msgid "Cancel"
 msgstr "Cancel"
 
-#: ../DRIQuery.cpp:155
-msgid "Closed source driver!!"
-msgstr "Closed source driver!!"
+#: ../main.cpp:70
+msgid "Checking if the system is supported"
+msgstr "Checking if the system is supported"
 
-#: ../DRIQuery.cpp:28 ../DRIQuery.cpp:137
+#: ../Utils/XorgQuery.cpp:15
 msgid "Couldn't open X display"
 msgstr "Couldn't open X display"
 
-#: ../GUI.cpp:146
+#: ../main.cpp:46
+msgid "Creating the GTK application object"
+msgstr "Creating the GTK application object"
+
+#: ../GUI.cpp:168
 #, fuzzy
 msgid "Current language code is %1"
 msgstr "Current language code is %1"
 
-#: ../GUI.cpp:187
+#: ../ValueObject/EGLDisplayWrapper.cpp:37
+msgid "Display is missing EGL_MESA_query_driver extension"
+msgstr "Display is missing EGL_MESA_query_driver extension"
+
+#: ../GUI.cpp:211
 msgid "Driver %1 not found"
 msgstr "Driver %1 not found"
 
-#: ../GUI.cpp:264
-msgid "Driver %1 not found "
-msgstr "Driver %1 not found "
-
-#: ../ConfigurationResolver.cpp:182
+#: ../Utils/ConfigurationResolver.cpp:213
 msgid ""
 "Driver '%1' doesn't support option '%2' on application '%3'. Option removed."
 msgstr ""
 "Driver '%1' doesn't support option '%2' on application '%3'. Option removed."
 
+#: ../Utils/WaylandQuery.cpp:57
+msgid "Driver doesn't support extension \"EGL_MESA_query_driver\""
+msgstr ""
+
 #: ../DriConf.glade.h:7
-#, fuzzy
 msgid "Driver:"
 msgstr "Driver:"
 
-#: ../DRIQuery.cpp:18
-msgid "Error getting function pointers. LibGL must be too old."
-msgstr "Error getting function pointers. LibGL must be too old."
+#: ../Utils/DRIQuery.cpp:28
+msgid "Enumerating DRI Devices"
+msgstr ""
 
-#: ../GUI.cpp:484
-#, fuzzy
+#: ../Utils/Parser.cpp:167
+msgid "Exception caught during device XML parsing: %1"
+msgstr ""
+
+#: ../Utils/EGLDisplayFactory.cpp:14
+msgid "Failed to create EGL display"
+msgstr ""
+
+#: ../Utils/GBMDeviceFactory.cpp:18
+msgid "Failed to create GBM device for %1"
+msgstr ""
+
+#: ../Utils/EGLDisplayFactory.cpp:20
+msgid "Failed to initialize EGL display"
+msgstr ""
+
+#: ../Utils/ConfigurationLoader.cpp:103
+msgid "Failed to load file: %1"
+msgstr ""
+
+#: ../Utils/GBMDeviceFactory.cpp:11
+msgid "Failed to open device %1"
+msgstr ""
+
+#: ../GUI.cpp:518
 msgid "Force Application to use GPU"
 msgstr "Force Application to use GPU"
 
-#: ../GUI.cpp:119
+#: ../Utils/DRIQuery.cpp:33
+msgid "Found %1 devices"
+msgstr ""
+
+#: ../Utils/ConfigurationLoader.cpp:93
+msgid "Found configuration on path: %1"
+msgstr ""
+
+#: ../Utils/DRIQuery.cpp:84
+msgid "GPU \"%1\" has the driver \"%2\""
+msgstr ""
+
+#: ../Utils/DRIQuery.cpp:57
+msgid "GPU has been detected as \"%1\" from \"%2\""
+msgstr ""
+
+#: ../Utils/DRIQuery.cpp:75
+msgid "Generating EGL Display from GBM device for \"%1\""
+msgstr ""
+
+#: ../GUI.cpp:139
 msgid "Generating final XML for saving..."
 msgstr "Generating final XML for saving..."
 
-#: ../GUI.cpp:51
+#: ../Utils/DRIQuery.cpp:66
+msgid "Generating gbm device for path \"%1\""
+msgstr ""
+
+#: ../Utils/ConfigurationLoader.cpp:17
+msgid "Legacy system-wide XML path: %1"
+msgstr "Legacy system-wide XML path: %1"
+
+#: ../Utils/ConfigurationLoader.cpp:24
+msgid "Legacy system-wide file doesn't exist"
+msgstr ""
+
+#: ../Utils/DRIQuery.cpp:90
+msgid "Loading driver options"
+msgstr ""
+
+#: ../GUI.cpp:71
 msgid "Main window object is not in glade file!"
 msgstr "Main window object is not in glade file!"
 
-#: ../main.cpp:24
-msgid "Not all screens have open source drivers"
+#: ../Utils/XorgQuery.cpp:85
+msgid ""
+"Missing GLX_MESA_query_renderer extension. Probably this is a closed-source "
+"driver."
 msgstr ""
 
-#: ../GUI.cpp:280
+#: ../GUI.cpp:314
 msgid "Notebook object not found in glade file!"
 msgstr "Notebook object not found in glade file!"
 
-#: ../GUI.cpp:325
+#: ../GUI.cpp:359
 msgid "Option %1 doesn't exist in application %2. Merge failed"
 msgstr "Option %1 doesn't exist in application %2. Merge failed"
 
-#: ../GUI.cpp:499
+#: ../GUI.cpp:533
 msgid "PRIME Settings"
 msgstr "PRIME Settings"
 
-#: ../GUI.cpp:88
+#: ../Utils/Parser.cpp:6
+msgid "Parsing XML %1"
+msgstr ""
+
+#: ../Utils/Parser.cpp:128
+msgid "Parsing device for XML: %1"
+msgstr "Writing generated XML: %1"
+
+#: ../Utils/DRIQuery.cpp:45
+msgid "Processing GPU with PCI ID \"%1\""
+msgstr ""
+
+#: ../Utils/ConfigurationLoader.cpp:10
+msgid "Reading legacy system-wide XML"
+msgstr "Reading legacy system-wide XML"
+
+#: ../Utils/ConfigurationLoader.cpp:70
+msgid "Reading system-wide XML"
+msgstr ""
+
+#: ../Utils/ConfigurationLoader.cpp:35
+msgid "Reading user defined XML"
+msgstr ""
+
+#: ../GUI.cpp:108
 msgid "Remove current Application"
 msgstr "Remove current Application"
 
-#: ../GUI.cpp:608
+#: ../Utils/DRIQuery.cpp:124
+msgid "Skipping device %1 due to error: %2"
+msgstr ""
+
+#: ../GUI.cpp:642
 msgid "Source Code"
 msgstr "Source Code"
 
-#: ../GUI.cpp:654
+#: ../GUI.cpp:62
+msgid "Start building GTK gui"
+msgstr "Start building GTK gui"
+
+#: ../Utils/ConfigurationLoader.cpp:77
+msgid "System-wide XML path: %1"
+msgstr ""
+
+#: ../Utils/ConfigurationLoader.cpp:117
+msgid "System-wide configuration path doesn't exist!"
+msgstr ""
+
+#: ../GUI.cpp:693
 msgid "The application has been removed."
 msgstr "The application has been removed."
 
-#: ../GUI.cpp:735
+#: ../GUI.cpp:778
 msgid "The application was successfully added. Reloading default app options."
 msgstr "The application was successfully added. Reloading default app options."
 
-#: ../GUI.cpp:639
+#: ../GUI.cpp:678
 msgid "The default application cannot be removed."
 msgstr "The default application cannot be removed."
 
-#: ../GUI.cpp:640
+#: ../GUI.cpp:679
 msgid "The driver needs a default configuration."
 msgstr "The driver needs a default configuration."
 
-#: ../DRIQuery.cpp:107 ../DRIQuery.cpp:116
+#: ../Utils/DRIQuery.cpp:97
 msgid "Unable to extract configuration for driver %1"
 msgstr "Unable to extract configuration for driver %1"
 
-#: ../GUI.cpp:622
+#: ../Utils/XorgQuery.cpp:31
+msgid "Unable to extract driver name for screen %1"
+msgstr "Unable to extract configuration for driver %1"
+
+#: ../GUI.cpp:658
 msgid "Unexpected response code from about dialog: %1"
 msgstr "Unexpected response code from about dialog: %1"
 
-#: ../GUI.cpp:457
+#: ../GUI.cpp:491
 msgid "Use default GPU of screen"
 msgstr "Use default GPU of screen"
 
-#: ../ConfigurationResolver.cpp:323
+#: ../Utils/ConfigurationLoader.cpp:49
+msgid "User defined XML doesn't exist"
+msgstr ""
+
+#: ../Utils/ConfigurationLoader.cpp:42
+msgid "User defined XML path: %1"
+msgstr ""
+
+#: ../Utils/ConfigurationLoader.cpp:139
+msgid "User defined configuration is empty. Returning an empty object"
+msgstr ""
+
+#: ../Utils/ConfigurationResolver.cpp:380
 msgid ""
 "User-defined driver '%1' on screen '%2' doesn't have a driver loaded on "
 "system. Configuration removed."
-msgstr "Configuration removed."
+msgstr ""
 
-#: ../GUI.cpp:710
+#: ../GUI.cpp:751
 msgid "Validation error"
 msgstr "Validation error"
 
-#: ../GUI.cpp:125
+#: ../GUI.cpp:146
 msgid "Writing generated XML: %1"
 msgstr "Writing generated XML: %1"
 
-#: ../GUI.cpp:712
+#: ../GUI.cpp:753
 msgid "You need to specify the application name, executable and driver."
 msgstr "You need to specify the application name, executable and driver."
 
@@ -201,3 +320,11 @@ msgstr "File"
 #: ../DriConf.glade.h:3
 msgid "_Help"
 msgstr "Help"
+
+#: ../main.cpp:63
+msgid "adriconf running on Wayland"
+msgstr "adriconf running on Wayland"
+
+#: ../main.cpp:66
+msgid "adriconf running on X11"
+msgstr "adriconf running on X11"

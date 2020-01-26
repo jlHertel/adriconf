@@ -18,36 +18,36 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : "
 "2);\n"
 
-#: ../GUI.cpp:687
+#: ../GUI.cpp:728
 msgid "Add Application app driver widget is not in glade file!"
 msgstr ""
 "Pievienot Programmu aplikācijas drivera sīkrīku dialogs nav glade failā!"
 
-#: ../GUI.cpp:681
+#: ../GUI.cpp:721
 msgid "Add Application app executable widget is not in glade file!"
 msgstr ""
 "Pievienot Programmu aplikācijas izpildāmā faila sīkrīku dialogs nav glade "
 "failā!"
 
-#: ../GUI.cpp:675
+#: ../GUI.cpp:714
 msgid "Add Application app name widget is not in glade file!"
 msgstr ""
 "Pievienot Programmu apliokjācijas nosaukuma sīkrīku dialogs nav glade failā!"
 
-#: ../GUI.cpp:669
+#: ../GUI.cpp:708
 msgid "Add Application dialog is not in glade file!"
 msgstr "Pievienot Programmu dialogs nav glade failā!"
 
-#: ../GUI.cpp:76
+#: ../GUI.cpp:96
 msgid "Add new"
 msgstr "Pievienot jaunu"
 
-#: ../GUI.cpp:604
+#: ../GUI.cpp:638
 msgid "An advanced DRI configurator tool."
 msgstr "Padziļinātais DRI Konfigurācijas rīks."
 
-#: ../GUI.cpp:251
-msgid "Application %1 not found "
+#: ../GUI.cpp:278
+msgid "Application %1 not found"
 msgstr "Programma %1 nav atrasta "
 
 #: ../DriConf.glade.h:6
@@ -58,11 +58,11 @@ msgstr "Programmas izpildāmais fails:"
 msgid "Application name:"
 msgstr "Programmas vārds:"
 
-#: ../GUI.cpp:653
+#: ../GUI.cpp:692
 msgid "Application removed successfully."
 msgstr "Programma noņemta veiksmīgi."
 
-#: ../GUI.cpp:734
+#: ../GUI.cpp:776
 msgid "Application successfully added."
 msgstr "Programma pievienota veikismīgi."
 
@@ -70,106 +70,232 @@ msgstr "Programma pievienota veikismīgi."
 msgid "Cancel"
 msgstr "Atcelt"
 
-#: ../DRIQuery.cpp:155
-msgid "Closed source driver!!"
-msgstr "Aizvērtā koda draiveri!!"
+#: ../main.cpp:70
+msgid "Checking if the system is supported"
+msgstr ""
 
-#: ../DRIQuery.cpp:28 ../DRIQuery.cpp:137
+#: ../Utils/XorgQuery.cpp:15
 msgid "Couldn't open X display"
 msgstr "Nevar atvērt X displeju"
 
-#: ../GUI.cpp:146
+#: ../main.cpp:46
+msgid "Creating the GTK application object"
+msgstr ""
+
+#: ../GUI.cpp:168
 msgid "Current language code is %1"
 msgstr "Pašreizējais valodas kods ir %1"
 
-#: ../GUI.cpp:187
+#: ../ValueObject/EGLDisplayWrapper.cpp:37
+msgid "Display is missing EGL_MESA_query_driver extension"
+msgstr ""
+
+#: ../GUI.cpp:211
 msgid "Driver %1 not found"
 msgstr "Draiveris %1 nav atrasts"
 
-#: ../GUI.cpp:264
-msgid "Driver %1 not found "
-msgstr "Draiveris %1 nav atrasts "
-
-#: ../ConfigurationResolver.cpp:182
+#: ../Utils/ConfigurationResolver.cpp:213
 msgid ""
 "Driver '%1' doesn't support option '%2' on application '%3'. Option removed."
 msgstr "Driveris '%1' neatbalsta opciju '%2' aplikācijā '%3'. Opcija noņemta."
+
+#: ../Utils/WaylandQuery.cpp:57
+msgid "Driver doesn't support extension \"EGL_MESA_query_driver\""
+msgstr ""
 
 #: ../DriConf.glade.h:7
 msgid "Driver:"
 msgstr "Draiveris:"
 
-#: ../DRIQuery.cpp:18
-msgid "Error getting function pointers. LibGL must be too old."
-msgstr "Kļuda iegūstot funkciju norādes. LibGL var būt pārāk veca."
+#: ../Utils/DRIQuery.cpp:28
+msgid "Enumerating DRI Devices"
+msgstr ""
 
-#: ../GUI.cpp:484
+#: ../Utils/Parser.cpp:167
+msgid "Exception caught during device XML parsing: %1"
+msgstr ""
+
+#: ../Utils/EGLDisplayFactory.cpp:14
+msgid "Failed to create EGL display"
+msgstr ""
+
+#: ../Utils/GBMDeviceFactory.cpp:18
+msgid "Failed to create GBM device for %1"
+msgstr ""
+
+#: ../Utils/EGLDisplayFactory.cpp:20
+msgid "Failed to initialize EGL display"
+msgstr ""
+
+#: ../Utils/ConfigurationLoader.cpp:103
+msgid "Failed to load file: %1"
+msgstr ""
+
+#: ../Utils/GBMDeviceFactory.cpp:11
+msgid "Failed to open device %1"
+msgstr ""
+
+#: ../GUI.cpp:518
 msgid "Force Application to use GPU"
 msgstr "Piespiest Programmu lietot GPU"
 
-#: ../GUI.cpp:119
+#: ../Utils/DRIQuery.cpp:33
+msgid "Found %1 devices"
+msgstr ""
+
+#: ../Utils/ConfigurationLoader.cpp:93
+msgid "Found configuration on path: %1"
+msgstr ""
+
+#: ../Utils/DRIQuery.cpp:84
+msgid "GPU \"%1\" has the driver \"%2\""
+msgstr ""
+
+#: ../Utils/DRIQuery.cpp:57
+msgid "GPU has been detected as \"%1\" from \"%2\""
+msgstr ""
+
+#: ../Utils/DRIQuery.cpp:75
+msgid "Generating EGL Display from GBM device for \"%1\""
+msgstr ""
+
+#: ../GUI.cpp:139
 msgid "Generating final XML for saving..."
 msgstr "Ģenerē galīgo XML faila versiju saglabāšanai..."
 
-#: ../GUI.cpp:51
+#: ../Utils/DRIQuery.cpp:66
+msgid "Generating gbm device for path \"%1\""
+msgstr ""
+
+#: ../Utils/ConfigurationLoader.cpp:17
+msgid "Legacy system-wide XML path: %1"
+msgstr ""
+
+#: ../Utils/ConfigurationLoader.cpp:24
+msgid "Legacy system-wide file doesn't exist"
+msgstr ""
+
+#: ../Utils/DRIQuery.cpp:90
+msgid "Loading driver options"
+msgstr ""
+
+#: ../GUI.cpp:71
 msgid "Main window object is not in glade file!"
 msgstr "Galvenais loga objekts nav glade failā!"
 
-#: ../main.cpp:24
-msgid "Not all screens have open source drivers"
-msgstr "Ne visirm ekrāniem ir atvērtā koda draiveri"
+#: ../Utils/XorgQuery.cpp:85
+msgid ""
+"Missing GLX_MESA_query_renderer extension. Probably this is a closed-source "
+"driver."
+msgstr ""
 
-#: ../GUI.cpp:280
+#: ../GUI.cpp:314
 msgid "Notebook object not found in glade file!"
 msgstr "Bloknota objekts nav atrasts glade failā!"
 
-#: ../GUI.cpp:325
+#: ../GUI.cpp:359
 msgid "Option %1 doesn't exist in application %2. Merge failed"
 msgstr "Opcija %1 neeksistē programmā %2. Apvienošana izgāzās"
 
-#: ../GUI.cpp:499
+#: ../GUI.cpp:533
 msgid "PRIME Settings"
 msgstr "PRIME iestatījumi"
 
-#: ../GUI.cpp:88
+#: ../Utils/Parser.cpp:6
+msgid "Parsing XML %1"
+msgstr ""
+
+#: ../Utils/Parser.cpp:128
+msgid "Parsing device for XML: %1"
+msgstr "Raksta ģenerēto XML: %1"
+
+#: ../Utils/DRIQuery.cpp:45
+msgid "Processing GPU with PCI ID \"%1\""
+msgstr ""
+
+#: ../Utils/ConfigurationLoader.cpp:10
+msgid "Reading legacy system-wide XML"
+msgstr ""
+
+#: ../Utils/ConfigurationLoader.cpp:70
+msgid "Reading system-wide XML"
+msgstr ""
+
+#: ../Utils/ConfigurationLoader.cpp:35
+msgid "Reading user defined XML"
+msgstr ""
+
+#: ../GUI.cpp:108
 msgid "Remove current Application"
 msgstr "Noņemt esošo Programmu"
 
-#: ../GUI.cpp:608
+#: ../Utils/DRIQuery.cpp:124
+msgid "Skipping device %1 due to error: %2"
+msgstr ""
+
+#: ../GUI.cpp:642
 msgid "Source Code"
 msgstr "Pirmkods"
 
-#: ../GUI.cpp:654
+#: ../GUI.cpp:62
+msgid "Start building GTK gui"
+msgstr ""
+
+#: ../Utils/ConfigurationLoader.cpp:77
+msgid "System-wide XML path: %1"
+msgstr ""
+
+#: ../Utils/ConfigurationLoader.cpp:117
+msgid "System-wide configuration path doesn't exist!"
+msgstr ""
+
+#: ../GUI.cpp:693
 msgid "The application has been removed."
 msgstr "Programma tika noņemta."
 
-#: ../GUI.cpp:735
+#: ../GUI.cpp:778
 msgid "The application was successfully added. Reloading default app options."
 msgstr ""
 "Programma tika pievienota veikismīgi. Pārlādēju noklusējuma aplikācijas "
 "opcijas."
 
-#: ../GUI.cpp:639
+#: ../GUI.cpp:678
 msgid "The default application cannot be removed."
 msgstr "Noklusējuma programma nevar tikt noņemta."
 
-#: ../GUI.cpp:640
+#: ../GUI.cpp:679
 msgid "The driver needs a default configuration."
 msgstr "Draiverim nepieciešama noklusējuma konfigurācija."
 
-#: ../DRIQuery.cpp:107 ../DRIQuery.cpp:116
+#: ../Utils/DRIQuery.cpp:97
 msgid "Unable to extract configuration for driver %1"
 msgstr "Nevar izvilkt konfigurāciju draiverim %1"
 
-#: ../GUI.cpp:622
+#: ../Utils/XorgQuery.cpp:31
+msgid "Unable to extract driver name for screen %1"
+msgstr "Nevar izvilkt konfigurāciju draiverim %1"
+
+#: ../GUI.cpp:658
 msgid "Unexpected response code from about dialog: %1"
 msgstr ""
 
-#: ../GUI.cpp:457
+#: ../GUI.cpp:491
 msgid "Use default GPU of screen"
 msgstr "Lieto noklusējuma GPU ekrānam"
 
-#: ../ConfigurationResolver.cpp:323
+#: ../Utils/ConfigurationLoader.cpp:49
+msgid "User defined XML doesn't exist"
+msgstr ""
+
+#: ../Utils/ConfigurationLoader.cpp:42
+msgid "User defined XML path: %1"
+msgstr ""
+
+#: ../Utils/ConfigurationLoader.cpp:139
+msgid "User defined configuration is empty. Returning an empty object"
+msgstr ""
+
+#: ../Utils/ConfigurationResolver.cpp:380
 msgid ""
 "User-defined driver '%1' on screen '%2' doesn't have a driver loaded on "
 "system. Configuration removed."
@@ -177,15 +303,15 @@ msgstr ""
 "Lietotaja-definētais driverim '%1' uz ekrāna '%2' nav ielādēts draivera "
 "sistēma. Konfigurācija noņemta."
 
-#: ../GUI.cpp:710
+#: ../GUI.cpp:751
 msgid "Validation error"
 msgstr "Pārbaudes kļūda"
 
-#: ../GUI.cpp:125
+#: ../GUI.cpp:146
 msgid "Writing generated XML: %1"
 msgstr "Raksta ģenerēto XML: %1"
 
-#: ../GUI.cpp:712
+#: ../GUI.cpp:753
 msgid "You need to specify the application name, executable and driver."
 msgstr ""
 "Jums nepieciešams norādīt programmas vārdu, izpildāmo failu vai draiveri."
@@ -201,3 +327,11 @@ msgstr "_Fails"
 #: ../DriConf.glade.h:3
 msgid "_Help"
 msgstr "_Palīdzība"
+
+#: ../main.cpp:63
+msgid "adriconf running on Wayland"
+msgstr ""
+
+#: ../main.cpp:66
+msgid "adriconf running on X11"
+msgstr ""

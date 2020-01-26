@@ -245,10 +245,6 @@ msgstr ""
 msgid "Unable to extract configuration for driver %1"
 msgstr ""
 
-#: ../Utils/DRIQuery.cpp:109
-msgid "Unable to extract configuration for driver %1"
-msgstr ""
-
 #: ../Utils/DRIQuery.cpp:124
 msgid "Skipping device %1 due to error: %2"
 msgstr ""
@@ -281,10 +277,6 @@ msgstr ""
 msgid "Exception caught during device XML parsing: %1"
 msgstr ""
 
-#: ../Utils/WaylandQuery.cpp:24
-msgid "Unable to extract configuration for driver %1"
-msgstr ""
-
 #: ../Utils/WaylandQuery.cpp:57
 msgid "Driver doesn't support extension \"EGL_MESA_query_driver\""
 msgstr ""
@@ -295,10 +287,6 @@ msgstr ""
 
 #: ../Utils/XorgQuery.cpp:31
 msgid "Unable to extract driver name for screen %1"
-msgstr ""
-
-#: ../Utils/XorgQuery.cpp:42
-msgid "Unable to extract configuration for driver %1"
 msgstr ""
 
 #: ../Utils/XorgQuery.cpp:85
