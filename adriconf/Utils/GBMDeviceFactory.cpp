@@ -5,7 +5,7 @@
 #include <glibmm/ustring.h>
 
 GBMDevice GBMDeviceFactory::generateDeviceFromPath(const char *path) {
-    int fileDescriptor = open(path, O_RDWR | FD_CLOEXEC);
+    int fileDescriptor = open(path, O_RDWR | O_CLOEXEC);
     if (fileDescriptor <= 0) {
         throw std::runtime_error(
                 Glib::ustring::compose(this->translator->trns("Failed to open device %1"), path)
