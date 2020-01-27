@@ -26,6 +26,17 @@
       </screenshot>
    </screenshots>
    <releases>
+      <release version="1.6.1" date="2020-01-27" urgency="low">
+         <description>
+            <p>This is a bug-fix release to address small issues with the latest release.</p>
+            <ul>
+               <li>Make EGL mandatory for building. @jlHertel</li>
+               <li>Update translation files with latest text. @jlHertel</li>
+               <li>Fix incorrect flag usage during GBM device creation. @jlHertel</li>
+               <li>Always build Wayland support. @jlHertel</li>
+            </ul>
+         </description>
+      </release>
       <release version="1.6" date="2020-01-19" urgency="low">
          <description>
             <p>This release has some bug-fixes but mostly is a rework in the code structure to better handle future changes</p>
@@ -36,7 +47,6 @@
                <li>Rework code for easy unit testing. @jlHertel</li>
                <li>Lower minimum desktop specification version for increased compatibility. @akien-mga</li>
                <li>Improve documentation around releasing new versions. @jlHertel</li>
-               <li></li>
             </ul>
          </description>
       </release>
