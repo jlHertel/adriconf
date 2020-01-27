@@ -3,7 +3,6 @@ project(adriconf)
 
 set(CMAKE_CXX_STANDARD 14)
 
-option(ENABLE_XWAYLAND "Enable XWayland support" ON)
 option(ENABLE_UNIT_TESTS "Enables building Unit tests" ON)
 set(TOP_CMAKE_WAS_CALLED TRUE)
 
@@ -102,8 +101,6 @@ set(SHARED_SOURCE_FILES
         ${CMAKE_SOURCE_DIR}/adriconf/Utils/ConfigurationResolverInterface.h
         ${CMAKE_SOURCE_DIR}/adriconf/Utils/DRIQuery.cpp
         ${CMAKE_SOURCE_DIR}/adriconf/Utils/DRIQuery.h
-        ${CMAKE_SOURCE_DIR}/adriconf/Utils/HelpersWayland.cpp
-        ${CMAKE_SOURCE_DIR}/adriconf/Utils/HelpersWayland.h
         ${CMAKE_SOURCE_DIR}/adriconf/Utils/WriterInterface.h
         ${CMAKE_SOURCE_DIR}/adriconf/Utils/ConfigurationLoaderInterface.h
         ${CMAKE_SOURCE_DIR}/adriconf/Utils/PCIDatabaseQuery.cpp

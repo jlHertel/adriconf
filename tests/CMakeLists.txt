@@ -56,8 +56,4 @@ endif ()
 target_link_libraries(runUnitTests ${EGL_LIBRARIES})
 target_include_directories(runUnitTests PUBLIC ${EGL_INCLUDE_DIRS})
 
-if (ENABLE_XWAYLAND)
-    target_compile_definitions(runUnitTests PRIVATE ENABLE_XWAYLAND)
-endif ()
-
 target_compile_options(runUnitTests PRIVATE -Wall -Wextra -pedantic)

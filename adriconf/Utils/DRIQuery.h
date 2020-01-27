@@ -4,7 +4,6 @@
 #include "../ValueObject/DriverConfiguration.h"
 #include "Parser.h"
 #include "../ValueObject/GPUInfo.h"
-#include "HelpersWayland.h"
 #include "../Logging/LoggerInterface.h"
 #include "PCIDatabaseQueryInterface.h"
 #include "GBMDeviceFactoryInterface.h"

@@ -178,7 +178,7 @@
       {
          "name": "adriconf",
          "buildsystem": "cmake-ninja",
-         "config-opts": ["-DENABLE_XWAYLAND=1", "-DENABLE_UNIT_TESTS=0"],
+         "config-opts": ["-DENABLE_UNIT_TESTS=0"],
          "sources": [
             {
                "type": "git",

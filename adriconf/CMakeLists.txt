@@ -47,10 +47,6 @@ endif ()
 target_link_libraries(adriconf ${EGL_LIBRARIES})
 target_include_directories(adriconf PUBLIC ${EGL_INCLUDE_DIRS})
 
-if (ENABLE_XWAYLAND)
-    target_compile_definitions(adriconf PRIVATE ENABLE_XWAYLAND)
-endif ()
-
 target_compile_options(adriconf PRIVATE -Wall -Wextra -pedantic)
 
 add_custom_command(OUTPUT ${CMAKE_SOURCE_DIR}/adriconf/resources.c
