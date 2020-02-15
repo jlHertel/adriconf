@@ -83,11 +83,21 @@ std::list<Device_ptr> ConfigurationResolver::resolveOptionsForSave(
             }
 
             Application_ptr systemWideApp = systemWideDevice->findApplication(userDefinedApplication->getExecutable());
+            Application_ptr systemWideDefaultApp = defaultSystemWideDevice->findApplication(userDefinedApplication->getExecutable());
 
             /* If this application already exists systemWide, we need to do a merge on it */
-            if (systemWideApp != nullptr) {
-                /* List of name-value options */
-                std::map<Glib::ustring, Glib::ustring> systemWideAppOptions = systemWideApp->getOptionsAsMap();
+            if (systemWideApp != nullptr || systemWideDefaultApp != nullptr) {
+                std::map<Glib::ustring, Glib::ustring> systemWideAppOptions;
+
+                if (systemWideDefaultApp != nullptr) {
+                    systemWideAppOptions = systemWideDefaultApp->getOptionsAsMap();
+                }
+
+                if (systemWideApp != nullptr) {
+                    for (auto const &systemWideAppOption : systemWideApp->getOptionsAsMap()) {
+                        systemWideAppOptions[systemWideAppOption.first] = systemWideAppOption.second;
+                    }
+                }
 
                 for (auto const &userDefinedAppOption : userDefinedApplication->getOptions()) {
                     if (systemWideAppOptions.count(userDefinedAppOption->getName()) > 0) {
@@ -281,6 +291,7 @@ void ConfigurationResolver::mergeOptionsForDisplay(
 
         /* Check if we can add any of the system-wide apps for this config */
         this->addMissingApplications(systemWideDevice, userDefinedDevice);
+        this->addMissingApplications(defaultSystemWideDevice, userDefinedDevice);
 
         std::list<Application_ptr> newDeviceApps = userDefinedDevice->getApplications();
 
