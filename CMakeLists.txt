@@ -6,6 +6,12 @@ set(CMAKE_CXX_STANDARD 14)
 option(ENABLE_UNIT_TESTS "Enables building Unit tests" ON)
 set(TOP_CMAKE_WAS_CALLED TRUE)
 
+set(SYSCONFDIR "/etc" CACHE PATH "The path to read system-wide configuration. Equivalent to mesa SYSCONFDIR option")
+add_definitions(-DSYSCONFDIR="${SYSCONFDIR}")
+
+set(DATADIR "/usr/share/drirc.d" CACHE PATH "The path to read system-wide configurations. Equivalent to mesa DATADIR option")
+add_definitions(-DDATADIR="${DATADIR}")
+
 # Setup version string
 if(EXISTS "${CMAKE_SOURCE_DIR}/.git")
     execute_process(

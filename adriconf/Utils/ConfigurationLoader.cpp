@@ -2,7 +2,6 @@
 #include "ConfigurationResolver.h"
 
 #include <boost/filesystem.hpp>
-#include <glibmm/i18n.h>
 #include <fstream>
 #include <algorithm>
 
@@ -145,11 +144,11 @@ std::list<Device_ptr> ConfigurationLoader::loadUserDefinedConfiguration() {
 }
 
 Glib::ustring ConfigurationLoader::getOldSystemWideConfigurationPath() {
-    Glib::ustring path("/etc/drirc");
+    Glib::ustring path(SYSCONFDIR "/drirc");
     std::ifstream flatpakInfo("/.flatpak-info");
 
     if (flatpakInfo.good()) {
-        path = "/var/run/host/etc/drirc";
+        path = "/var/run/host" SYSCONFDIR "/drirc";
     }
 
     return path;
@@ -159,10 +158,10 @@ boost::filesystem::path ConfigurationLoader::getSystemWideConfigurationPath() {
     std::ifstream flatpakInfo("/.flatpak-info");
 
     if (flatpakInfo.good()) {
-        return boost::filesystem::path("/var/run/host/usr/share/drirc.d/");
+        return boost::filesystem::path("/var/run/host" DATADIR);
     }
 
-    return boost::filesystem::path("/usr/share/drirc.d/");
+    return boost::filesystem::path(DATADIR);
 }
 
 ConfigurationLoader::ConfigurationLoader(
