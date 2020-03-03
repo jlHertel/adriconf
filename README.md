@@ -1,3 +1,9 @@
+# This project has moved
+This project has moved to Free desktop gitlab repositories.
+You can see the code [here](https://gitlab.freedesktop.org/mesa/adriconf/).
+
+This repository won't be updated anymore.
+
 # Advanced DRI Configurator
 
 adriconf (**A**dvanced **DRI** **CONF**igurator) is a GUI tool used to configure
