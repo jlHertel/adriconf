@@ -1,0 +1,330 @@
+# Polish translations for 1.0.1 package.
+# Copyright (C) 2020 THE 1.0.1'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the 1.0.1 package.
+# Witold Baryluk <witold.baryluk@gmail.com>, 2020.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 1.0.1\n"
+"Report-Msgid-Bugs-To: Jean Lorenz Hertel <jean.hertel@hotmail.com>\n"
+"POT-Creation-Date: 2018-08-06 08:10-0300\n"
+"PO-Revision-Date: 2020-09-22 23:35+0000\n"
+"Last-Translator: Witold Baryluk <witold.baryluk@gmail.com>\n"
+"Language-Team: Polish\n"
+"Language: pl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
+"|| n%100>=20) ? 1 : 2);\n"
+
+#: ../main.cpp:46
+msgid "Creating the GTK application object"
+msgstr ""
+
+#: ../main.cpp:63
+msgid "adriconf running on Wayland"
+msgstr "adricong uruchomiony na Wayland"
+
+#: ../main.cpp:66
+msgid "adriconf running on X11"
+msgstr "adriconf uruchomiony na X11"
+
+#: ../main.cpp:70
+msgid "Checking if the system is supported"
+msgstr "Sprawdzanie, czy system jest wspierany"
+
+#: ../GUI.cpp:62
+msgid "Start building GTK gui"
+msgstr ""
+
+#: ../GUI.cpp:71
+msgid "Main window object is not in glade file!"
+msgstr "Główny objekt okna nie jest plikiem glade!"
+
+#: ../GUI.cpp:96
+msgid "Add new"
+msgstr "Dodaj nową"
+
+#: ../GUI.cpp:108
+msgid "Remove current Application"
+msgstr "Usuń bieżącą aplikacje"
+
+#: ../GUI.cpp:139
+msgid "Generating final XML for saving..."
+msgstr "Generowanie ostatecznego XML do zapisu..."
+
+#: ../GUI.cpp:146
+msgid "Writing generated XML: %1"
+msgstr "Zapisywanie wygenerowanego XML: %1"
+
+#: ../GUI.cpp:168
+msgid "Current language code is %1"
+msgstr "Bieżący kod jezyka to %1"
+
+#: ../GUI.cpp:211
+msgid "Driver %1 not found"
+msgstr "Sterownik %1 nie znaleziony"
+
+#: ../GUI.cpp:278
+msgid "Application %1 not found"
+msgstr "Aplikacja %1 nie znaleziona"
+
+#: ../GUI.cpp:314
+msgid "Notebook object not found in glade file!"
+msgstr "Objekt Notebook nie znaleziony w pliku glade!"
+
+#: ../GUI.cpp:359
+msgid "Option %1 doesn't exist in application %2. Merge failed"
+msgstr "Opcja %1 nie istnieje w aplikacji %2. Scalanie się nie powiodło"
+
+#: ../GUI.cpp:491
+msgid "Use default GPU of screen"
+msgstr "Użyj domyślnego GPU ekranu"
+
+#: ../GUI.cpp:518
+msgid "Force Application to use GPU"
+msgstr "Wymuś applikacje do użycia GPU"
+
+#: ../GUI.cpp:533
+msgid "PRIME Settings"
+msgstr "Ustawienia PRIME"
+
+#: ../GUI.cpp:638
+msgid "An advanced DRI configurator tool."
+msgstr "Zaawansowane narzędzie konfiguracji DRI (adriconf)"
+
+#: ../GUI.cpp:642
+msgid "Source Code"
+msgstr "Kod źródłowy"
+
+#: ../GUI.cpp:658
+msgid "Unexpected response code from about dialog: %1"
+msgstr "Nieoczekiwany kod odpowiedzi z okna about: %1"
+
+#: ../GUI.cpp:678
+msgid "The default application cannot be removed."
+msgstr "Domyślna aplikacja (default) nie może być usunięta."
+
+#: ../GUI.cpp:679
+msgid "The driver needs a default configuration."
+msgstr "Ten sterownik wymaga domyślnej konfiguracji."
+
+#: ../GUI.cpp:692
+msgid "Application removed successfully."
+msgstr "Aplikacja usunięta pomyślnie."
+
+#: ../GUI.cpp:693
+msgid "The application has been removed."
+msgstr "Aplikacja została usunięta."
+
+#: ../GUI.cpp:708
+msgid "Add Application dialog is not in glade file!"
+msgstr "Okno Dodaj Aplikacje nie znaleziono w pliku glade!"
+
+#: ../GUI.cpp:714
+msgid "Add Application app name widget is not in glade file!"
+msgstr ""
+
+#: ../GUI.cpp:721
+msgid "Add Application app executable widget is not in glade file!"
+msgstr ""
+
+#: ../GUI.cpp:728
+msgid "Add Application app driver widget is not in glade file!"
+msgstr ""
+
+#: ../GUI.cpp:751
+msgid "Validation error"
+msgstr "Bład walidacji"
+
+#: ../GUI.cpp:753
+msgid "You need to specify the application name, executable and driver."
+msgstr "Nazwa aplikacji, nazwa pliku wykonywalnego i nazwa sterownika są wymagane."
+
+#: ../GUI.cpp:776
+msgid "Application successfully added."
+msgstr "Applikacja dodane pomyślnie."
+
+#: ../GUI.cpp:778
+msgid "The application was successfully added. Reloading default app options."
+msgstr "Applikacja została dodana pomyślnie. Przeładowywanie domyślnych opcji aplikacji."
+
+#: ../ValueObject/EGLDisplayWrapper.cpp:37
+msgid "Display is missing EGL_MESA_query_driver extension"
+msgstr "Ekran nie posiada rozszerzenia EGL_MESA_query_driver"
+
+#: ../Utils/ConfigurationLoader.cpp:10
+msgid "Reading legacy system-wide XML"
+msgstr "Wczytuję starożytny ogólno-systemowy XML"
+
+#: ../Utils/ConfigurationLoader.cpp:17
+msgid "Legacy system-wide XML path: %1"
+msgstr "Ścieżka starożytnego ogólno-systemowego XML: %1"
+
+#: ../Utils/ConfigurationLoader.cpp:24
+msgid "Legacy system-wide file doesn't exist"
+msgstr "Starożytny ogólno-systemowy plik XML nie istnieje"
+
+#: ../Utils/ConfigurationLoader.cpp:35
+msgid "Reading user defined XML"
+msgstr "Wczytuję XML użytkownika"
+
+#: ../Utils/ConfigurationLoader.cpp:42
+msgid "User defined XML path: %1"
+msgstr "Ścieżka XML użytkownika: %1"
+
+#: ../Utils/ConfigurationLoader.cpp:49
+msgid "User defined XML doesn't exist"
+msgstr "XML użytkownika nie istnieje"
+
+#: ../Utils/ConfigurationLoader.cpp:70
+msgid "Reading system-wide XML"
+msgstr "Wczytuje ogólno-systemowy XML"
+
+#: ../Utils/ConfigurationLoader.cpp:77
+msgid "System-wide XML path: %1"
+msgstr "Ścieżka ogólno-systemowego XML: %1"
+
+#: ../Utils/ConfigurationLoader.cpp:93
+msgid "Found configuration on path: %1"
+msgstr "Znaleziono konfiguracje w ścieżce: %1"
+
+#: ../Utils/ConfigurationLoader.cpp:103
+msgid "Failed to load file: %1"
+msgstr "Nie udało się wczytać pliku: %1"
+
+#: ../Utils/ConfigurationLoader.cpp:117
+msgid "System-wide configuration path doesn't exist!"
+msgstr "Ścieżka ogólno-systemowa konfiguracji nie istnieje!"
+
+#: ../Utils/ConfigurationLoader.cpp:139
+msgid "User defined configuration is empty. Returning an empty object"
+msgstr "Konfiguracja użytkownika jest pusta. Zwracam pusty objekt"
+
+#: ../Utils/ConfigurationResolver.cpp:213
+msgid ""
+"Driver '%1' doesn't support option '%2' on application '%3'. Option removed."
+msgstr "Sterownik '%1' nie wspiera opcji '%2' w aplikacji '%3'. Opcja usunięta."
+
+#: ../Utils/ConfigurationResolver.cpp:380
+msgid ""
+"User-defined driver '%1' on screen '%2' doesn't have a driver loaded on "
+"system. Configuration removed."
+msgstr ""
+"Sterownik użytkownika '%1' na ekranie '%2% nie ma sterownika załadowanego "
+"w systemie. Konfiguracja usunięta."
+
+#: ../Utils/DRIQuery.cpp:28
+msgid "Enumerating DRI Devices"
+msgstr "Przeszukiwanie urządzeń DRI"
+
+#: ../Utils/DRIQuery.cpp:33
+msgid "Found %1 devices"
+msgstr "Znaleziono %1 urządzeń"
+
+#: ../Utils/DRIQuery.cpp:45
+msgid "Processing GPU with PCI ID \"%1\""
+msgstr "Przetwarzanie GPU z PCI ID \"%1\""
+
+#: ../Utils/DRIQuery.cpp:57
+msgid "GPU has been detected as \"%1\" from \"%2\""
+msgstr "GPU zostało wykryte jako \"%1\" z \"%2\""
+
+#: ../Utils/DRIQuery.cpp:66
+msgid "Generating gbm device for path \"%1\""
+msgstr "Gerowanie urządzenia gbm dla ścieżki \"%1\""
+
+#: ../Utils/DRIQuery.cpp:75
+msgid "Generating EGL Display from GBM device for \"%1\""
+msgstr "Gerowanie ekranu gbm dla ścieżki \"%1\""
+
+#: ../Utils/DRIQuery.cpp:84
+msgid "GPU \"%1\" has the driver \"%2\""
+msgstr "GPU \"%1\" ma sterownik \"%2\""
+
+#: ../Utils/DRIQuery.cpp:90
+msgid "Loading driver options"
+msgstr "Ładowanie opcji sterownika"
+
+#: ../Utils/DRIQuery.cpp:97
+msgid "Unable to extract configuration for driver %1"
+msgstr "Nie można wyciągnąć konfiguracji dla sterownika %1"
+
+#: ../Utils/DRIQuery.cpp:124
+msgid "Skipping device %1 due to error: %2"
+msgstr "Pomijam urządzenie %1 z powodu błędu: %2"
+
+#: ../Utils/EGLDisplayFactory.cpp:14
+msgid "Failed to create EGL display"
+msgstr "Nie udało się stworzyć ekranu EGL"
+
+#: ../Utils/EGLDisplayFactory.cpp:20
+msgid "Failed to initialize EGL display"
+msgstr "Nie udało się zainicjalizować ekranu EGL"
+
+#: ../Utils/GBMDeviceFactory.cpp:11
+msgid "Failed to open device %1"
+msgstr "Nie udało się otworzyć urządzenia %1"
+
+#: ../Utils/GBMDeviceFactory.cpp:18
+msgid "Failed to create GBM device for %1"
+msgstr "Nie udało się stworzyć urządzenia GBM dla %1"
+
+#: ../Utils/Parser.cpp:6
+msgid "Parsing XML %1"
+msgstr "Parsowanie XML %1"
+
+#: ../Utils/Parser.cpp:128
+msgid "Parsing device for XML: %1"
+msgstr "Parsowanie urządzenia dla XML: %1"
+
+#: ../Utils/Parser.cpp:167
+msgid "Exception caught during device XML parsing: %1"
+msgstr "Wyjątek złapany podczas parsowanie XML urządzenia: %1"
+
+#: ../Utils/WaylandQuery.cpp:57
+msgid "Driver doesn't support extension \"EGL_MESA_query_driver\""
+msgstr "Sterownik nie wspiera rozszerzania \"EGL_MESA_query_driver\""
+
+#: ../Utils/XorgQuery.cpp:15
+msgid "Couldn't open X display"
+msgstr "Nie można otworzyć ekranu X11"
+
+#: ../Utils/XorgQuery.cpp:31
+msgid "Unable to extract driver name for screen %1"
+msgstr "Nie udało się otrzymać nazwy sterownika dla ekranu %1"
+
+#: ../Utils/XorgQuery.cpp:85
+msgid ""
+"Missing GLX_MESA_query_renderer extension. Probably this is a closed-source "
+"driver."
+msgstr "Brakujące rozszerzenie GLX_MESA_query_renderer. Może to nie jest sterownik Mesa."
+
+#: ../DriConf.glade.h:1
+msgid "_File"
+msgstr "Plik"
+
+#: ../DriConf.glade.h:2
+msgid "_Application"
+msgstr "Aplikacje"
+
+#: ../DriConf.glade.h:3
+msgid "_Help"
+msgstr "Pomoc"
+
+#: ../DriConf.glade.h:4
+msgid "Cancel"
+msgstr "Anuluj"
+
+#: ../DriConf.glade.h:5
+msgid "Application name:"
+msgstr "Nazwa aplikacji"
+
+#: ../DriConf.glade.h:6
+msgid "Application executable:"
+msgstr "Plik wykonywalne aplikacji:"
+
+#: ../DriConf.glade.h:7
+msgid "Driver:"
+msgstr "Sterownik:"
